@@ -28,7 +28,7 @@ export default defineConfig({
       symbolId: 'icon-[dir]-[name]',
     }),
     visualizer({
-      open: false,
+      open: true,
     }),
   ],
   server: {
