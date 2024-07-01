@@ -250,7 +250,7 @@ export default function OrganizationPage() {
       },
       categoryList: optionsDataList,
     }));
-    console.log(optionsDataList,'this is optionsDataList');
+    console.log(optionsDataList, 'this is optionsDataList');
   };
   const onEdit = (formValue: Website) => {
     setWebsiteModalProps((prev) => ({
@@ -541,7 +541,7 @@ function AddTagModel({ title, show, formValue, onOk, onCancel, categoryList }: A
   };
   // const [parentTag, setParentTag] = useState([]);
   // const
-  const treeCategroy = TreeToArray(categoryList);
+  const treeCategroy = TreeToArray(categoryList, -1);
   console.log(treeCategroy, 'this is tree');
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
