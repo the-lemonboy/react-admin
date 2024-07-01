@@ -536,6 +536,8 @@ function AddTagModel({ title, show, formValue, onOk, onCancel, categoryList }: A
       console.error('Validation failed:', error);
     }
   };
+
+console.log('test')
   const onChange = (checked: boolean) => {
     console.log(`switch to ${checked}`);
   };
