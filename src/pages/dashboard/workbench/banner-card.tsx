@@ -33,7 +33,7 @@ export default function BannerCard() {
           style={{ color: themeToken.colorPrimaryTextActive }}
           className="mx-auto mb-6 mt-4 max-w-sm text-sm opacity-80 md:mx-0"
         >
-          Welcome to join the Discord channel to discuss everything about Slash Admin, or you can
+          Welcome to join the Discord channel to discuss everything about RSSDAO Admin, or you can
           visite my blog:
           <div>
             <a

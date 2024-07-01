@@ -11,3 +11,11 @@ export function flattenTrees<T extends { children?: T[] }>(trees: T[] = []): T[]
     return [node, ...flattenTrees(children)];
   }, trees);
 }
+
+// 数组转树
+export function TreeToArray<T extends { children?: T[] }>(arr: T[] = []): T[] {
+  return chain((node) => {
+    const children = node.children ? TreeToArray(node.children) : [];
+    return [...children, node];
+  }, arr);
+}

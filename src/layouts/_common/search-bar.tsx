@@ -23,7 +23,6 @@ export default function SearchBar() {
   const themeToken = useThemeToken();
 
   const flattenedRoutes = useFlattenedRoutes();
-
   const activeStyle: CSSProperties = {
     border: `1px dashed ${themeToken.colorPrimary}`,
     backgroundColor: `${Color(themeToken.colorPrimary).alpha(0.2).toString()}`,

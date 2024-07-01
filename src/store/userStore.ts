@@ -13,6 +13,8 @@ import { StorageEnum } from '#/enum';
 
 const { VITE_APP_HOMEPAGE: HOMEPAGE } = import.meta.env;
 
+import res from './logininfo';
+
 type UserStore = {
   userInfo: Partial<UserInfo>;
   userToken: UserToken;
@@ -55,12 +57,13 @@ export const useSignIn = () => {
   const { notification, message } = App.useApp();
   const { setUserToken, setUserInfo } = useUserActions();
 
-  const signInMutation = useMutation(userService.signin);
+  // const signInMutation = useMutation(userService.signin);
 
   const signIn = async (data: SignInReq) => {
     try {
-      const res = await signInMutation.mutateAsync(data);
+      // const res = await signInMutation.mutateAsync(data);
       const { user, accessToken, refreshToken } = res;
+      console.log(res, 'this is res');
       setUserToken({ accessToken, refreshToken });
       setUserInfo(user);
       navigatge(HOMEPAGE, { replace: true });

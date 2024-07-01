@@ -5,7 +5,6 @@ import { isEmpty } from 'ramda';
 import { t } from '@/locales/i18n';
 
 import { Result } from '#/api';
-import { ResultEnum } from '#/enum';
 
 // 创建 axios 实例
 const axiosInstance = axios.create({
@@ -32,13 +31,12 @@ axiosInstance.interceptors.response.use(
   (res: AxiosResponse<Result>) => {
     if (!res.data) throw new Error(t('sys.api.apiRequestFailed'));
 
-    const { status, data, message } = res.data;
+    const { success, status, data, message } = res.data;
     // 业务请求成功
-    const hasSuccess = data && Reflect.has(res.data, 'status') && status === ResultEnum.SUCCESS;
+    const hasSuccess = data && Reflect.has(res.data, 'success') && success === true;
     if (hasSuccess) {
       return data;
     }
-
     // 业务请求错误
     throw new Error(message || t('sys.api.apiRequestFailed'));
   },

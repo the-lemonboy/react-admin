@@ -22,6 +22,7 @@ function LoginForm() {
   if (loginState !== LoginStateEnum.LOGIN) return null;
 
   const handleFinish = async ({ username, password }: SignInReq) => {
+    // 模拟登录
     setLoading(true);
     try {
       await signIn({ username, password });

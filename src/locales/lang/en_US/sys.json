@@ -82,6 +82,20 @@
       "closeLeft": "Close Left",
       "closeRight": "Close Right"
     },
+    "monitor":{
+      "monitor":"Twitter monitor",
+      "keyword-library":"Keyword library",
+      "sort-section":"Sort section",
+      "sort-twitter":"Sort twitte",
+      "subscription-management":"Subscription",
+      "member-management":"Member",
+      "subscription-config":"Config",
+      "tweet-management":"Tweet management",
+      "session-management":"session",
+      "tweet-content":"tweet",
+      "twitter-management":"Tiwitter management",
+      "account-management":"account"
+    },
     "menu": {
       "dashboard": "Dashboard",
       "workbench": "Workbench",
@@ -96,6 +110,7 @@
         "index": "System",
         "organization": "Organization",
         "permission": "Permission",
+        "media-management":"media",
         "role": "Role",
         "user": "User",
         "user_detail": "User Detail"

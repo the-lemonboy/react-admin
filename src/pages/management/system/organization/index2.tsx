@@ -21,10 +21,9 @@ import orgService from '@/api/services/orgService';
 import { IconButton, Iconify } from '@/components/icon';
 import ProTag from '@/theme/antd/components/tag';
 
-// import OrganizationChart from './organization-chart';
+import OrganizationChart from './organization-chart';
 
 import { Organization } from '#/entity';
-import type { RadioChangeEvent } from 'antd';
 
 type SearchFormFieldType = Pick<Organization, 'name' | 'status'>;
 
@@ -125,12 +124,7 @@ export default function OrganizationPage() {
       formValue,
     }));
   };
-  const [keyword, setValue] = useState(1);
 
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setValue(e.target.value);
-  };
   return (
     <Space direction="vertical" size="large" className="w-full">
       <Card>
@@ -164,35 +158,7 @@ export default function OrganizationPage() {
           </Row>
         </Form>
       </Card>
-      <Card>
-        <div className="flex items-center">
-          <p className="mr-3 text-sm font-bold">关键词1</p>
-          <Radio.Group onChange={onChange} value={keyword}>
-            <Radio value={1}>A</Radio>
-            <Radio value={2}>B</Radio>
-            <Radio value={3}>C</Radio>
-            <Radio value={4}>D</Radio>
-          </Radio.Group>
-        </div>
-        <div className="flex items-center">
-          <p className="mr-3 whitespace-nowrap text-sm font-bold">关键词1</p>
-          <Radio.Group onChange={onChange} value={keyword}>
-            <Radio value={1}>A</Radio>
-            <Radio value={2}>B</Radio>
-            <Radio value={3}>C</Radio>
-            <Radio value={4}>D</Radio>
-          </Radio.Group>
-        </div>
-        <div className="flex items-center">
-          <p className="mr-3 whitespace-nowrap text-sm font-bold">关键词1</p>
-          <Radio.Group onChange={onChange} value={keyword}>
-            <Radio value={1}>A</Radio>
-            <Radio value={2}>B</Radio>
-            <Radio value={3}>C</Radio>
-            <Radio value={4}>D</Radio>
-          </Radio.Group>
-        </div>
-      </Card>
+
       <Card
         title="Organization List"
         extra={
@@ -212,9 +178,9 @@ export default function OrganizationPage() {
         />
       </Card>
 
-      {/* <Card title="Organization Chart">
+      <Card title="Organization Chart">
         <OrganizationChart organizations={data} />
-      </Card> */}
+      </Card>
 
       <OrganizationModal {...organizationModalPros} />
     </Space>

@@ -82,6 +82,19 @@
       "closeRight": "关闭右侧标签页"
     },
     "menu": {
+      "monitor":"推特监控",
+      "keyword-library":"关键词库",
+      "sort-section":"分类板块",
+      "sort-twitter":"推特分类",
+      "subscription-management":"订阅管理",
+      "member-management":"成员管理",
+      "subscription-config":"订阅配置",
+      "tweet-management":"推文管理",
+      "session-management":"会话管理",
+      "tweet-content":"推文内容",
+      "twitter-management":"推特管理",
+      "account-management":"推特账号",
+
       "dashboard": "仪表",
       "workbench": "工作台",
       "analysis": "分析",
@@ -94,6 +107,7 @@
       "system": {
         "index": "系统",
         "organization": "组织",
+        "media-management":"媒体管理",
         "permission": "权限",
         "role": "角色",
         "user": "用户",

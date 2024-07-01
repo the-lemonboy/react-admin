@@ -24,7 +24,13 @@ export interface Organization {
   order?: number;
   children?: Organization[];
 }
-
+export interface Website {
+  id?: string;
+  description: string;
+  icon: string;
+  link: string;
+  title: string;
+}
 export interface Permission {
   id: string;
   parentId: string;

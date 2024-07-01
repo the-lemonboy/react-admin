@@ -15,6 +15,7 @@ import { AppRouteObject } from '#/router';
 // 使用 import.meta.glob 获取所有路由组件
 const entryPath = '/src/pages';
 const pages = import.meta.glob('/src/pages/**/*.tsx');
+console.log('pages', pages);
 export const pagesSelect = Object.entries(pages).map(([path]) => {
   const pagePath = path.replace(entryPath, '');
   return {
