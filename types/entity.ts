@@ -25,6 +25,7 @@ export interface Organization {
   children?: Organization[];
 }
 export interface Website {
+  hash_key: string;
   id?: string;
   description: string;
   icon: string;

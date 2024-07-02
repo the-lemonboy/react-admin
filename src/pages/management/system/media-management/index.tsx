@@ -14,6 +14,7 @@ import {
   Typography,
   Tag,
   Switch,
+  TreeSelect,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -38,20 +39,21 @@ interface TableParams {
   pagination?: TablePaginationConfig;
 }
 type OptionType = {
-  area_id: String;
-  c_id: String;
-  created_at: String;
-  del_tag: Number;
-  id: Number;
-  level: Number;
-  opt_status: Number;
-  order_n: Number;
-  p_c_id: String;
-  p_c_path: String;
-  title: String;
-  updated_at: String;
-  upperTitle: String;
-  word_key: String;
+  a_id: string;
+  c_id: string;
+  created_at: string;
+  del_tag: number;
+  id: number;
+  level: number;
+  opt_status: number;
+  order_n: number;
+  p_c_path: string;
+  p_c_id: string;
+  updated_at: string;
+  title: string;
+  word_key: string;
+  upper_title: string;
+  children?: OptionType[];
 };
 // ------------
 type SearchFormFieldType = Pick<Website, 'title'>;
@@ -76,7 +78,7 @@ export default function OrganizationPage() {
   // 表格数据数据
   const fetchWebsiteList = async (params: GetWebsiteListRes) => {
     const res = await navService.WebsiteList(params);
-    return res.data;
+    return res;
   };
   const [query, setQuery] = useState<GetWebsiteListRes>({ limit: 10, page: 1 });
 
@@ -90,9 +92,20 @@ export default function OrganizationPage() {
     pagination: {
       current: 1,
       pageSize: 10,
-      total: 400,
+      total: data?.count,
     },
   });
+  useEffect(() => {
+    if (data) {
+      setTableParams((prev) => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: data?.count, // 确保 data.count 是正确的总数值
+        },
+      }));
+    }
+  }, [data]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
@@ -109,6 +122,7 @@ export default function OrganizationPage() {
   const [searchForm] = Form.useForm();
   const [websiteModalProps, setWebsiteModalProps] = useState<WebsiteModalProps>({
     formValue: {
+      hash_key: '',
       description: '',
       icon: '',
       link: '',
@@ -140,7 +154,7 @@ export default function OrganizationPage() {
     },
   });
   // 新增目录标签
-  const [addTagModelProps, setAddTagModelProps] = useState<AddTagModelProps>({
+  const [addTagModelProps, setAddTagModelProps] = useState<AddCategoryModelProps>({
     formValue: {
       opt_status: 0,
       p_c_id: '',
@@ -155,7 +169,7 @@ export default function OrganizationPage() {
       setAddTagModelProps((prev) => ({ ...prev, show: false }));
     },
     categoryList: [],
-  }); // [AddTagModelProps]
+  }); // [AddCategoryModelProps]
   const columns: ColumnsType<Website> = [
     { title: '名称', dataIndex: 'title', align: 'center', width: 200 },
     {
@@ -190,7 +204,7 @@ export default function OrganizationPage() {
             okText="Yes"
             cancelText="No"
             placement="left"
-            onConfirm={() => onDel(record)}
+            onConfirm={() => onDelWebsite(record)}
           >
             <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
@@ -250,7 +264,6 @@ export default function OrganizationPage() {
       },
       categoryList: optionsDataList,
     }));
-    console.log(optionsDataList, 'this is optionsDataList');
   };
   const onEdit = (formValue: Website) => {
     setWebsiteModalProps((prev) => ({
@@ -280,17 +293,38 @@ export default function OrganizationPage() {
   });
 
   // 事件处理函数，调用删除操作
-  const onDel = (formValue: Website) => {
-    console.log(formValue);
-    const data = { wid: formValue.id }; // 替换为实际的数据
-    delWebsitemutation.mutate(data);
+  const onDelWebsite = (formValue: Website) => {
+    const delData = { wid: formValue.hash_key }; // 替换为实际的数据
+    delWebsitemutation.mutate(delData);
   };
   // 标签事件
   const [keyword, setValue] = useState(1);
+  // -------------删除目录标签 start
+  const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
+
+  const handleTagClose = (e: React.MouseEvent<HTMLElement>, item: OptionType) => {
+    e.preventDefault(); // Prevent the default Tag close behavior
+    e.stopPropagation(); // Prevent the event from bubbling up
+    setVisiblePopconfirm(item.id); // Show the Popconfirm for the clicked Tag
+  };
   const onChangeTag = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
+  const delCategoryTag = (tagValue: OptionType) => {
+    // delCategoryTag(item); // Call the delete function
+    setVisiblePopconfirm(null); // Hide the Popconfirm
+    console.log(tagValue);
+  };
+  const cancelCategoryTagPop = () => {
+    setVisiblePopconfirm(null);
+  };
+  const handleVisibleChange = (visible: boolean, itemId: number) => {
+    if (!visible) {
+      setVisiblePopconfirm(null); // Hide Popconfirm when clicking outside
+    }
+  };
+  // --------------删除目录标签 end
   return (
     <Space direction="vertical" size="large" className="w-full">
       <Card>
@@ -339,17 +373,31 @@ export default function OrganizationPage() {
               {optionsDataList
                 .filter((item: OptionType) => item.level === 0)
                 .map((item: OptionType, index: number) => (
-                  <Tag
-                    key={index}
-                    closeIcon={<CloseCircleOutlined />}
-                    onClose={() => console.log(`Closing tag ${item.title}`)}
-                    style={{ marginBottom: '8px', marginRight: '8px' }}
+                  <Popconfirm
+                    key={item.id} // Use a unique identifier if available
+                    title="删除标签"
+                    okText="Yes"
+                    cancelText="No"
+                    placement="left"
+                    visible={visiblePopconfirm === item.id}
+                    onConfirm={() => delCategoryTag(item)}
+                    onCancel={cancelCategoryTagPop}
+                    onVisibleChange={(visible) => handleVisibleChange(visible, item.id)}
                   >
-                    {item.title}
-                  </Tag>
+                    <Tag
+                      closable
+                      key={item.id} // Use a unique identifier if available
+                      closeIcon={<CloseCircleOutlined />}
+                      onClose={(e) => handleTagClose(e, item)}
+                      style={{ marginBottom: '8px', marginRight: '8px' }}
+                    >
+                      {item.title}
+                    </Tag>
+                  </Popconfirm>
                 ))}
             </div>
           )}
+
         {optionsDataList &&
           optionsDataList.filter((item: OptionType) => item.level === 1).length > 0 && (
             <div className="mb-4 flex flex-wrap items-center">
@@ -412,7 +460,7 @@ export default function OrganizationPage() {
           size="small"
           scroll={{ x: 'max-content' }}
           columns={columns}
-          dataSource={data}
+          dataSource={data?.data}
           pagination={tableParams.pagination}
           rowSelection={{ ...rowSelection }}
           loading={isLoading}
@@ -426,7 +474,7 @@ export default function OrganizationPage() {
 
       <WebsiteModal {...websiteModalProps} />
       <EditorTagModal {...editorTagModalProps} />
-      <AddTagModel {...addTagModelProps} />
+      <AddCateGoryModel {...addTagModelProps} />
     </Space>
   );
 }
@@ -453,11 +501,11 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
     </div>
   );
   const queryClient = useQueryClient();
-  const fetchWeAddWebsite = async (params: AddWebsiteReq) => {
-    const res = await navService.AddWebsite(params);
-    return res.data;
-  };
-  const addWebsiteMutation = useMutation(fetchWeAddWebsite, {
+  const addWebsiteMutation = useMutation({
+    mutationFn: async (params: AddWebsiteReq) => {
+      const res = await navService.AddWebsite(params);
+      return res.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['websiteList']); // 成功新增后，重新获取数据或更新缓存
       onOk(); // 调用父组件传递的 onOk 函数
@@ -466,7 +514,6 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
       console.error('Error adding website:', error); // 处理错误
     },
   });
-
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
@@ -493,7 +540,7 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
         <Form.Item<Website> label="描述" name="description" required>
           <Input />
         </Form.Item>
-        <Form.Item<Website> label="icon" name="desc" required>
+        <Form.Item<Website> label="icon" name="icon" required>
           <UploadImage placeholder={boxPlaceHolder} action="/api/nav/website/icon/upload" />
         </Form.Item>
       </Form>
@@ -515,7 +562,7 @@ function EditorTagModal({ title, show, formValue, onOk, onCancel }: EditorTagMod
   );
 }
 
-type AddTagModelProps = {
+type AddCategoryModelProps = {
   formValue: AddCateGoryReq;
   title: String;
   show: boolean;
@@ -523,28 +570,65 @@ type AddTagModelProps = {
   onCancel: VoidFunction;
   categoryList: Array<OptionType>;
 };
-function AddTagModel({ title, show, formValue, onOk, onCancel, categoryList }: AddTagModelProps) {
+
+// 新增目录标签
+function AddCateGoryModel({
+  title,
+  show,
+  formValue,
+  onOk,
+  onCancel,
+  categoryList,
+}: AddCategoryModelProps) {
   const [form] = Form.useForm();
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
+  const onStatusChange = (checked: boolean) => {
+    if (checked) formValue.opt_status = 1;
+    else formValue.opt_status = 0;
+  };
+  // const [parentTag, setParentTag] = useState([]);
+  // const
+  // const [parentValue, setParentValue] = useState<string>('');
+  const treeCategory = TreeToArray(categoryList).map((item) => ({
+    title: item.title,
+    value: item.c_id,
+    key: item.c_id,
+    children: item.children
+      ? item.children.map((child) => ({
+          title: child.title,
+          value: child.c_id,
+          key: child.c_id,
+        }))
+      : [],
+  }));
+  const SelectParent = (newValue: string) => {
+    formValue.p_c_id = newValue;
+  };
+  // 新增
+  const queryClient = useQueryClient();
+  const addCateGoryMutation = useMutation({
+    mutationFn: async (params: AddCateGoryReq) => {
+      const res = await navService.AddCateGory(params);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['categoryList']); // 成功新增后，重新获取数据或更新缓存
+      onOk(); // 调用父组件传递的 onOk 函数
+    },
+    onError: (error) => {
+      console.error('Error adding website:', error); // 处理错误
+    },
+  });
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
-      // addWebsiteMutation.mutate(values); // 提交表单数据进行新增
+      addCateGoryMutation.mutate(values); // 提交表单数据进行新增
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
-
-console.log('test')
-  const onChange = (checked: boolean) => {
-    console.log(`switch to ${checked}`);
-  };
-  // const [parentTag, setParentTag] = useState([]);
-  // const
-  const treeCategroy = TreeToArray(categoryList, -1);
-  console.log(treeCategroy, 'this is tree');
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -554,14 +638,25 @@ console.log('test')
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<AddCateGoryReq> label="父目录" name="title" required>
-          <Input />
+        <Form.Item<AddCateGoryReq> label="父目录" name="p_c_id" required>
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            value={formValue.p_c_id}
+            // lable={}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="Please select"
+            allowClear
+            treeDefaultExpandAll
+            onChange={SelectParent}
+            treeData={treeCategory}
+          />
         </Form.Item>
         <Form.Item<AddCateGoryReq> label="标签名" name="title" required>
           <Input />
         </Form.Item>
-        <Form.Item<AddCateGoryReq> label="标签名" name="title" required>
-          <Switch defaultChecked onChange={onChange} />
+        <Form.Item<AddCateGoryReq> label="是否禁用" name="opt_status" required>
+          <Switch onChange={onStatusChange} />
         </Form.Item>
       </Form>
     </Modal>
