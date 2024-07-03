@@ -3,18 +3,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Card,
-  Col,
   Form,
   Input,
   Modal,
   Popconfirm,
-  Row,
-  Select,
   Space,
   Typography,
   Tag,
   Switch,
   TreeSelect,
+  message,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -26,8 +24,7 @@ import navService, {
   AddCateGoryReq,
 } from '@/api/services/navService';
 import { Iconify, IconButton } from '@/components/icon';
-import { UploadImage } from '@/components/upload';
-import ProTag from '@/theme/antd/components/tag';
+import { UploadAvatar } from '@/components/upload/upload-avatar';
 // import OrganizationChart from './organization-chart';
 import { TreeToArray } from '@/utils/tree';
 
@@ -57,7 +54,8 @@ type OptionType = {
 };
 // ------------
 type SearchFormFieldType = Pick<Website, 'title'>;
-export default function OrganizationPage() {
+export default function NavWebsitePage() {
+  const [messageApi, contextHolder] = message.useMessage();
   // 多级单选框
   // const { data: optionsDataList, isLoading: isLoadingCg } = useQuery<OptionType[], Error>({
   //   queryKey: ['websiteOptions'],
@@ -75,7 +73,6 @@ export default function OrganizationPage() {
       setOptionsDataList(res);
     });
   }, []);
-  // 表格数据数据
   const fetchWebsiteList = async (params: GetWebsiteListRes) => {
     const res = await navService.WebsiteList(params);
     return res;
@@ -170,6 +167,24 @@ export default function OrganizationPage() {
     },
     categoryList: [],
   }); // [AddCategoryModelProps]
+  // 新增网站的标签
+  const [addWebsiteTagModelProps, setAddWebsiteTagModelProps] = useState<AddWebsiteTagModelProps>({
+    formValue: {
+      description: '',
+      icon: '',
+      link: '',
+      title: '',
+      website_id: '',
+    },
+    title: '新增网站标签',
+    show: false,
+    onOk: () => {
+      setAddWebsiteTagModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setAddWebsiteTagModelProps((prev) => ({ ...prev, show: false }));
+    },
+  });
   const columns: ColumnsType<Website> = [
     { title: '名称', dataIndex: 'title', align: 'center', width: 200 },
     {
@@ -193,7 +208,7 @@ export default function OrganizationPage() {
       width: 100,
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <IconButton onClick={() => onEditTag(record)}>
+          <IconButton onClick={() => onCreateWebsiteTag(record.hash_key)}>
             <Iconify icon="ph:tag-fill" size={18} />
           </IconButton>
           <IconButton onClick={() => onEdit(record)}>
@@ -265,6 +280,21 @@ export default function OrganizationPage() {
       categoryList: optionsDataList,
     }));
   };
+  const onCreateWebsiteTag = (hash_key: string) => {
+    setAddTagModelProps((prev) => ({
+      ...prev,
+      show: true,
+      title: '新增目录标签',
+      wid: hash_key,
+      formValue: {
+        ...prev.formValue,
+        opt_status: 0,
+        p_c_id: '',
+        title: '',
+      },
+      categoryList: optionsDataList,
+    }));
+  };
   const onEdit = (formValue: Website) => {
     setWebsiteModalProps((prev) => ({
       ...prev,
@@ -278,7 +308,6 @@ export default function OrganizationPage() {
   // }
   const onEditTag = (formValue: Website) => {};
   const queryClient = useQueryClient();
-
   // 使用 useMutation 钩子处理删除操作
   const delWebsitemutation = useMutation({
     mutationFn: navService.DelWebSite,
@@ -301,33 +330,49 @@ export default function OrganizationPage() {
   const [keyword, setValue] = useState(1);
   // -------------删除目录标签 start
   const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
-
   const handleTagClose = (e: React.MouseEvent<HTMLElement>, item: OptionType) => {
     e.preventDefault(); // Prevent the default Tag close behavior
     e.stopPropagation(); // Prevent the event from bubbling up
     setVisiblePopconfirm(item.id); // Show the Popconfirm for the clicked Tag
   };
+  const fetchDelCategoryTag = useMutation({
+    mutationFn: navService.DelCateGory,
+    onSuccess: () => {
+      // queryClient.invalidateQueries(['websiteList']);
+      console.log('删除成功');
+      messageApi.open({
+        type: 'success',
+        content: '标签删除成功',
+      });
+    },
+    onError: (error) => {
+      console.error('Error deleting category:', error);
+    },
+  });
   const onChangeTag = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
   const delCategoryTag = (tagValue: OptionType) => {
     // delCategoryTag(item); // Call the delete function
+    fetchDelCategoryTag.mutate({ cid: tagValue.c_id });
     setVisiblePopconfirm(null); // Hide the Popconfirm
     console.log(tagValue);
   };
   const cancelCategoryTagPop = () => {
     setVisiblePopconfirm(null);
   };
-  const handleVisibleChange = (visible: boolean, itemId: number) => {
+  const handleVisibleChange = (visible: boolean) => {
     if (!visible) {
       setVisiblePopconfirm(null); // Hide Popconfirm when clicking outside
     }
   };
   // --------------删除目录标签 end
   return (
-    <Space direction="vertical" size="large" className="w-full">
-      <Card>
+    <>
+      {contextHolder}
+      <Space direction="vertical" size="large" className="w-full">
+        {/* <Card>
         <Form form={searchForm}>
           <Row gutter={[16, 16]}>
             <Col span={24} lg={6}>
@@ -357,66 +402,110 @@ export default function OrganizationPage() {
             </Col>
           </Row>
         </Form>
-      </Card>
-      <Card
-        title="目录操作"
-        extra={
-          <Button type="primary" onClick={onCreateCategory}>
-            新增
-          </Button>
-        }
-      >
-        {optionsDataList &&
-          optionsDataList.filter((item: OptionType) => item.level === 0).length > 0 && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">关键词1</p>
-              {optionsDataList
-                .filter((item: OptionType) => item.level === 0)
-                .map((item: OptionType, index: number) => (
-                  <Popconfirm
-                    key={item.id} // Use a unique identifier if available
-                    title="删除标签"
-                    okText="Yes"
-                    cancelText="No"
-                    placement="left"
-                    visible={visiblePopconfirm === item.id}
-                    onConfirm={() => delCategoryTag(item)}
-                    onCancel={cancelCategoryTagPop}
-                    onVisibleChange={(visible) => handleVisibleChange(visible, item.id)}
-                  >
-                    <Tag
-                      closable
+      </Card> */}
+        <Card
+          title="目录操作"
+          extra={
+            <Button type="primary" onClick={onCreateCategory}>
+              新增
+            </Button>
+          }
+        >
+          {optionsDataList &&
+            optionsDataList.filter((item: OptionType) => item.level === 0).length > 0 && (
+              <div className="mb-4 flex flex-wrap items-center">
+                <p className="mr-3 whitespace-nowrap text-base font-bold">关键词1</p>
+                {optionsDataList
+                  .filter((item: OptionType) => item.level === 0)
+                  .map((item: OptionType) => (
+                    <Popconfirm
                       key={item.id} // Use a unique identifier if available
-                      closeIcon={<CloseCircleOutlined />}
-                      onClose={(e) => handleTagClose(e, item)}
-                      style={{ marginBottom: '8px', marginRight: '8px' }}
+                      title="删除标签"
+                      okText="Yes"
+                      cancelText="No"
+                      placement="left"
+                      open={visiblePopconfirm === item.id}
+                      onConfirm={() => delCategoryTag(item)}
+                      onCancel={cancelCategoryTagPop}
+                      onOpenChange={(visible) => handleVisibleChange(visible)}
                     >
-                      {item.title}
-                    </Tag>
-                  </Popconfirm>
-                ))}
-            </div>
-          )}
+                      <Tag
+                        closable
+                        key={item.id} // Use a unique identifier if available
+                        closeIcon={<CloseCircleOutlined />}
+                        onClose={(e) => handleTagClose(e, item)}
+                        style={{ marginBottom: '8px', marginRight: '8px' }}
+                      >
+                        {item.title}
+                      </Tag>
+                    </Popconfirm>
+                  ))}
+              </div>
+            )}
 
-        {optionsDataList &&
-          optionsDataList.filter((item: OptionType) => item.level === 1).length > 0 && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">关键词2</p>
-              {optionsDataList
-                .filter((item: OptionType) => item.level === 1)
-                .map((item: OptionType, index: number) => (
-                  <Tag
-                    key={index}
-                    closeIcon={<CloseCircleOutlined />}
-                    onClose={() => console.log(`Closing tag ${item.title}`)}
-                    style={{ marginBottom: '8px', marginRight: '8px' }}
-                  >
-                    {item.title}
-                  </Tag>
-                ))}
-            </div>
-          )}
-        {/* {optionsDataList &&
+          {optionsDataList &&
+            optionsDataList.filter((item: OptionType) => item.level === 1).length > 0 && (
+              <div className="mb-4 flex flex-wrap items-center">
+                <p className="mr-3 whitespace-nowrap text-base font-bold">关键词2</p>
+                {optionsDataList
+                  .filter((item: OptionType) => item.level === 1)
+                  .map((item: OptionType) => (
+                    <Popconfirm
+                      key={item.id} // Use a unique identifier if available
+                      title="删除标签"
+                      okText="Yes"
+                      cancelText="No"
+                      placement="left"
+                      open={visiblePopconfirm === item.id}
+                      onConfirm={() => delCategoryTag(item)}
+                      onCancel={cancelCategoryTagPop}
+                      onOpenChange={(visible) => handleVisibleChange(visible)}
+                    >
+                      <Tag
+                        closable
+                        key={item.id} // Use a unique identifier if available
+                        closeIcon={<CloseCircleOutlined />}
+                        onClose={(e) => handleTagClose(e, item)}
+                        style={{ marginBottom: '8px', marginRight: '8px' }}
+                      >
+                        {item.title}
+                      </Tag>
+                    </Popconfirm>
+                  ))}
+              </div>
+            )}
+          {optionsDataList &&
+            optionsDataList.filter((item: OptionType) => item.level === 2).length > 0 && (
+              <div className="mb-4 flex flex-wrap items-center">
+                <p className="mr-3 whitespace-nowrap text-base font-bold">关键词3</p>
+                {optionsDataList
+                  .filter((item: OptionType) => item.level === 2)
+                  .map((item: OptionType) => (
+                    <Popconfirm
+                      key={item.id} // Use a unique identifier if available
+                      title="删除标签"
+                      okText="Yes"
+                      cancelText="No"
+                      placement="left"
+                      open={visiblePopconfirm === item.id}
+                      onConfirm={() => delCategoryTag(item)}
+                      onCancel={cancelCategoryTagPop}
+                      onOpenChange={(visible) => handleVisibleChange(visible)}
+                    >
+                      <Tag
+                        closable
+                        key={item.id} // Use a unique identifier if available
+                        closeIcon={<CloseCircleOutlined />}
+                        onClose={(e) => handleTagClose(e, item)}
+                        style={{ marginBottom: '8px', marginRight: '8px' }}
+                      >
+                        {item.title}
+                      </Tag>
+                    </Popconfirm>
+                  ))}
+              </div>
+            )}
+          {/* {optionsDataList &&
           optionsDataList.filter((item: OptionType) => item.level === 1).length > 0 && (
             <div className="flex-start mb-4 flex items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">关键词2</p>
@@ -446,36 +535,38 @@ export default function OrganizationPage() {
               </Radio.Group>
             </div>
           )} */}
-      </Card>
-      <Card
-        title="Website List"
-        extra={
-          <Button type="primary" onClick={onCreate}>
-            新增
-          </Button>
-        }
-      >
-        <Table
-          rowKey="id"
-          size="small"
-          scroll={{ x: 'max-content' }}
-          columns={columns}
-          dataSource={data?.data}
-          pagination={tableParams.pagination}
-          rowSelection={{ ...rowSelection }}
-          loading={isLoading}
-          onChange={handleTableChange}
-        />
-      </Card>
+        </Card>
+        <Card
+          title="Website List"
+          extra={
+            <Button type="primary" onClick={onCreate}>
+              新增
+            </Button>
+          }
+        >
+          <Table
+            rowKey="id"
+            size="small"
+            scroll={{ x: 'max-content' }}
+            columns={columns}
+            dataSource={data?.data}
+            pagination={tableParams.pagination}
+            rowSelection={{ ...rowSelection }}
+            loading={isLoading}
+            onChange={handleTableChange}
+          />
+        </Card>
 
-      {/* <Card title="Organization Chart">
+        {/* <Card title="Organization Chart">
         <OrganizationChart organizations={data} />
       </Card> */}
 
-      <WebsiteModal {...websiteModalProps} />
-      <EditorTagModal {...editorTagModalProps} />
-      <AddCateGoryModel {...addTagModelProps} />
-    </Space>
+        <WebsiteModal {...websiteModalProps} />
+        <EditorTagModal {...editorTagModalProps} />
+        <AddCateGoryModel {...addTagModelProps} />
+        {/* <EditorTagModal {... editTagModelProps} /> */}
+      </Space>
+    </>
   );
 }
 
@@ -488,6 +579,7 @@ type WebsiteModalProps = {
 };
 
 function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalProps) {
+  const { TextArea } = Input;
   const [form] = Form.useForm();
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
@@ -538,26 +630,12 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
           <Input />
         </Form.Item>
         <Form.Item<Website> label="描述" name="description" required>
-          <Input />
+          <TextArea rows={4} />
         </Form.Item>
         <Form.Item<Website> label="icon" name="icon" required>
-          <UploadImage placeholder={boxPlaceHolder} action="/api/nav/website/icon/upload" />
+          <UploadAvatar action="/api/api/nav/website/icon/upload" />
         </Form.Item>
       </Form>
-    </Modal>
-  );
-}
-type EdiortagModalProps = {
-  formValue: Tag;
-  title: string;
-  show: boolean;
-  onOk: VoidFunction;
-  onCancel: VoidFunction;
-};
-function EditorTagModal({ title, show, formValue, onOk, onCancel }: EditorTagModalProps) {
-  return (
-    <Modal title={title} open={show} onOk={onOk} onCancel={onCancel}>
-      <div className="h-20 w-1/2" />
     </Modal>
   );
 }
@@ -588,9 +666,6 @@ function AddCateGoryModel({
     if (checked) formValue.opt_status = 1;
     else formValue.opt_status = 0;
   };
-  // const [parentTag, setParentTag] = useState([]);
-  // const
-  // const [parentValue, setParentValue] = useState<string>('');
   const treeCategory = TreeToArray(categoryList).map((item) => ({
     title: item.title,
     value: item.c_id,
@@ -657,6 +732,83 @@ function AddCateGoryModel({
         </Form.Item>
         <Form.Item<AddCateGoryReq> label="是否禁用" name="opt_status" required>
           <Switch onChange={onStatusChange} />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}
+// 网站标签删除和新增
+type EditTagModalProps = {
+  wid: string;
+  formValue: any;
+  title: string;
+  show: boolean;
+  onOk: VoidFunction;
+  onCancel: VoidFunction;
+  categoryList: Array<OptionType>;
+};
+function EditorTagModal({
+  wid,
+  title,
+  show,
+  formValue,
+  onOk,
+  onCancel,
+  categoryList,
+}: EditTagModalProps) {
+  const [form] = Form.useForm();
+  useEffect(() => {
+    form.setFieldsValue({ ...formValue });
+  }, [formValue, form]);
+  // const treeCategory = TreeToArray(categoryList).map((item) => ({
+  //   title: item.title,
+  //   value: item.c_id,
+  //   key: item.c_id,
+  //   children: item.children
+  //     ? item.children.map((child) => ({
+  //         title: child.title,
+  //         value: child.c_id,
+  //         key: child.c_id,
+  //       }))
+  //     : [],
+  // }));
+  const SelectParent = (newValue: string) => {
+    formValue.p_c_id = newValue;
+  };
+  const { data } = useQuery({
+    queryKey: ['websiteTagList', wid], // 将 wid 作为查询参数的一部分
+    queryFn: async () => {
+      const res = await navService.GetWebsiteTagList({ w_id: wid }); // 在服务函数中传入 wid
+      return res.data;
+    },
+  });
+  const handleOk = async () => {};
+  console.log(data, 'this is web');
+  return (
+    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+      <Form
+        initialValues={formValue}
+        form={form}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 18 }}
+        layout="horizontal"
+      >
+        {/* <Form.Item<Website> label="已有标签" name="title" required>
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            value={formValue.p_c_id}
+            // lable={}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="Please select"
+            allowClear
+            treeDefaultExpandAll
+            onChange={SelectParent}
+            treeData={treeCategory}
+          />
+        </Form.Item> */}
+        <Form.Item<Website> label="链接" name="link" required>
+          <Input />
         </Form.Item>
       </Form>
     </Modal>

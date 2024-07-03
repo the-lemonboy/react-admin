@@ -28,9 +28,9 @@ export interface DelTagReq {
   cid: string;
   wid: string;
 }
-// export interface getTagListReq {
-//   cid: string;
-// }
+export interface GetWebsiteTagListReq {
+  w_id: string;
+}
 export interface SearchWebsiteReq {
   description: String;
   limit: number;
@@ -82,6 +82,8 @@ const AddWebsite = (data: AddWebsiteReq) => apiClient.post<any>({ url: NavType.A
 const DelWebSite = (data: DelWebSiteReq) => apiClient.post<any>({ url: NavType.DelWebSite, data });
 const EditorWebsite = (data: AddWebsiteReq) =>
   apiClient.post<any>({ url: NavType.EditorWebsite, data });
+const GetWebsiteTagList = (data: GetWebsiteTagListReq) =>
+  apiClient.get<any>({ url: NavType.GetTagList, data });
 export default {
   WebsiteList,
   AddCateGory,
@@ -90,7 +92,7 @@ export default {
   OptCateGory,
   AddTag,
   DelTag,
-  // getTagList,
+  GetWebsiteTagList,
   SearchWebsite,
   AddWebsite,
   DelWebSite,

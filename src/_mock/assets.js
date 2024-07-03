@@ -47,121 +47,121 @@ export const ORG_LIST = [
 /**
  * User permission mock
  */
-const MONITOR_PERMISSION = {
-  id: '9100714781927345',
-  parentId: '',
-  label: 'sys.menu.monitor',
-  name: 'Monitor',
-  icon: 'ic-analysis',
-  type: PermissionType.CATALOGUE,
-  route: 'monitor',
-  order: 0,
-  children: [
-    {
-      id: '8426999229400239',
-      parentId: '9100714781927345',
-      label: 'sys.menu.keyword-library',
-      name: 'keyword-library',
-      type: PermissionType.CATALOGUE,
-      route: 'keyword-library',
-      children: [
-        {
-          id: '4754063958766648',
-          parentId: '8426999229400239',
-          label: 'sys.menu.user.sort-section',
-          name: 'sort-section',
-          type: PermissionType.MENU,
-          route: 'sort-section',
-          component: '/monitor/keyword-library/sort-section/index.tsx',
-        },
-        {
-          id: '4754063958766649',
-          parentId: '8426999229400239',
-          label: 'sys.menu.user.sort-twitter',
-          name: 'sort-twitter',
-          type: PermissionType.MENU,
-          route: 'sort-twitter',
-          component: '/monitor/keyword-library/sort-twitter/index.tsx',
-        },
-      ]
-    },
-    {
-      id: '8426999229404579',
-      parentId: '9100714781927345',
-      label: 'sys.menu.subscription-section',
-      name: 'subscription-section',
-      type: PermissionType.CATALOGUE,
-      route: 'subscription-section',
-      children:[
-        {
-          id: '4754063958766650',
-          parentId: '8426999229404579',
-          label: 'sys.menu.user.menber-management',
-          name: 'menber-management',
-          type: PermissionType.MENU,
-          route: 'menber-management',
-          component: '/monitor/subscription-section/menber-management/index.tsx',
-        },
-        {
-          id: '4754063958766651',
-          parentId: '8426999229404579',
-          label: 'sys.menu.user.subscription-config',
-          name: 'subscription-config',
-          type: PermissionType.MENU,
-          route: 'subscription-config',
-          component: '/monitor/subscription-section/subscription-config/index.tsx',
-        }
-      ]
-    },
-    {
-      id: '8426999229400345',
-      parentId: '9100714781927345',
-      label: 'sys.menu.user.tweet-management',
-      name: 'tweet-management',
-      type: PermissionType.CATALOGUE,
-      route: 'tweet-management',
-      children:[
-        {
-          id: '4754063958766652',
-          parentId: '8426999229400345',
-          label: 'sys.menu.user.session-management',
-          name: 'session-management',
-          type: PermissionType.MENU,
-          route: 'session-management',
-          component: '/monitor/tweet-management/session-management/index.tsx',
-        },
-        {
-          id: '4754063958766653',
-          parentId: '8426999229400345',
-          label: 'sys.menu.user.tweets-content',
-          name: 'tweets-content',
-          type: PermissionType.MENU,
-          route: 'tweets-content',
-          component: '/monitor/tweet-management/tweets-content/index.tsx',
-        } 
-      ]
-    },
-    {
-      id: '8426999229400980',
-      parentId: '9100714781927345',
-      label: 'sys.menu.user.twitter-management',
-      name: 'twitter-management',
-      type: PermissionType.CATALOGUE,
-      route: 'twitter-management',
-      children:[
-        {
-          id: '4754063958766654',
-          parentId: '8426999229400980',
-          label: 'sys.menu.user.account-management',
-          name: 'account-management',
-          type: PermissionType.MENU,
-          route: 'account-management',
-          component: '/monitor/twitter-management/account-management/index.tsx',
-        }
-      ]
-    }
-  ]
-};
+// const MONITOR_PERMISSION = {
+//   id: '9100714781927345',
+//   parentId: '',
+//   label: 'sys.menu.monitor',
+//   name: 'Monitor',
+//   icon: 'ic-analysis',
+//   type: PermissionType.CATALOGUE,
+//   route: 'monitor',
+//   order: 0,
+//   children: [
+//     {
+//       id: '8426999229400239',
+//       parentId: '9100714781927345',
+//       label: 'sys.menu.keyword-library',
+//       name: 'keyword-library',
+//       type: PermissionType.CATALOGUE,
+//       route: 'keyword-library',
+//       children: [
+//         {
+//           id: '4754063958766648',
+//           parentId: '8426999229400239',
+//           label: 'sys.menu.user.sort-section',
+//           name: 'sort-section',
+//           type: PermissionType.MENU,
+//           route: 'sort-section',
+//           component: '/monitor/keyword-library/sort-section/index.tsx',
+//         },
+//         {
+//           id: '4754063958766649',
+//           parentId: '8426999229400239',
+//           label: 'sys.menu.user.sort-twitter',
+//           name: 'sort-twitter',
+//           type: PermissionType.MENU,
+//           route: 'sort-twitter',
+//           component: '/monitor/keyword-library/sort-twitter/index.tsx',
+//         },
+//       ]
+//     },
+//     {
+//       id: '8426999229404579',
+//       parentId: '9100714781927345',
+//       label: 'sys.menu.subscription-section',
+//       name: 'subscription-section',
+//       type: PermissionType.CATALOGUE,
+//       route: 'subscription-section',
+//       children:[
+//         {
+//           id: '4754063958766650',
+//           parentId: '8426999229404579',
+//           label: 'sys.menu.user.menber-management',
+//           name: 'menber-management',
+//           type: PermissionType.MENU,
+//           route: 'menber-management',
+//           component: '/monitor/subscription-section/menber-management/index.tsx',
+//         },
+//         {
+//           id: '4754063958766651',
+//           parentId: '8426999229404579',
+//           label: 'sys.menu.user.subscription-config',
+//           name: 'subscription-config',
+//           type: PermissionType.MENU,
+//           route: 'subscription-config',
+//           component: '/monitor/subscription-section/subscription-config/index.tsx',
+//         }
+//       ]
+//     },
+//     {
+//       id: '8426999229400345',
+//       parentId: '9100714781927345',
+//       label: 'sys.menu.user.tweet-management',
+//       name: 'tweet-management',
+//       type: PermissionType.CATALOGUE,
+//       route: 'tweet-management',
+//       children:[
+//         {
+//           id: '4754063958766652',
+//           parentId: '8426999229400345',
+//           label: 'sys.menu.user.session-management',
+//           name: 'session-management',
+//           type: PermissionType.MENU,
+//           route: 'session-management',
+//           component: '/monitor/tweet-management/session-management/index.tsx',
+//         },
+//         {
+//           id: '4754063958766653',
+//           parentId: '8426999229400345',
+//           label: 'sys.menu.user.tweets-content',
+//           name: 'tweets-content',
+//           type: PermissionType.MENU,
+//           route: 'tweets-content',
+//           component: '/monitor/tweet-management/tweets-content/index.tsx',
+//         } 
+//       ]
+//     },
+//     {
+//       id: '8426999229400980',
+//       parentId: '9100714781927345',
+//       label: 'sys.menu.user.twitter-management',
+//       name: 'twitter-management',
+//       type: PermissionType.CATALOGUE,
+//       route: 'twitter-management',
+//       children:[
+//         {
+//           id: '4754063958766654',
+//           parentId: '8426999229400980',
+//           label: 'sys.menu.user.account-management',
+//           name: 'account-management',
+//           type: PermissionType.MENU,
+//           route: 'account-management',
+//           component: '/monitor/twitter-management/account-management/index.tsx',
+//         }
+//       ]
+//     }
+//   ]
+// };
 
 // const DASHBOARD_PERMISSION = {
 //   id: '9100714781927703',
@@ -203,6 +203,15 @@ const MANAGEMENT_PERMISSION = {
   route: 'management',
   order: 2,
   children: [
+    {
+      id: '1985890042972845',
+      parentId: '0901673425580518',
+      label: 'sys.menu.system.media-management',
+      name: 'media-management',
+      type: PermissionType.MENU,
+      route: 'media-management',
+      component: '/management/media-management/index.tsx',
+    },
     {
       id: '2781684678535711',
       parentId: '0901673425580518',
@@ -248,15 +257,7 @@ const MANAGEMENT_PERMISSION = {
           route: 'organization',
           component: '/management/system/organization/index.tsx',
         },
-        {
-          id: '1985890042972845',
-          parentId: '0249937641030250',
-          label: 'sys.menu.system.media-management',
-          name: 'media-management',
-          type: PermissionType.MENU,
-          route: 'media-management',
-          component: '/management/system/media-management/index.tsx',
-        },
+        
         {
           id: '4359580910369984',
           parentId: '0249937641030250',
@@ -598,7 +599,7 @@ const ERRORS_PERMISSION = {
 // ];
 
 export const PERMISSION_LIST = [
-  MONITOR_PERMISSION,
+  // MONITOR_PERMISSION,
   // DASHBOARD_PERMISSION,
   MANAGEMENT_PERMISSION,
   // COMPONENTS_PERMISSION,

@@ -28,6 +28,7 @@ export function UploadAvatar({ helperText, defaultAvatar = '', ...other }: Props
     if (['done', 'error'].includes(info.file.status!)) {
       // TODO: Get this url from response in real world.
       setImageUrl(getBlobUrl(info.file.originFileObj!));
+      console.log(info, 'this is upload');
     }
   };
 
@@ -68,7 +69,7 @@ export function UploadAvatar({ helperText, defaultAvatar = '', ...other }: Props
   return (
     <StyledUploadAvatar>
       <Upload
-        name="avatar"
+        name="file"
         showUploadList={false}
         listType="picture-circle"
         className="avatar-uploader !flex items-center justify-center"

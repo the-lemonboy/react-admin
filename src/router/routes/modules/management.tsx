@@ -10,7 +10,7 @@ const ProfilePage = lazy(() => import('@/pages/management/user/profile'));
 const AccountPage = lazy(() => import('@/pages/management/user/account'));
 
 const OrganizationPage = lazy(() => import('@/pages/management/system/organization'));
-const MediaManagementPage = lazy(() => import('@/pages/management/system/media-management'));
+const MediaManagementPage = lazy(() => import('@/pages/management/media-management'));
 const PermissioPage = lazy(() => import('@/pages/management/system/permission'));
 
 const Blog = lazy(() => import('@/pages/management/blog'));
@@ -84,5 +84,51 @@ const management: AppRouteObject = {
     },
   ],
 };
+
+
+// import { Suspense, lazy } from 'react';
+// import { Navigate, Outlet } from 'react-router-dom';
+
+// import { SvgIcon } from '@/components/icon';
+// import { CircleLoading } from '@/components/loading';
+
+// import { AppRouteObject } from '#/router';
+
+// // const HomePage = lazy(() => import(`@/pages/dashboard/workbench`));
+// const HomePage = lazy(() => import(`@/pages/management/media-management`));
+// const Analysis = lazy(() => import('@/pages/dashboard/analysis'));
+
+// const dashboard: AppRouteObject = {
+//   order: 1,
+//   path: 'dashboard',
+//   element: (
+//     <Suspense fallback={<CircleLoading />}>
+//       <Outlet />
+//     </Suspense>
+//   ),
+//   meta: {
+//     label: 'sys.menu.dashboard',
+//     icon: <SvgIcon icon="ic-analysis" className="ant-menu-item-icon" size="24" />,
+//     key: '/management',
+//   },
+//   children: [
+//     {
+//       index: true,
+//       element: <Navigate to="media-management" replace />,
+//     },
+//     {
+//       path: 'media-management',
+//       element: <HomePage />,
+//       meta: { label: 'sys.menu.system.media-management', key: '/management/media-management' },
+//     },
+//     {
+//       path: 'analysis',
+//       element: <Analysis />,
+//       meta: { label: 'sys.menu.analysis', key: '/dashboard/analysis' },
+//     },
+//   ],
+// };
+
+// export default dashboard;
 
 export default management;
