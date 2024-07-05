@@ -82,19 +82,19 @@
       "closeLeft": "Close Left",
       "closeRight": "Close Right"
     },
-    "monitor":{
-      "monitor":"Twitter monitor",
-      "keyword-library":"Keyword library",
-      "sort-section":"Sort section",
-      "sort-twitter":"Sort twitte",
-      "subscription-management":"Subscription",
-      "member-management":"Member",
-      "subscription-config":"Config",
-      "tweet-management":"Tweet management",
-      "session-management":"session",
-      "tweet-content":"tweet",
-      "twitter-management":"Tiwitter management",
-      "account-management":"account"
+    "monitor": {
+      "monitor": "Twitter monitor",
+      "keyword-library": "Keyword library",
+      "sort-section": "Sort section",
+      "sort-twitter": "Sort twitte",
+      "subscription-management": "Subscription",
+      "member-management": "Member",
+      "subscription-config": "Config",
+      "tweet-management": "Tweet management",
+      "session-management": "session",
+      "tweet-content": "tweet",
+      "twitter-management": "Tiwitter management",
+      "account-management": "account"
     },
     "menu": {
       "dashboard": "Dashboard",
@@ -110,10 +110,24 @@
         "index": "System",
         "organization": "Organization",
         "permission": "Permission",
-        "media-management":"media",
+        "website-management": "Website Management",
         "role": "Role",
         "user": "User",
         "user_detail": "User Detail"
+      },
+      "member": {
+        "index": "Member",
+        "rssdao": {
+          "index": "RssDAO",
+          "consumerCard": "Consumer Card",
+          "memberLevel": "Member Level"
+        },
+
+        "wechat": {
+          "index": "Wechat",
+          "officialAccount": "Official Account",
+          "rechargeRecord": "Recharge Record"
+        }
       },
       "blog": "Blog",
       "components": "Components",

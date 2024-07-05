@@ -219,11 +219,11 @@ const res = {
                 {
                   id: '1985890042972845',
                   parentId: '0249937641030250',
-                  label: 'sys.menu.system.media-management',
-                  name: 'media-management',
+                  label: 'sys.menu.system.website-management',
+                  name: 'website-management',
                   type: 1,
-                  route: 'media-management',
-                  component: '/management/system/media-management/index.tsx',
+                  route: 'website-management',
+                  component: '/management/system/website-management/index.tsx',
                 },
                 {
                   id: '4359580910369984',
@@ -723,11 +723,11 @@ const res = {
           {
             id: '1985890042972845',
             parentId: '0901673425580518',
-            label: 'sys.menu.system.media-management',
-            name: 'media-management',
+            label: 'sys.menu.system.website-management',
+            name: 'website-management',
             type: 1,
-            route: 'media-management',
-            component: '/management/media-management/index.tsx',
+            route: 'website-management',
+            component: '/management/website-management/index.tsx',
           },
           // {
           //   id: '2781684678535711',
@@ -813,6 +813,74 @@ const res = {
           //     },
           //   ],
           // },
+        ],
+      },
+      {
+        id: '090167342552323',
+        parentId: '',
+        label: 'sys.menu.member.index',
+        name: 'Member',
+        icon: 'ic-management',
+        type: 0,
+        route: 'member',
+        order: 3,
+        children: [
+          {
+            id: '1985890042972845',
+            parentId: '090167342552323',
+            label: 'sys.menu.member.rssdao.index',
+            name: 'Rssdao',
+            type: 0,
+            route: 'rssdao',
+            children: [
+              {
+                id: '1985890042972846',
+                parentId: '1985890042972845',
+                label: 'sys.menu.member.rssdao.consumerCard',
+                name: 'Consumer Card',
+                type: 1,
+                route: 'consumer-card',
+                component: '/member/rssdao/consumer-card/index.tsx',
+              },
+              {
+                id: '1985890042972847',
+                parentId: '1985890042972845',
+                label: 'sys.menu.member.rssdao.memberLevel',
+                name: 'Member Level',
+                type: 1,
+                route: 'member-level',
+                component: '/member/rssdao/member-level/index.tsx',
+              },
+            ],
+          },
+          {
+            id: '1985890042972848',
+            parentId: '090167342552323',
+            label: 'sys.menu.member.wechat.index',
+            name: 'Wechat',
+            type: 0,
+            route: 'Wechat',
+            children: [
+              {
+                id: '1985890042972849',
+                parentId: '1985890042972848',
+                label: 'sys.menu.member.wechat.officialAccount',
+                name: 'Official Acount',
+                type: 1,
+                route: 'official-acount',
+                component: '/member/wechat/official-acount/index.tsx',
+              },
+              {
+                id: '1985890042972850',
+                parentId: '1985890042972848',
+                label: 'sys.menu.member.wechat.rechargeRecord',
+                name: 'Recharge Record',
+                type: 1,
+                route: 'recharge-record',
+                component: '/member/wechat/recharge-record/index.tsx',
+              },
+            ],
+          },
         ],
       },
       // {
@@ -1117,4 +1185,4 @@ const res = {
   refreshToken: '833ac906-a759-4f58-a52a-954229800bb6',
 };
 
-export default res
+export default res;

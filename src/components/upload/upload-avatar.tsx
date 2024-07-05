@@ -7,13 +7,20 @@ import { fBytes } from '@/utils/format-number';
 import { Iconify } from '../icon';
 
 import { StyledUploadAvatar } from './styles';
-import { beforeAvatarUpload, getBlobUrl } from './utils';
+import { beforeAvatarUpload } from './utils';
 
 interface Props extends UploadProps {
   defaultAvatar?: string;
   helperText?: React.ReactElement | string;
+  onImageUrlChange?: (url: string) => void; // 新增回调函数类型
 }
-export function UploadAvatar({ helperText, defaultAvatar = '', ...other }: Props) {
+
+export function UploadAvatar({
+  helperText,
+  defaultAvatar = '',
+  onImageUrlChange,
+  ...other
+}: Props) {
   const [imageUrl, setImageUrl] = useState<string>(defaultAvatar);
 
   const [isHover, setIsHover] = useState(false);
@@ -26,9 +33,9 @@ export function UploadAvatar({ helperText, defaultAvatar = '', ...other }: Props
       return;
     }
     if (['done', 'error'].includes(info.file.status!)) {
-      // TODO: Get this url from response in real world.
-      setImageUrl(getBlobUrl(info.file.originFileObj!));
-      console.log(info, 'this is upload');
+      const newImageUrl = info.file.response.data.src!;
+      setImageUrl(newImageUrl);
+      onImageUrlChange?.(newImageUrl); // 调用回调函数
     }
   };
 

@@ -87,11 +87,11 @@ const menuList = [
           {
             id: '1985890042972845',
             parentId: '0249937641030250',
-            label: 'sys.menu.system.media-management',
-            name: 'media-management',
+            label: 'sys.menu.system.website-management',
+            name: 'website-management',
             type: 1,
-            route: 'media-management',
-            component: '/management/system/media-management/index.tsx',
+            route: 'website-management',
+            component: '/management/system/website-management/index.tsx',
           },
           {
             id: '4359580910369984',

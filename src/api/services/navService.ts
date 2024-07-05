@@ -83,7 +83,7 @@ const DelWebSite = (data: DelWebSiteReq) => apiClient.post<any>({ url: NavType.D
 const EditorWebsite = (data: AddWebsiteReq) =>
   apiClient.post<any>({ url: NavType.EditorWebsite, data });
 const GetWebsiteTagList = (data: GetWebsiteTagListReq) =>
-  apiClient.get<any>({ url: NavType.GetTagList, data });
+  apiClient.get<any>({ url: NavType.GetTagList, params: data });
 export default {
   WebsiteList,
   AddCateGory,
