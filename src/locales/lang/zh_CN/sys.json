@@ -108,24 +108,23 @@
         "index": "系统",
         "organization": "组织",
         "website-management": "网站导航",
+        "member-level": "会员等级",
         "permission": "权限",
         "role": "角色",
         "user": "用户",
         "user_detail": "用户详情"
       },
-        "member": {
-          "index": "会员管理",
-          "rssdao": {
-            "index": "RssDAO",
-            "consumerCard": "消费卡",
-            "memberLevel": "会员等级"
-          },
-          "wechat": {
-            "index": "微信公众号",
-            "officialAccount": "微信公众号",
-            "rechargeRecord": "充值记录"
-          }
-        },   
+        "member": "会员管理",
+        "wechat":{
+          "index": "微信公众号",
+          "official-account": "微信公众号",
+          "recharge-record": "充值记录"
+        },
+        "rssdao": {
+          "index": "RssDAO",
+          "consumer-card": "消费卡",
+          "member-level": "会员等级"
+        },
       "blog": "博客",
       "components": "组件",
       "icon": "图标",

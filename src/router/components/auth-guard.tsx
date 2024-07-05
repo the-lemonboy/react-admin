@@ -12,7 +12,6 @@ type Props = {
 export default function AuthGuard({ children }: Props) {
   const router = useRouter();
   const { accessToken } = useUserToken();
-
   const check = useCallback(() => {
     if (!accessToken) {
       router.replace('/login');

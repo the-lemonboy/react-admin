@@ -111,23 +111,21 @@
         "organization": "Organization",
         "permission": "Permission",
         "website-management": "Website Management",
+        "official-account": "Official Account",
         "role": "Role",
         "user": "User",
         "user_detail": "User Detail"
       },
-      "member": {
-        "index": "Member",
-        "rssdao": {
-          "index": "RssDAO",
-          "consumerCard": "Consumer Card",
-          "memberLevel": "Member Level"
-        },
-
-        "wechat": {
-          "index": "Wechat",
-          "officialAccount": "Official Account",
-          "rechargeRecord": "Recharge Record"
-        }
+      "member": "Member",
+      "wechat":{
+        "index": "Wechat",
+        "official-account": "Official Account",
+        "recharge-record": "Recharge Record"
+      },
+      "rssdao": {
+        "index": "RssDAO",
+        "consumer-card": "Consumer Card",
+        "member-level": "Member Level"
       },
       "blog": "Blog",
       "components": "Components",

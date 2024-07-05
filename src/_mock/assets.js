@@ -302,7 +302,7 @@ const MANAGEMENT_PERMISSION = {
 const MEMBER_PERMISSION = {
   id: '090167342552323',
   parentId: '',
-  label: 'sys.menu.member.index',
+  label: 'sys.menu.member',
   name: 'Member',
   icon: 'ic-management',
   type: PermissionType.CATALOGUE,
@@ -312,7 +312,7 @@ const MEMBER_PERMISSION = {
     {
       id: '1985890042972851',
       parentId: '090167342552323',
-      label: 'sys.menu.member.rssdao.index',
+      label: 'sys.menu.rssdao.index',
       name: 'Rssdao',
       type: PermissionType.CATALOGUE,
       route: 'rssdao',
@@ -320,7 +320,7 @@ const MEMBER_PERMISSION = {
         {
           id: '1985890042972852',
           parentId: '1985890042972851',
-          label: 'sys.menu.member.rssdao.consumerCard',
+          label: 'sys.menu.rssdao.consumerCard',
           name: 'Consumer Card',
           type: PermissionType.MENU,
           route: 'consumer-card',
@@ -329,7 +329,7 @@ const MEMBER_PERMISSION = {
         {
           id: '1985890042972853',
           parentId: '1985890042972851',
-          label: 'sys.menu.member.rssdao.memberLevel',
+          label: 'sys.menu.rssdao.memberLevel',
           name: 'Member Level',
           type: PermissionType.MENU,
           route: 'member-level',
