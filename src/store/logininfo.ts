@@ -191,6 +191,15 @@ const res = {
             route: 'member-level',
             component: '/member/rssdao/member-level/index.tsx',
           },
+          {
+            id: '1985890042970926',
+            parentId: '0901673425580518',
+            label: 'sys.menu.rssdao.consumer-card',
+            name: 'consumer-card',
+            type: 1,
+            route: 'consumer-card',
+            component: '/member/rssdao/consumer-card/index.tsx',
+          },
         ],
       },
       {

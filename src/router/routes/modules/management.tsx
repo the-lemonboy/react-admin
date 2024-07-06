@@ -15,6 +15,7 @@ const WebsiteManagementPage = lazy(() => import('@/pages/management/website-mana
 
 // const Blog = lazy(() => import('@/pages/management/blog'));
 const MemberLevelPage = lazy(() => import('@/pages/member/rssdao/member-level'));
+const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
 const management: AppRouteObject = {
   order: 2,
   path: 'management',
@@ -47,6 +48,14 @@ const management: AppRouteObject = {
       meta: {
         label: 'sys.menu.system.member-level',
         key: '/management/system/member-level',
+      },
+    },
+    {
+      path: 'consumerCardPage',
+      element: <ConsumerCardPage />,
+      meta: {
+        label: 'sys.menu.system.consumer-card',
+        key: '/management/system/consumer-card',
       },
     },
   ],

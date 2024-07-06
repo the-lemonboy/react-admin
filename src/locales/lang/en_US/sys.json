@@ -108,13 +108,10 @@
       },
       "system": {
         "index": "System",
-        "organization": "Organization",
-        "permission": "Permission",
         "website-management": "Website Management",
         "official-account": "Official Account",
-        "role": "Role",
-        "user": "User",
-        "user_detail": "User Detail"
+        "member-level": "Member Level",
+        "consumer-card": "Consumer Card"
       },
       "member": "Member",
       "wechat":{

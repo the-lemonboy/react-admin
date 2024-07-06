@@ -1,19 +1,45 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Card, Form, Input, Modal, Space, Switch, message, Select } from 'antd';
+import { Button, Card, Form, Input, Modal, Space, message, Select, Radio, InputNumber } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import navService, { GetMemberListReq, CouponCreateReq } from '@/api/services/member';
-import { Iconify, IconButton } from '@/components/icon';
 // import OrganizationChart from './organization-chart';
 
 import { MemberTable, ConsumerCard } from '#/entity';
-import type { GetProp, TableProps } from 'antd';
+import type { GetProp, TableProps, RadioChangeEvent } from 'antd';
 // --------------------分页类型
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
+const { TextArea } = Input;
+const VipOption = [
+  {
+    id: 0,
+    title: '年卡',
+  },
+  {
+    id: 1,
+    title: '月卡',
+  },
+  {
+    id: 2,
+    title: '合伙人',
+  },
+  {
+    id: 3,
+    title: '股东',
+  },
+  {
+    id: -1,
+    title: '普通会员',
+  },
+  {
+    id: -2,
+    title: '终身会员',
+  },
+];
 export default function MemberLevelPage() {
   const [messageApi, contextHolder] = message.useMessage();
   // -------------分页 table start
@@ -24,7 +50,7 @@ export default function MemberLevelPage() {
   };
   // 使用 useQuery 获取数据
   const { data, isLoading } = useQuery({
-    queryKey: ['websiteList', query],
+    queryKey: ['memberList', query],
     queryFn: () => fetchWebsiteList(query),
   });
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -46,7 +72,6 @@ export default function MemberLevelPage() {
     }
   }, [data]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
-    console.log(pagination);
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 10;
     setQuery({ page: current, limit: pageSize });
@@ -55,13 +80,30 @@ export default function MemberLevelPage() {
       setData([]);
     }
   };
-
   const columns: ColumnsType<MemberTable> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '等级', dataIndex: 'kind', key: 'level' },
-    { title: '描述', dataIndex: 'description', key: 'description' },
-    { title: '价值', dataIndex: 'amount', key: 'amount' },
-    { title: '价值(公众号)', dataIndex: 'amount0', key: 'amount0' },
+    {
+      title: '等级',
+      dataIndex: 'kind',
+      key: 'level',
+      render: (_, record) => {
+        const vip = VipOption?.find((item) => item.id === record.kind);
+        return vip ? vip.title : '未知等级';
+      },
+    },
+    { title: '描述', dataIndex: 'description', key: 'description', width: 300 },
+    {
+      title: '价值',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (_, record) => `${record.amount} ${record.currency}`, // 组合显示amount和currency
+    },
+    {
+      title: '价值(公众号)',
+      dataIndex: 'amount0',
+      key: 'amount0',
+      render: (_, record) => `${record.amount0} ${record.currency}`,
+    },
     { title: '支付渠道', dataIndex: 'pay_channel', key: 'pay_channel' },
     { title: '收益率', dataIndex: 'profit_percent', key: 'profit_percent' },
     { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
@@ -71,20 +113,17 @@ export default function MemberLevelPage() {
       key: 'action',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <IconButton onClick={() => onCreateCoupon(record)}>
-            <Iconify icon="ph:tag-fill" size={18} />
-          </IconButton>
-          <IconButton onClick={() => onEdit(record)}>
-            <Iconify icon="solar:pen-bold-duotone" size={18} />
-          </IconButton>
+          <Button className="mr-2" onClick={() => onCreateCoupon(record)} type="primary">
+            发卡
+          </Button>
+          <Button onClick={() => onEditVip(false, record)} type="default">
+            编辑
+          </Button>
         </div>
       ),
     },
   ];
   // -------------分页 table end
-  // ------------新增弹框 start
-  const onCreate = () => {};
-  // --------------新增弹框 end
   // ---------------分发coupon start
   // 初始化
   const [createCouponProps, setCreateCouponProps] = useState<ConsumerCard>({
@@ -106,7 +145,7 @@ export default function MemberLevelPage() {
     },
   });
   // 新增
-  const onCreateCoupon = (record: MemberTable) => {
+  const onCreateCoupon = () => {
     setCreateCouponProps((prev) => ({
       ...prev,
       show: true,
@@ -117,14 +156,67 @@ export default function MemberLevelPage() {
     }));
   };
   // ---------------分发coupon end
+  // --------------新增或编辑会员信息 start
+  const [addOrEditModelProps, setAddOrEditModelProps] = useState<AddOrEditModelProps>({
+    formValue: {
+      id: 0,
+      kind: 0,
+      description: '',
+      amount: 0,
+      amount0: 0,
+      pay_channel: '',
+      profit_percent: 0,
+    },
+    title: '新增会员等级',
+    show: false,
+    onOk: () => {
+      setAddOrEditModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setAddOrEditModelProps((prev) => ({ ...prev, show: false }));
+    },
+    type: 'add',
+  });
+  const onCreateVip = (addFlag: boolean) => {
+    setAddOrEditModelProps((prev) => ({
+      ...prev,
+      show: true,
+      addFlag,
+      title: addFlag ? '新增会员等级' : '编辑会员等级',
+      formValue: {
+        ...prev.formValue,
+        title: '',
+        pay_channel: '',
+        currency: 'CNY',
+        currency0: 'CNY',
+        description: '',
+        description0: '',
+        profit_percent: 0,
+        twtter_total: 0,
+        tweet_total_of_day: 0,
+      },
+    }));
+  };
+  const onEditVip = (addFlag: boolean, record: MemberTable) => {
+    setAddOrEditModelProps((prev) => ({
+      ...prev,
+      show: true,
+      addFlag,
+      title: '编辑会员等级',
+      formValue: {
+        ...record,
+      },
+    }));
+  };
+  // --------------新增或编辑会员信息 end
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
         <Card
-          title="Website List"
+          title="会员等级列表"
           extra={
-            <Button type="primary" onClick={onCreate}>
+            <Button type="primary" onClick={onCreateVip}>
               新增
             </Button>
           }
@@ -142,74 +234,156 @@ export default function MemberLevelPage() {
           />
         </Card>
         <CreateCardModel {...createCouponProps} />
+        <AddOrEditModel {...addOrEditModelProps} />
       </Space>
     </>
   );
 }
 
-type AddOrAddModelProps = {
+type AddOrEditModelProps = {
   formValue: MemberTable;
   title: String;
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  type: string;
-  // categoryList: Array<OptionType>;
+  addFlag: boolean;
+  // memberList: Array<OptionType>;
 };
 
 // 新增目录标签
-function AddOrAddModel({ title, show, formValue, onOk, onCancel, type }: AddOrAddModelProps) {
+function AddOrEditModel({ title, show, formValue, onOk, onCancel, addFlag }: AddOrEditModelProps) {
   const [form] = Form.useForm();
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-  const onStatusChange = (checked: boolean) => {
-    if (checked) formValue.opt_status = 1;
-    else formValue.opt_status = 0;
+  const handleVipType = (e: RadioChangeEvent) => {
+    formValue.kind = e.target.value;
   };
+  const handleCurrencyPc = (e: RadioChangeEvent) => {
+    formValue.currency = e.target.value;
+  };
+  const handleCurrencyMp = (e: RadioChangeEvent) => {
+    formValue.currency0 = e.target.value;
+  };
+
+  // 编辑时候的会员详细信息
+  // if (!addFlag) {
+  //   const { data: VipInfo, isLoading: vipInfoLoading } = useQuery({
+  //     queryKey: ['vip-level', formValue.id],
+  //     queryFn: async () => {
+  //       const res = await navService.GetVipLevel(formValue.id);
+  //       return res;
+  //     },
+  //     enabled: !!formValue.id, // 确保 level_id 存在时才执行请求
+  //   });
+  // }
   // 新增
   const queryClient = useQueryClient();
-  const addCateGoryMutation = useMutation({
-    mutationFn: async (params: AddCateGoryReq) => {
-      const res = await navService.AddCateGory(params);
+  const addVipLevelMutation = useMutation({
+    mutationFn: async (params: MemberTable) => {
+      const res = await navService.AddVipLevel(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['categoryList']); // 成功新增后，重新获取数据或更新缓存
+      queryClient.invalidateQueries(['memberList']); // 成功新增后，重新获取数据或更新缓存
       onOk(); // 调用父组件传递的 onOk 函数
     },
     onError: (error) => {
       console.error('Error adding website:', error); // 处理错误
     },
   });
+  // 编辑
+  const editVipLevelMutation = useMutation({
+    mutationFn: async (params: { levelId: number; data: MemberTable }) => {
+      const { levelId, data } = params;
+      const res = await navService.EditVipLevel(levelId, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['memberList']); // 成功新增后，重新获取数据或更新缓存
+      onOk(); // 调用父组件传递的 onOk 函数
+    },
+    onError: (error) => {
+      console.error('Error editing VIP level:', error); // 处理错误
+    },
+  });
+
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
-      addCateGoryMutation.mutate(values); // 提交表单数据进行新增
+      if (addFlag) {
+        addVipLevelMutation.mutate(values); // 提交表单数据进行新增
+      } else {
+        const { id, ...data } = values; // 从表单值中解构出 id 和其他数据
+        editVipLevelMutation.mutate({ levelId: id, data }); // 提交表单数据进行编辑
+      }
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
   return (
-    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+    <Modal width={600} title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
         initialValues={formValue}
         form={form}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 16 }}
         layout="horizontal"
       >
-        <Form.Item<MemberTable> label="种类" name="种类" required>
-          <input />
+        <Form.Item<MemberTable> label="种类" name="kind" required>
+          <Radio.Group onChange={handleVipType} value={formValue.kind}>
+            {VipOption?.map((item, index) => (
+              <Radio key={index} value={item.id}>
+                {item.title}
+              </Radio>
+            ))}
+          </Radio.Group>
         </Form.Item>
         <Form.Item<MemberTable> label="名称" name="title" required>
           <Input />
         </Form.Item>
-        <Form.Item<MemberTable> label="名称" name="title" required>
+        <Form.Item<MemberTable> label="支付渠道" name="pay_channel" required>
           <Input />
         </Form.Item>
-        <Form.Item<MemberTable> label="是否禁用" name="opt_status" required>
-          <Switch onChange={onStatusChange} />
+        <Form.Item<MemberTable> label="价格" name="acount" required>
+          <InputNumber />
+        </Form.Item>
+        <Form.Item<MemberTable> label="货币" name="currency" required>
+          <Select
+            onChange={handleCurrencyPc}
+            options={[
+              { value: 'USD', label: 'USD' },
+              { value: 'BTC', label: 'BTC' },
+              { value: 'ETH', label: 'ETH' },
+              { value: 'CNY', label: 'CNY' },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item<MemberTable> label="等级描述" name="description" required>
+          <TextArea showCount maxLength={200} placeholder="描述内容" />
+        </Form.Item>
+        <Form.Item<MemberTable> label="价格(公众号)" name="acount0" required>
+          <InputNumber />
+        </Form.Item>
+        <Form.Item<MemberTable> label="货币(公众号)" name="currency0" required>
+          <Select
+            onChange={handleCurrencyMp}
+            options={[
+              { value: 'USD', label: 'USD' },
+              { value: 'BTC', label: 'BTC' },
+              { value: 'ETH', label: 'ETH' },
+              { value: 'CNY', label: 'CNY' },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item<MemberTable> label="描述(公众号)" name="description0" required>
+          <TextArea showCount maxLength={200} placeholder="描述内容" />
+        </Form.Item>
+        <Form.Item<MemberTable> label="推特订阅数" name="twtter_total" required>
+          <InputNumber />
+        </Form.Item>
+        <Form.Item<MemberTable> label="推文日推送量" name="tweet_total_of_day" required>
+          <InputNumber />
         </Form.Item>
       </Form>
     </Modal>
@@ -223,7 +397,7 @@ type CreateCardModelProps = {
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  // categoryList: Array<OptionType>;
+  // memberList: Array<OptionType>;
 };
 
 // 新增目录标签
@@ -232,17 +406,12 @@ function CreateCardModel({ title, show, formValue, onOk, onCancel }: CreateCardM
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-  // 获取会员等级option
-  const { data: VipOption } = useQuery({
-    queryKey: ['vip-option'],
-    queryFn: async () => {
-      const res = await navService.VipLevelOption();
-      return res;
-    },
-  });
-  console.log(VipOption);
+
   const handleVipType = (value: number) => {
     formValue.vip_level_id = value;
+  };
+  const handleCurrency = (value: string) => {
+    formValue.currency = value;
   };
   // 新增
   const queryClient = useQueryClient();
@@ -252,7 +421,7 @@ function CreateCardModel({ title, show, formValue, onOk, onCancel }: CreateCardM
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['categoryList']); // 成功新增后，重新获取数据或更新缓存
+      queryClient.invalidateQueries(['memberList']); // 成功新增后，重新获取数据或更新缓存
       onOk(); // 调用父组件传递的 onOk 函数
     },
     onError: (error) => {
@@ -278,9 +447,8 @@ function CreateCardModel({ title, show, formValue, onOk, onCancel }: CreateCardM
       >
         <Form.Item<ConsumerCard> label="名称" name="title" required>
           <Select
-            style={{ width: 120 }}
             onChange={handleVipType}
-            options={VipOption.map((option: any) => ({ label: option.title, value: option.id }))}
+            options={VipOption?.map((option: any) => ({ label: option.title, value: option.id }))}
             value={formValue.vip_level_id}
             // label= {}
           />
@@ -289,13 +457,21 @@ function CreateCardModel({ title, show, formValue, onOk, onCancel }: CreateCardM
           <Input />
         </Form.Item>
         <Form.Item<ConsumerCard> label="货币" name="currency" required>
-          <Input />
+          <Select
+            onChange={handleCurrency}
+            options={[
+              { value: 'USD', label: 'USD' },
+              { value: 'BTC', label: 'BTC' },
+              { value: 'ETH', label: 'ETH' },
+              { value: 'CNY', label: 'CNY' },
+            ]}
+          />
         </Form.Item>
         <Form.Item<ConsumerCard> label="站点" name="web_site_id" required>
           <Input />
         </Form.Item>
         <Form.Item<ConsumerCard> label="生成数量" name="vip_level_id" required>
-          <Input />
+          <InputNumber />
         </Form.Item>
       </Form>
     </Modal>

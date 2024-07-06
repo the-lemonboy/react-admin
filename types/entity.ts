@@ -51,6 +51,22 @@ export interface MemberTable {
   tweet_total_of_day: number;
   twtter_total: number;
 }
+export interface CouponTableType {
+  id: number;
+  c_no: string;
+  vip_level_id: number;
+  vip_level_name: string;
+  kind: number;
+  price: number;
+  currency: string;
+  binding_status: number;
+  distributed: boolean;
+  remark: string;
+  bonded_at: string;
+  expired_at: string;
+  dist_to_u_id: number;
+  mobile_number: string;
+}
 export interface ConsumerCard {
   currency: string;
   price: number;
