@@ -112,7 +112,9 @@
         "official-account": "Official Account",
         "member-level": "Member Level",
         "consumer-card": "Consumer Card"
+        
       },
+      "media-management": "media",
       "member": "Member",
       "wechat":{
         "index": "Wechat",

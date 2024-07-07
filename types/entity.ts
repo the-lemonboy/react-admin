@@ -75,6 +75,12 @@ export interface ConsumerCard {
   vip_level_id: number;
   web_site_id: string;
 }
+export interface mediaTableType {
+  id: number;
+  media_key: string;
+  media_title: string;
+  opt_status: boolean;
+}
 export interface Permission {
   id: string;
   parentId: string;

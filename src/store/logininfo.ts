@@ -200,6 +200,15 @@ const res = {
             route: 'consumer-card',
             component: '/member/rssdao/consumer-card/index.tsx',
           },
+          {
+            id: '1985890042972212',
+            parentId: '0901673425580518',
+            label: 'sys.menu.media-management',
+            name: 'media-management',
+            type: 1,
+            route: 'media-management',
+            component: '/news/media-management/index.tsx',
+          },
         ],
       },
       {
