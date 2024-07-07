@@ -1,8 +1,7 @@
+import { LoadingOutlined } from '@ant-design/icons';
 import { Typography, Upload } from 'antd';
 import { UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import { useState } from 'react';
-
-import { fBytes } from '@/utils/format-number';
 
 import { Iconify } from '../icon';
 
@@ -27,15 +26,17 @@ export function UploadAvatar({
   const handelHover = (hover: boolean) => {
     setIsHover(hover);
   };
-
+  const [loading, setLoading] = useState(false);
   const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === 'uploading') {
+      setLoading(true);
       return;
     }
     if (['done', 'error'].includes(info.file.status!)) {
       const newImageUrl = info.file.response.data.src!;
       setImageUrl(newImageUrl);
       onImageUrlChange?.(newImageUrl); // 调用回调函数
+      setLoading(false);
     }
   };
 
@@ -49,7 +50,7 @@ export function UploadAvatar({
       }}
       className="absolute z-10 flex h-full w-full flex-col items-center justify-center"
     >
-      <Iconify icon="solar:camera-add-bold" size={32} />
+      <Iconify icon="mage:image-upload" size={32} />
       <div className="mt-1 text-xs">Upload Photo</div>
     </div>
   );
@@ -60,15 +61,14 @@ export function UploadAvatar({
       onMouseEnter={() => handelHover(true)}
       onMouseLeave={() => handelHover(false)}
     >
-      {imageUrl ? renderPreview : null}
-      {!imageUrl || isHover ? renderPlaceholder : null}
+      {loading ? <LoadingOutlined /> : imageUrl ? renderPreview : null}
+      {!loading && (!imageUrl || isHover) ? renderPlaceholder : null}
     </div>
   );
 
   const defaultHelperText = (
     <Typography.Text type="secondary" style={{ fontSize: 12 }}>
       Allowed *.jpeg, *.jpg, *.png, *.gif
-      <br /> max size of {fBytes(3145728)}
     </Typography.Text>
   );
   const renderHelpText = <div className="text-center">{helperText || defaultHelperText}</div>;

@@ -22,7 +22,7 @@ export interface OptCateGoryReq {
 }
 export interface AddTagReq {
   cids: Array<string>;
-  url: string;
+  wid: string;
 }
 export interface DelTagReq {
   cid: string;

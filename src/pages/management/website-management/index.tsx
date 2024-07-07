@@ -8,7 +8,6 @@ import {
   Modal,
   Popconfirm,
   Space,
-  Typography,
   Tag,
   Switch,
   TreeSelect,
@@ -22,6 +21,7 @@ import navService, {
   AddWebsiteReq,
   GetWebsiteListRes,
   AddCateGoryReq,
+  AddTagReq,
 } from '@/api/services/navService';
 import { Iconify, IconButton } from '@/components/icon';
 import { UploadAvatar } from '@/components/upload/upload-avatar';
@@ -246,11 +246,6 @@ export default function NavWebsitePage() {
     },
   };
 
-  // const { data } = useQuery({
-  //   queryKey: ['orgs'],
-  //   queryFn: orgService.getOrgList,
-  // });
-
   const onSearchFormReset = () => {
     searchForm.resetFields();
   };
@@ -266,6 +261,8 @@ export default function NavWebsitePage() {
         icon: '',
         link: '',
         title: '',
+        hash_key: '',
+        created_at: '',
       },
     }));
   };
@@ -585,14 +582,7 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-  const boxPlaceHolder = (
-    <div className="flex flex-col">
-      <Iconify icon="hugeicons:image-upload" size={40} />
-      <Typography.Text type="secondary" className="">
-        Upload File
-      </Typography.Text>
-    </div>
-  );
+  console.log(formValue);
   const queryClient = useQueryClient();
   const addWebsiteMutation = useMutation({
     mutationFn: async (params: AddWebsiteReq) => {
@@ -601,9 +591,11 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['websiteList']); // 成功新增后，重新获取数据或更新缓存
+      message.success('添加网站成功');
       onOk(); // 调用父组件传递的 onOk 函数
     },
     onError: (error) => {
+      message.error('添加网站失败');
       console.error('Error adding website:', error); // 处理错误
     },
   });
@@ -774,11 +766,14 @@ function EditorTagModal({
 }: EditTagModalProps) {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-  // -------------树 新增目录标签 start
-  const [addTagValues, setAddTagValues] = useState<[]>([]);
+
+  const [tagValues, setAddTagValues] = useState<string[]>([]);
+  const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
+
   const treeCategory = TreeToArray(categoryList).map((item) => ({
     title: item.title,
     value: item.c_id,
@@ -791,66 +786,68 @@ function EditorTagModal({
         }))
       : [],
   }));
-  const SelectParent = (newValue: []) => {
+
+  const SelectParent = (newValue: string[]) => {
     setAddTagValues(newValue);
   };
+
   const { SHOW_PARENT } = TreeSelect;
-  const tProps = {
-    treeData: treeCategory,
-    value: addTagValues,
-    onChange: SelectParent,
-    treeCheckable: true,
-    showCheckedStrategy: SHOW_PARENT,
-    placeholder: 'Please select',
-    style: {
-      width: '100%',
-    },
-  };
 
   const { data: websiteTagList } = useQuery({
-    queryKey: ['websiteTagList', { w_id: wid }], // 将 wid 作为查询参数的一部分
+    queryKey: ['websiteTagList', { w_id: wid }],
     queryFn: async () => {
-      const res = await navService.GetWebsiteTagList({ w_id: wid }); // 在服务函数中传入 wid
+      const res = await navService.GetWebsiteTagList({ w_id: wid });
       return res;
     },
   });
-  // -------------树 新增目录标签 end
-  const handleOk = async () => {};
-  // -------------删除目录标签 start
-  const [visiblePopconfirm, setVisiblePopconfirm] = useState<boolean>(false);
-  const handleTagDel = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault(); // Prevent the default Tag close behavior
-    e.stopPropagation(); // Prevent the event from bubbling up
-    setVisiblePopconfirm(false); // Show the Popconfirm for the clicked Tag
+
+  const addTagMutation = useMutation({
+    mutationFn: async (params: AddTagReq) => {
+      const res = await navService.AddTag(params);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['websiteTagList']);
+      message.success('标签新增成功');
+      onOk();
+    },
+    onError: (error) => {
+      message.error('新增标签失败');
+      console.error('Error adding category:', error);
+    },
+  });
+
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log(wid, values);
+      const params = {
+        wid,
+        cids: values.cids,
+      };
+      addTagMutation.mutate(params);
+    } catch (error) {
+      console.error('Validation failed:', error);
+    }
   };
+
   const fetchDelCategoryTag = useMutation({
     mutationFn: navService.DelTag,
     onSuccess: () => {
       queryClient.invalidateQueries(['websiteTagList']);
-      console.log('删除成功');
-      // messageApi.open({
-      //   type: 'success',
-      //   content: '标签删除成功',
-      // });
+      message.success('标签删除成功');
     },
     onError: (error) => {
+      message.error('删除标签失败');
       console.error('Error deleting category:', error);
     },
   });
+
   const delCategoryTag = (tagValue: TagInfo) => {
     fetchDelCategoryTag.mutate({ cid: tagValue.c_id, wid: tagValue.w_id });
-    setVisiblePopconfirm(false); // Hide the Popconfirm
-    console.log(tagValue);
+    setVisiblePopconfirm(null); // Hide the Popconfirm
   };
-  const cancelCategoryTagPop = () => {
-    setVisiblePopconfirm(false);
-  };
-  const handleVisibleChange = (visible: boolean) => {
-    if (!visible) {
-      setVisiblePopconfirm(false); // Hide Popconfirm when clicking outside
-    }
-  };
-  // --------------删除目录标签 end
+
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -860,30 +857,41 @@ function EditorTagModal({
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<Website> label="标签" name="title" required>
-          <TreeSelect {...tProps} />
+        <Form.Item label="新增标签" name="cids" required>
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            value={tagValues}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="Please select"
+            allowClear
+            multiple
+            treeDefaultExpandAll
+            onChange={SelectParent}
+            treeData={treeCategory}
+          />
         </Form.Item>
-        <Form.Item label="链接" name="link">
+        <Form.Item label="已有标签" name="url">
           {websiteTagList && (
             <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">关键词1</p>
               {websiteTagList.map((item: TagInfo) => (
                 <Popconfirm
-                  key={item.id} // Use a unique identifier if available
-                  title="删除标签"
-                  okText="Yes"
-                  cancelText="No"
+                  key={item.id}
+                  title="确定删除这个标签吗?"
+                  okText="确定"
+                  cancelText="取消"
                   placement="left"
-                  open={visiblePopconfirm}
+                  open={visiblePopconfirm === item.id}
                   onConfirm={() => delCategoryTag(item)}
-                  onCancel={cancelCategoryTagPop}
-                  onOpenChange={(visible) => handleVisibleChange(visible)}
+                  onCancel={() => setVisiblePopconfirm(null)}
                 >
                   <Tag
                     closable
-                    key={item.id} // Use a unique identifier if available
                     closeIcon={<CloseCircleOutlined />}
-                    onClose={(e) => handleTagDel(e)}
+                    onClose={(e) => {
+                      e.preventDefault();
+                      setVisiblePopconfirm(item.id);
+                    }}
                     style={{ marginBottom: '8px', marginRight: '8px' }}
                   >
                     {item.title}
