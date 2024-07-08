@@ -39,13 +39,15 @@ export function usePermissionRoutes() {
   // }, []);
 
   const permissions = useUserPermission();
-
+  console.log(permissions,"permissions------");
   return useMemo(() => {
     const flattenedPermissions = flattenTrees(permissions!);
+    console.log(flattenedPermissions,"flattenedPermissions");
     const permissionRoutes = transformPermissionToMenuRoutes(
       permissions || [],
       flattenedPermissions,
     );
+    console.log(permissionRoutes,"permissionRoutes");
     return [...permissionRoutes];
   }, [permissions]);
 }
@@ -141,6 +143,7 @@ function transformPermissionToMenuRoutes(
  * @returns {string} - The complete route after splicing
  */
 function getCompleteRoute(permission: Permission, flattenedPermissions: Permission[], route = '') {
+  debugger
   const currentRoute = route ? `/${permission.route}${route}` : `/${permission.route}`;
 
   if (permission.parentId) {

@@ -1,7 +1,7 @@
 import { Button, Card, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 
-import { USER_LIST } from '@/_mock/assets';
+// import { USER_LIST } from '@/_mock/assets';
 import { IconButton, Iconify } from '@/components/icon';
 import { usePathname, useRouter } from '@/router/hooks';
 import ProTag from '@/theme/antd/components/tag';

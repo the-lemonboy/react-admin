@@ -115,6 +115,8 @@
         
       },
       "media-management": "media",
+      "theasaurus-tag": "Theasaurus",
+      "category-tag": "Category",
       "member": "Member",
       "wechat":{
         "index": "Wechat",

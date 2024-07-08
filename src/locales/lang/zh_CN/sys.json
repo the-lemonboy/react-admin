@@ -111,7 +111,9 @@
         "consumer-card": "消费卡"
       },
         "media-management": "媒体管理",
+        "theasaurus-tag": "词库分类",
         "member": "会员管理",
+        "category-tag": "标签分类",
         "wechat":{
           "index": "微信公众号",
           "official-account": "微信公众号",

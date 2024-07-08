@@ -2,7 +2,7 @@ import { Button, Card, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import { ROLE_LIST } from '@/_mock/assets';
+// import { ROLE_LIST } from '@/_mock/assets';
 import { IconButton, Iconify } from '@/components/icon';
 import ProTag from '@/theme/antd/components/tag';
 

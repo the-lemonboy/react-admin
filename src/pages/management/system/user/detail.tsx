@@ -1,4 +1,4 @@
-import { USER_LIST } from '@/_mock/assets';
+// import { USER_LIST } from '@/_mock/assets';
 import Card from '@/components/card';
 import { useParams } from '@/router/hooks';
 

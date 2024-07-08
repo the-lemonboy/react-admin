@@ -17,43 +17,43 @@ interface MediaTableType {
   opt_status: boolean;
 }
 
-export default function MediaManagement() {
+export default function ThesaurusTag() {
   const [messageApi, contextHolder] = message.useMessage();
-  const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
+  // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['mediaList', query],
-    queryFn: () => newsService.GetMediaList(query),
+    queryKey: ['mediaList'],
+    queryFn: () => newsService.GetTheasaurusList(),
   });
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: tableList?.count,
-    },
-  });
+  // const [tableParams, setTableParams] = useState<TableParams>({
+  //   pagination: {
+  //     current: 1,
+  //     pageSize: 10,
+  //     total: tableList?.count,
+  //   },
+  // });
 
-  useEffect(() => {
-    if (tableList) {
-      setTableParams((prev) => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: tableList?.count,
-        },
-      }));
-    }
-  }, [tableList]);
+  // useEffect(() => {
+  //   if (tableList) {
+  //     setTableParams((prev) => ({
+  //       ...prev,
+  //       pagination: {
+  //         ...prev.pagination,
+  //         total: tableList?.count,
+  //       },
+  //     }));
+  //   }
+  // }, [tableList]);
 
-  const handleTableChange: TableProps<MediaTableType>['onChange'] = (pagination) => {
-    const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
-    setQuery({ page: current, limit: pageSize });
-    setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      // 清空数据
-      // setData([]); // 确保这里有数据清空逻辑
-    }
-  };
+  // const handleTableChange: TableProps<MediaTableType>['onChange'] = (pagination) => {
+  //   const current = pagination.current ?? 1;
+  //   const pageSize = pagination.pageSize ?? 10;
+  //   setQuery({ page: current, limit: pageSize });
+  //   setTableParams({ pagination });
+  //   if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+  //     // 清空数据
+  //     // setData([]); // 确保这里有数据清空逻辑
+  //   }
+  // };
 
   const columns: ColumnsType<MediaTableType> = [
     { title: 'ID', dataIndex: 'media_key', key: 'media_key' },
@@ -127,8 +127,6 @@ export default function MediaManagement() {
             columns={columns}
             dataSource={tableList?.data}
             loading={isLoadingList}
-            pagination={tableParams.pagination}
-            onChange={handleTableChange}
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />

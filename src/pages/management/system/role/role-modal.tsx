@@ -1,7 +1,7 @@
 import { Form, Modal, Input, InputNumber, Radio, Tree } from 'antd';
 import { useEffect } from 'react';
 
-import { PERMISSION_LIST } from '@/_mock/assets';
+// import { PERMISSION_LIST } from '@/_mock/assets';
 import { flattenTrees } from '@/utils/tree';
 
 import { Permission, Role } from '#/entity';

@@ -16,6 +16,8 @@ const WebsiteManagementPage = lazy(() => import('@/pages/management/website-mana
 // const Blog = lazy(() => import('@/pages/management/blog'));
 const MemberLevelPage = lazy(() => import('@/pages/member/rssdao/member-level'));
 const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
+const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
+// const TheasaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag'));
 const management: AppRouteObject = {
   order: 2,
   path: 'management',
@@ -56,6 +58,23 @@ const management: AppRouteObject = {
       meta: {
         label: 'sys.menu.system.consumer-card',
         key: '/management/system/consumer-card',
+      },
+    },
+    
+    // {
+    //   path: 'mediaManagementPage',
+    //   element: <TheasaurusTagPage />,
+    //   meta: {
+    //     label: 'sys.menu.theasaurus-tag',
+    //     key: '/management/theasaurus-tag',
+    //   },
+    // },
+    {
+      path: 'theasaurusTagPage',
+      element: <MediaManagementPage />,
+      meta: {
+        label: 'sys.menu.media-management',
+        key: '/management/media-management',
       },
     },
   ],
