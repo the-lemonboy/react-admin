@@ -1,7 +1,6 @@
 import { ascend } from 'ramda';
 
 import { AppRouteObject, RouteMeta } from '#/router';
-
 /**
  * return menu routes
  */

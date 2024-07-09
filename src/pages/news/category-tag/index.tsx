@@ -7,6 +7,8 @@ import newsService from '@/api/services/newsService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
+import { Theasaurus, NewsCategory } from '#/entity';
+
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -16,8 +18,8 @@ interface MediaTableType {
   media_title: string;
   opt_status: boolean;
 }
-
-export default function ThesaurusTag() {
+type SearchFormFieldType = {};
+export default function CategoryTag() {
   const [messageApi, contextHolder] = message.useMessage();
   // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
@@ -58,18 +60,20 @@ export default function ThesaurusTag() {
     queryKey: ['theasaurusList'],
     queryFn: () => newsService.GetTheasaurusList(),
   });
-  const columns: ColumnsType<MediaTableType> = [
-    { title: 'ID', dataIndex: 'media_key', key: 'media_key' },
-    { title: '名称', dataIndex: 'media_title', key: 'media_title' },
+  const columns: ColumnsType<NewsCategory> = [
+    { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
+    { title: '名称', dataIndex: 'title', key: 'title' },
+    { title: '名称(大写)', dataIndex: 'upper_title', key: 'upper_title' },
+    { title: '所属板块', dataIndex: 'area_title', key: 'area_title' },
     {
-      title: '分发状态',
+      title: '状态',
       dataIndex: 'opt_status',
       key: 'opt_status',
       render: (_, record) => (
         <Switch
-          checkedChildren="已分发"
-          unCheckedChildren="未分发"
-          defaultChecked={record.opt_status}
+          checkedChildren="开放"
+          unCheckedChildren="禁用"
+          defaultChecked={!record.opt_status}
           onChange={(checked) => onChangeMediaStatus(checked, record)}
         />
       ),
@@ -78,6 +82,7 @@ export default function ThesaurusTag() {
 
   const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
     // 修改分发状态逻辑
+    // 记得取反
     console.log('Media status changed:', checked, record);
   };
 
@@ -124,20 +129,22 @@ export default function ThesaurusTag() {
           <Form form={searchForm}>
             <Row gutter={[16, 16]}>
               <Col span={24} lg={6}>
-                <Form.Item<SearchFormFieldType> label="板块" name="name" className="!mb-0">
+                <Form.Item<Theasaurus> label="板块" name="area_key" className="!mb-0">
                   <Select>
-                    {theasaurusList?.map((item) => (
-                      <Select.Option value={item.media_key}>{item.media_title}</Select.Option>
+                    {theasaurusList?.data.map((item: Theasaurus) => (
+                      <Select.Option key={item.area_key} value={item.area_key}>
+                        {item.title}
+                      </Select.Option>
                     ))}
                   </Select>
                 </Form.Item>
               </Col>
               <Col span={24} lg={6}>
                 <Form.Item<SearchFormFieldType> label="Status" name="status" className="!mb-0">
-                  <Select>
+                  {/* <Select>
                     <Select.Option value="enable" />
                     <Select.Option value="disable" />
-                  </Select>
+                  </Select> */}
                 </Form.Item>
               </Col>
               <Col span={24} lg={12}>

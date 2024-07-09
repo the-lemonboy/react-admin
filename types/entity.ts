@@ -75,7 +75,31 @@ export interface ConsumerCard {
   vip_level_id: number;
   web_site_id: string;
 }
-export interface mediaTableType {
+export interface Theasaurus {
+  id: string;
+  title: string;
+  area_key: string;
+  word_key: string;
+  created_at: string;
+  updated_at: string;
+  opt_status: boolean;
+}
+export interface NewsCategory {
+  c_id: string;
+  area_id: string;
+  area_title: string;
+  word_key: string;
+  title: string;
+  upper_title: string;
+  level: number;
+  order_n: number;
+  p_c_id: number;
+  p_c_path: string;
+  opt_status: boolean;
+  created_at: string;
+  updated_at: string;
+}
+export interface MediaTableType {
   id: number;
   media_key: string;
   media_title: string;

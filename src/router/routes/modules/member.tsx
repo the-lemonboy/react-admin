@@ -1,7 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { Iconify } from '@/components/icon';
+import { SvgIcon } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { AppRouteObject } from '#/router';
@@ -20,7 +20,7 @@ const member: AppRouteObject = {
   ),
   meta: {
     label: 'sys.menu.member',
-    icon: <Iconify icon="solar:user-5-bold-duotone" className="ant-menu-item-icon" size="24" />,
+    icon: <SvgIcon icon="ic_member" className="ant-menu-item-icon" size="24" />,
     key: '/member',
   },
   children: [

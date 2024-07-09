@@ -4,6 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import { Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
+import { getRoutesFromModules } from '@/router/utils';
 import { useUserPermission } from '@/store/userStore';
 import ProTag from '@/theme/antd/components/tag';
 import { flattenTrees } from '@/utils/tree';
@@ -11,7 +12,6 @@ import { flattenTrees } from '@/utils/tree';
 import { Permission } from '#/entity';
 import { BasicStatus, PermissionType } from '#/enum';
 import { AppRouteObject } from '#/router';
-
 // 使用 import.meta.glob 获取所有路由组件
 const entryPath = '/src/pages';
 const pages = import.meta.glob('/src/pages/**/*.tsx');
@@ -34,20 +34,20 @@ function resolveComponent(path: string) {
  */
 export function usePermissionRoutes() {
   // 切换回静态路由
-  // return useMemo(() => {
-  //   return getRoutesFromModules();
-  // }, []);
+  return useMemo(() => {
+    return getRoutesFromModules();
+  }, []);
 
   const permissions = useUserPermission();
-  console.log(permissions,"permissions------");
+  console.log(permissions, 'permissions------');
   return useMemo(() => {
     const flattenedPermissions = flattenTrees(permissions!);
-    console.log(flattenedPermissions,"flattenedPermissions");
+    console.log(flattenedPermissions, 'flattenedPermissions');
     const permissionRoutes = transformPermissionToMenuRoutes(
       permissions || [],
       flattenedPermissions,
     );
-    console.log(permissionRoutes,"permissionRoutes");
+    console.log(permissionRoutes, 'permissionRoutes');
     return [...permissionRoutes];
   }, [permissions]);
 }
@@ -143,7 +143,7 @@ function transformPermissionToMenuRoutes(
  * @returns {string} - The complete route after splicing
  */
 function getCompleteRoute(permission: Permission, flattenedPermissions: Permission[], route = '') {
-  debugger
+  debugger;
   const currentRoute = route ? `/${permission.route}${route}` : `/${permission.route}`;
 
   if (permission.parentId) {

@@ -19,6 +19,10 @@ export interface CreateMediaReq {
 export interface GetCategoryListReq {
   area_id?: string;
 }
+export interface AddCategoryReq {
+  opt_status: boolean;
+  title: string;
+}
 export enum NewsType {
   MediaList = '/api/nav/media/news/list',
   CreateMedia = '/api/nav/media_content/area/update',
@@ -26,6 +30,7 @@ export enum NewsType {
   DeleteNews = '/api/news/delete',
   GetTheasaurusList = '/api/nav/media_content/area/list',
   GetCategoryList = '/api/nav/media_content/category/list',
+  AddCategory = '/api/nav/media_content/category/add',
 }
 
 const GetMediaList = (data: GetMediaListReq) =>
@@ -35,6 +40,7 @@ const CreateMedia = (data: CreateMediaReq) =>
 const GetTheasaurusList = () => apiClient.get<any>({ url: NewsType.GetTheasaurusList });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post<any>({ url: NewsType.GetCategoryList, data });
+const AddCategory = (data: any) => apiClient.post<any>({ url: NewsType.AddCategory, data });
 export default {
   GetMediaList,
   CreateMedia,
