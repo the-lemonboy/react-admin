@@ -1,81 +1,64 @@
-import { useQuery } from '@tanstack/react-query';
-import { Card, Space, message, Switch, Button, TableProps } from 'antd';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Card, Space, message, Switch, Button } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import newsService from '@/api/services/newsService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-interface TableParams {
-  pagination?: TablePaginationConfig;
-}
-interface MediaTableType {
-  media_key: string;
-  media_title: string;
-  opt_status: boolean;
-}
+import { Media } from '#/entity';
 
 export default function MediaManagement() {
+  const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
+  // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['mediaList', query],
-    queryFn: () => newsService.GetMediaList(query),
+    queryKey: ['mediaList'],
+    queryFn: () => newsService.GetMediaList(),
   });
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: tableList?.count,
-    },
-  });
-
-  useEffect(() => {
-    if (tableList) {
-      setTableParams((prev) => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: tableList?.count,
-        },
-      }));
-    }
-  }, [tableList]);
-
-  const handleTableChange: TableProps<MediaTableType>['onChange'] = (pagination) => {
-    const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
-    setQuery({ page: current, limit: pageSize });
-    setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      // 清空数据
-      // setData([]); // 确保这里有数据清空逻辑
-    }
-  };
-
-  const columns: ColumnsType<MediaTableType> = [
+  const columns: ColumnsType<Media> = [
     { title: 'ID', dataIndex: 'media_key', key: 'media_key' },
     { title: '名称', dataIndex: 'media_title', key: 'media_title' },
     {
-      title: '分发状态',
+      title: '状态',
       dataIndex: 'opt_status',
       key: 'opt_status',
       render: (_, record) => (
         <Switch
-          checkedChildren="已分发"
-          unCheckedChildren="未分发"
+          checkedChildren="启用"
+          unCheckedChildren="禁用"
           defaultChecked={record.opt_status}
           onChange={(checked) => onChangeMediaStatus(checked, record)}
         />
       ),
     },
   ];
-
-  const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
+  const changeMediaStatus = useMutation({
+    mutationFn: (params: Media) => {
+      const res = newsService.ChangeMediaStatus(params);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['mediaList']);
+      messageApi.open({
+        type: 'success',
+        content: '状态修改成功',
+      });
+    },
+    onError: () => {
+      messageApi.open({
+        type: 'error',
+        content: '状态修改失败',
+      });
+    },
+  });
+  const onChangeMediaStatus = (checked: boolean, record: Media) => {
     // 修改分发状态逻辑
-    console.log('Media status changed:', checked, record);
+    changeMediaStatus.mutate({
+      media_title: record.media_title,
+      opt_status: checked,
+    });
   };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
@@ -127,8 +110,8 @@ export default function MediaManagement() {
             columns={columns}
             dataSource={tableList?.data}
             loading={isLoadingList}
-            pagination={tableParams.pagination}
-            onChange={handleTableChange}
+            // pagination={tableParams.pagination}
+            // onChange={handleTableChange}
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />

@@ -7,10 +7,10 @@ import { CircleLoading } from '@/components/loading';
 import { AppRouteObject } from '#/router';
 
 const WebsiteManagementPage = lazy(() => import('@/pages/management/website-management'));
-const MemberLevelPage = lazy(() => import('@/pages/member/rssdao/member-level'));
-const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
-const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
-const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
+// const MemberLevelPage = lazy(() => import('@/pages/member/rssdao/member-level'));
+// const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
+// const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
+// const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
 
 const management: AppRouteObject = {
   order: 2,
@@ -54,22 +54,22 @@ const management: AppRouteObject = {
     //     key: '/management/system/consumer-card',
     //   },
     // },
-    {
-      path: 'media-management', // 修改路径为连字符命名法
-      element: <MediaManagementPage />,
-      meta: {
-        label: 'sys.menu.media-management', // 修正meta标签
-        key: '/management/media-management',
-      },
-    },
-    {
-      path: 'thesaurus-tag', // 修改路径为连字符命名法，并修正为ThesaurusTagPage
-      element: <ThesaurusTagPage />,
-      meta: {
-        label: 'sys.menu.thesaurus-tag', // 修正meta标签
-        key: '/management/thesaurus-tag',
-      },
-    },
+    // {
+    //   path: 'media-management', // 修改路径为连字符命名法
+    //   element: <MediaManagementPage />,
+    //   meta: {
+    //     label: 'sys.menu.media-management', // 修正meta标签
+    //     key: '/management/media-management',
+    //   },
+    // },
+    // {
+    //   path: 'thesaurus-tag', // 修改路径为连字符命名法，并修正为ThesaurusTagPage
+    //   element: <ThesaurusTagPage />,
+    //   meta: {
+    //     label: 'sys.menu.thesaurus-tag', // 修正meta标签
+    //     key: '/management/thesaurus-tag',
+    //   },
+    // },
   ],
 };
 

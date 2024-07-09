@@ -10,7 +10,7 @@ export interface GetMediaListReq {
   limit: number;
   page: number;
 }
-export interface CreateMediaReq {
+export interface AddTheasaurusReq {
   area_id?: string;
   title: string;
   id?: string;
@@ -23,9 +23,16 @@ export interface AddCategoryReq {
   opt_status: boolean;
   title: string;
 }
+export interface ChangeMediaStatusReq {
+  media_title: string;
+  opt_status: boolean;
+}
 export enum NewsType {
-  MediaList = '/api/nav/media/news/list',
+  MediaList = '/api/nav/media/list',
+  ChangeMediaStatus = '/api/nav/media/opt_status',
   CreateMedia = '/api/nav/media_content/area/update',
+  AddTheasaurus = '/api/nav/media_content/area/add',
+  ChangeTheasaurusStatus = '/api/nav/media_content/area/opt_status',
   UpdateNews = '/api/news/update',
   DeleteNews = '/api/news/delete',
   GetTheasaurusList = '/api/nav/media_content/area/list',
@@ -33,17 +40,25 @@ export enum NewsType {
   AddCategory = '/api/nav/media_content/category/add',
 }
 
-const GetMediaList = (data: GetMediaListReq) =>
-  apiClient.post<any>({ url: NewsType.MediaList, data });
+const GetMediaList = () => apiClient.get<any>({ url: NewsType.MediaList });
+const ChangeMediaStatus = (data: ChangeMediaStatusReq) =>
+  apiClient.post<any>({ url: NewsType.ChangeMediaStatus, data });
 const CreateMedia = (data: CreateMediaReq) =>
   apiClient.post<any>({ url: NewsType.CreateMedia, data });
 const GetTheasaurusList = () => apiClient.get<any>({ url: NewsType.GetTheasaurusList });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post<any>({ url: NewsType.GetCategoryList, data });
 const AddCategory = (data: any) => apiClient.post<any>({ url: NewsType.AddCategory, data });
+const AddTheasaurus = (data: AddTheasaurusReq) =>
+  apiClient.post<any>({ url: NewsType.AddTheasaurus, data });
+const ChangeTheasaurusStatus = (data: AddTheasaurusReq) =>
+  apiClient.post<any>({ url: NewsType.ChangeTheasaurusStatus, data });
 export default {
   GetMediaList,
+  ChangeMediaStatus,
   CreateMedia,
   GetTheasaurusList,
   GetCategoryList,
+  AddTheasaurus,
+  ChangeTheasaurusStatus,
 };

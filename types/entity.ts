@@ -99,9 +99,9 @@ export interface NewsCategory {
   created_at: string;
   updated_at: string;
 }
-export interface MediaTableType {
-  id: number;
-  media_key: string;
+export interface Media {
+  id?: number;
+  media_key?: string;
   media_title: string;
   opt_status: boolean;
 }

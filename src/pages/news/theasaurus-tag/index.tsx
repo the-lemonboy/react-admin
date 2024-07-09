@@ -1,16 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Switch, Button, TableProps } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import newsService from '@/api/services/newsService';
+import newsService, { AddTheasaurusReq } from '@/api/services/newsService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-interface TableParams {
-  pagination?: TablePaginationConfig;
-}
+import { Theasaurus } from '#/entity';
+
 interface MediaTableType {
   media_key: string;
   media_title: string;
@@ -18,64 +16,62 @@ interface MediaTableType {
 }
 
 export default function ThesaurusTag() {
+  const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['mediaList'],
+    queryKey: ['mediaAreaList'],
     queryFn: () => newsService.GetTheasaurusList(),
   });
-  // const [tableParams, setTableParams] = useState<TableParams>({
-  //   pagination: {
-  //     current: 1,
-  //     pageSize: 10,
-  //     total: tableList?.count,
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (tableList) {
-  //     setTableParams((prev) => ({
-  //       ...prev,
-  //       pagination: {
-  //         ...prev.pagination,
-  //         total: tableList?.count,
-  //       },
-  //     }));
-  //   }
-  // }, [tableList]);
-
-  // const handleTableChange: TableProps<MediaTableType>['onChange'] = (pagination) => {
-  //   const current = pagination.current ?? 1;
-  //   const pageSize = pagination.pageSize ?? 10;
-  //   setQuery({ page: current, limit: pageSize });
-  //   setTableParams({ pagination });
-  //   if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-  //     // 清空数据
-  //     // setData([]); // 确保这里有数据清空逻辑
-  //   }
-  // };
-
   const columns: ColumnsType<MediaTableType> = [
-    { title: 'ID', dataIndex: 'media_key', key: 'media_key' },
-    { title: '名称', dataIndex: 'media_title', key: 'media_title' },
+    { title: 'ID', dataIndex: 'area_key', key: 'area_key' },
+    { title: '名称', dataIndex: 'title', key: 'title' },
     {
       title: '分发状态',
       dataIndex: 'opt_status',
       key: 'opt_status',
       render: (_, record) => (
         <Switch
-          checkedChildren="已分发"
-          unCheckedChildren="未分发"
+          checkedChildren="启用"
+          unCheckedChildren="禁用"
           defaultChecked={record.opt_status}
           onChange={(checked) => onChangeMediaStatus(checked, record)}
         />
       ),
     },
+    {
+      title: '操作',
+      key: 'operation',
+      align: 'center',
+      render: (_, record) => (
+        <div className="flex w-full justify-center text-gray">
+          <Button>编辑</Button>
+        </div>
+      ),
+    },
   ];
-
-  const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
+  const changeTheasaurusStatus = useMutation({
+    mutationFn: (params: AddTheasaurusReq) => {
+      const res = newsService.ChangeTheasaurusStatus(params);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['mediaAreaList']);
+      messageApi.open({
+        type: 'success',
+        content: '状态修改成功',
+      });
+    },
+    onError: () => {
+      messageApi.open({
+        type: 'error',
+        content: '状态修改失败',
+      });
+    },
+  });
+  const onChangeMediaStatus = (checked: boolean, record: Theasaurus) => {
     // 修改分发状态逻辑
-    console.log('Media status changed:', checked, record);
+    changeTheasaurusStatus.mutate({ id: record.id, opt_status: checked });
   };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
@@ -87,8 +83,6 @@ export default function ThesaurusTag() {
         ...prev,
         show: false,
       }));
-      // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['mediaList']);
     },
     onCancel: () => {
       setEditorOrAddModelProps((prev) => ({

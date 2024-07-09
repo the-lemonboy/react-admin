@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 import newsService, { CreateMediaReq } from '@/api/services/newsService';
 
+import { Media } from '#/entity';
+
 export type EditorOrAddModelProps = {
   title: string;
   show: boolean;
@@ -68,10 +70,10 @@ function EditorOrAddModel({
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<CreateMediaReq> label="名称" name="title" rules={[{ required: true }]}>
+        <Form.Item<Media> label="名称" name="media_title" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item<CreateMediaReq> label="是否禁用" name="opt_status" rules={[{ required: true }]}>
+        <Form.Item<Media> label="是否启用" name="opt_status" rules={[{ required: true }]}>
           <Radio.Group onChange={handleOptStatusChange} value={form.getFieldValue('opt_status')}>
             <Radio value>是</Radio>
             <Radio value={false}>否</Radio>

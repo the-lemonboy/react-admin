@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio } from 'antd';
 import { useEffect } from 'react';
 
-import newsService, { CreateMediaReq } from '@/api/services/newsService';
+import newsService, { AddTheasaurusReq } from '@/api/services/newsService';
 
 export type EditorOrAddModelProps = {
   title: string;
@@ -29,12 +29,12 @@ function EditorOrAddModel({
 
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
-    mutationFn: async (params: CreateMediaReq) => {
-      const res = await newsService.CreateMedia(params);
+    mutationFn: async (params: AddTheasaurusReq) => {
+      const res = await newsService.AddTheasaurus(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['memberList']);
+      queryClient.invalidateQueries(['mediaAreaList']);
       onOk();
     },
     onError: (error) => {
@@ -46,7 +46,10 @@ function EditorOrAddModel({
     try {
       const values = await form.validateFields();
       if (addFlag) {
-        createMediaMutation.mutate(values);
+        createMediaMutation.mutate({
+          title: values.title,
+          opt_status: values.opt_status,
+        });
       } else {
         // handle update logic here
       }
@@ -68,10 +71,14 @@ function EditorOrAddModel({
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<CreateMediaReq> label="名称" name="title" rules={[{ required: true }]}>
+        <Form.Item<AddTheasaurusReq> label="名称" name="title" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item<CreateMediaReq> label="是否禁用" name="opt_status" rules={[{ required: true }]}>
+        <Form.Item<AddTheasaurusReq>
+          label="是否禁用"
+          name="opt_status"
+          rules={[{ required: true }]}
+        >
           <Radio.Group onChange={handleOptStatusChange} value={form.getFieldValue('opt_status')}>
             <Radio value>是</Radio>
             <Radio value={false}>否</Radio>
