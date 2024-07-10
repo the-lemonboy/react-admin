@@ -1,5 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { Card, Space, message, Switch, Button, TableProps, Form, Row, Col, Select } from 'antd';
+import {
+  Card,
+  Space,
+  message,
+  Switch,
+  Button,
+  TableProps,
+  Form,
+  Row,
+  Col,
+  Select,
+  Popconfirm,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -19,12 +31,12 @@ interface MediaTableType {
   opt_status: boolean;
 }
 type SearchFormFieldType = {};
-export default function CategoryTag() {
+export default function NewsCategoryTag() {
   const [messageApi, contextHolder] = message.useMessage();
-  // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
+  const [query, setQuery] = useState<{ area_id?: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['newsCategroyList'],
-    queryFn: () => newsService.GetCategoryList(),
+    queryKey: ['newsCategroyList', query],
+    queryFn: () => newsService.GetCategoryList(query),
   });
   // const [tableParams, setTableParams] = useState<TableParams>({
   //   pagination: {
@@ -78,8 +90,30 @@ export default function CategoryTag() {
         />
       ),
     },
+    {
+      title: '操作',
+      key: 'action',
+      align: 'center',
+      render: (_, record) => (
+        <div className="flex w-full justify-center text-gray">
+          <Button onClick={() => onAddChildTag(record)}>添加下级</Button>
+          <Button onClick={() => onEditTag(record, false)}>编辑</Button>
+          <Popconfirm
+            title="Delete the Website"
+            okText="Yes"
+            cancelText="No"
+            placement="left"
+            onConfirm={() => onDelTag(record)}
+          >
+            <Button>删除</Button>
+          </Popconfirm>
+        </div>
+      ),
+    },
   ];
-
+  const onAddChildTag = (record: NewsCategory) => {};
+  const onEditTag = (record: NewsCategory, addFlag: boolean) => {};
+  const onDelTag = (record: NewsCategory) => {};
   const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
     // 修改分发状态逻辑
     // 记得取反
@@ -95,8 +129,6 @@ export default function CategoryTag() {
         ...prev,
         show: false,
       }));
-      // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['mediaList']);
     },
     onCancel: () => {
       setEditorOrAddModelProps((prev) => ({
@@ -121,37 +153,36 @@ export default function CategoryTag() {
   const onSearchFormReset = () => {
     searchForm.resetFields();
   };
+  const [searchFormValues, setSearchFormValues] = useState<SearchFormFieldType>({});
+  const onSearchSubmit = async () => {
+    console.log(searchFormValues);
+    const values = await searchForm.validateFields();
+    console.log(values);
+    setQuery({ ...values });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
         <Card>
-          <Form form={searchForm}>
+          <Form form={searchForm} initialValues={searchFormValues}>
             <Row gutter={[16, 16]}>
               <Col span={24} lg={6}>
-                <Form.Item<Theasaurus> label="板块" name="area_key" className="!mb-0">
+                <Form.Item label="板块" name="area_id" className="!mb-0">
                   <Select>
-                    {theasaurusList?.data.map((item: Theasaurus) => (
-                      <Select.Option key={item.area_key} value={item.area_key}>
+                    {theasaurusList?.data.map((item: Theasaurus, index) => (
+                      <Select.Option key={index} value={item.id}>
                         {item.title}
                       </Select.Option>
                     ))}
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={24} lg={6}>
-                <Form.Item<SearchFormFieldType> label="Status" name="status" className="!mb-0">
-                  {/* <Select>
-                    <Select.Option value="enable" />
-                    <Select.Option value="disable" />
-                  </Select> */}
-                </Form.Item>
-              </Col>
-              <Col span={24} lg={12}>
+              <Col span={24} lg={18}>
                 <div className="flex justify-end">
-                  <Button onClick={onSearchFormReset}>Reset</Button>
-                  <Button type="primary" className="ml-4">
-                    Search
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
                   </Button>
                 </div>
               </Col>

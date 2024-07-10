@@ -820,7 +820,6 @@ function EditorTagModal({
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      console.log(wid, values);
       const params = {
         wid,
         cids: values.cids,

@@ -116,6 +116,7 @@
       },
       "media-management": "media",
       "theasaurus-tag": "Theasaurus",
+      "newscatagory-tag": "News Category",
       "category-tag": "Category",
       "member": "Member",
       "wechat":{
@@ -126,7 +127,8 @@
       "rssdao": {
         "index": "RssDAO",
         "consumer-card": "Consumer Card",
-        "member-level": "Member Level"
+        "member-level": "Member Level",
+        "user": "User Management"
       },
       "blog": "Blog",
       "components": "Components",

@@ -3,9 +3,14 @@ import { Card, Space, message, Switch } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import navService, { GetCouponListReq, ChangeCouponStatusReq } from '@/api/services/coupon';
-// import OrganizationChart from './organization-chart';
+import couponService, {
+  GetCouponListReq,
+  ChangeCouponStatusReq,
+} from '@/api/services/couponService';
 
+import AddInfoModel from './addInfoModel';
+
+// import OrganizationChart from './organization-chart';
 import { CouponTableType } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 // --------------------分页类型
@@ -18,7 +23,7 @@ export default function MemberLevelPage() {
   // -------------分页 table start
   const [query, setQuery] = useState<GetCouponListReq>({ limit: 10, page: 1 });
   const fetchCouponList = async (params: GetCouponListReq) => {
-    const res = await navService.GetCouponList(params);
+    const res = await couponService.GetCouponList(params);
     return res;
   };
   // 使用 useQuery 获取数据
@@ -57,7 +62,7 @@ export default function MemberLevelPage() {
   const queryClient = useQueryClient();
   const changeDistributedMutation = useMutation({
     mutationFn: async (params: ChangeCouponStatusReq) => {
-      const res = await navService.ChangeCouponStatus(params);
+      const res = await couponService.ChangeCouponStatus(params);
       return res.data;
     },
     onSuccess: () => {
@@ -69,12 +74,35 @@ export default function MemberLevelPage() {
       messageApi.error(err.message);
     },
   });
+  const [addInfoModelProps, setAddInfoModelProps] = useState({
+    title: '发放卡券',
+    show: false,
+    formValue: {},
+    onOk: () => {
+      setAddInfoModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setAddInfoModelProps((prev) => ({ ...prev, show: false }));
+    },
+  });
   const onChanheCouponStatus = (checked: boolean, record: CouponTableType) => {
-    changeDistributedMutation.mutate({
-      account: record.mobile_number,
-      c_no: record.c_no,
-      distributed: checked,
-    });
+    if (record.mobile_number && record.c_no) {
+      changeDistributedMutation.mutate({
+        account: record.mobile_number,
+        c_no: record.c_no,
+        distributed: checked,
+      });
+    } else {
+      setAddInfoModelProps((prev) => ({
+        ...prev,
+        show: true,
+        formValue: {
+          distributed: checked,
+          c_no: record.c_no,
+          account: record.mobile_number,
+        },
+      }));
+    }
   };
   // 这里可以加入更新状态的逻辑，例如调用 API 更新状态
   const columns: ColumnsType<CouponTableType> = [
@@ -129,6 +157,7 @@ export default function MemberLevelPage() {
             onChange={handleTableChange}
           />
         </Card>
+        <AddInfoModel {...addInfoModelProps} />
       </Space>
     </>
   );

@@ -113,6 +113,7 @@
         "consumer-card": "消费卡"
       },
         "theasaurus-tag": "词库分类",
+        "newscatagory-tag": "标签分类",
         "member": "会员管理",
         "category-tag": "标签分类",
         "wechat":{
@@ -123,7 +124,8 @@
         "rssdao": {
           "index": "RssDAO",
           "consumer-card": "消费卡",
-          "member-level": "会员等级"
+          "member-level": "会员等级",
+           "user": "用户管理"
         },
       "blog": "博客",
       "components": "组件",

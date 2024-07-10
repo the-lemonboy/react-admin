@@ -1,9 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Card, Form, Input, Modal, Space, message, Select, Radio, InputNumber } from 'antd';
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  Modal,
+  Space,
+  message,
+  Select,
+  Radio,
+  InputNumber,
+  Switch,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import navService, { GetMemberListReq, CouponCreateReq } from '@/api/services/member';
+import memberService, {
+  GetMemberListReq,
+  CouponCreateReq,
+  ChangeVipLevelStatusReq,
+} from '@/api/services/memberService';
 // import OrganizationChart from './organization-chart';
 
 import { MemberTable, ConsumerCard } from '#/entity';
@@ -42,10 +58,11 @@ const VipOption = [
 ];
 export default function MemberLevelPage() {
   const [messageApi, contextHolder] = message.useMessage();
+  const queryClient = useQueryClient();
   // -------------分页 table start
   const [query, setQuery] = useState<GetMemberListReq>({ limit: 10, page: 1 });
   const fetchWebsiteList = async (params: GetMemberListReq) => {
-    const res = await navService.MemberList(params);
+    const res = await memberService.MemberList(params);
     return res;
   };
   // 使用 useQuery 获取数据
@@ -106,6 +123,19 @@ export default function MemberLevelPage() {
     },
     { title: '支付渠道', dataIndex: 'pay_channel', key: 'pay_channel' },
     { title: '收益率', dataIndex: 'profit_percent', key: 'profit_percent' },
+    {
+      title: '状态',
+      dataIndex: 'opt_status',
+      key: 'opt_status',
+      render: (_, record) => (
+        <Switch
+          checkedChildren="启用"
+          unCheckedChildren="禁用"
+          defaultChecked={record.opt_status}
+          onChange={(checked) => onChangeMemberStatus(checked, record)}
+        />
+      ),
+    },
     { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
     {
       title: '操作',
@@ -113,7 +143,12 @@ export default function MemberLevelPage() {
       key: 'action',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button className="mr-2" onClick={() => onCreateCoupon(record)} type="primary">
+          <Button
+            disabled={!record.opt_status}
+            className="mr-2"
+            onClick={() => onCreateCoupon(record)}
+            type="primary"
+          >
             发卡
           </Button>
           <Button onClick={() => onEditVip(false, record)} type="default">
@@ -124,6 +159,34 @@ export default function MemberLevelPage() {
     },
   ];
   // -------------分页 table end
+  // ---------------修改会员状态
+  const changeMemberStatus = useMutation({
+    mutationFn: (params: ChangeVipLevelStatusReq) => {
+      const res = memberService.ChangeVipLevelStatus(params);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['memberList']);
+
+      messageApi.open({
+        type: 'success',
+        content: '状态修改成功',
+      });
+    },
+    onError: () => {
+      messageApi.open({
+        type: 'error',
+        content: '状态修改失败',
+      });
+    },
+  });
+
+  const onChangeMemberStatus = (checked: boolean, record: MemberTable) => {
+    changeMemberStatus.mutate({
+      id: record.id,
+      opt_status: checked,
+    });
+  };
   // ---------------分发coupon start
   // 初始化
   const [createCouponProps, setCreateCouponProps] = useState<ConsumerCard>({
@@ -271,7 +334,7 @@ function AddOrEditModel({ title, show, formValue, onOk, onCancel, addFlag }: Add
   //   const { data: VipInfo, isLoading: vipInfoLoading } = useQuery({
   //     queryKey: ['vip-level', formValue.id],
   //     queryFn: async () => {
-  //       const res = await navService.GetVipLevel(formValue.id);
+  //       const res = await memberService.GetVipLevel(formValue.id);
   //       return res;
   //     },
   //     enabled: !!formValue.id, // 确保 level_id 存在时才执行请求
@@ -281,7 +344,7 @@ function AddOrEditModel({ title, show, formValue, onOk, onCancel, addFlag }: Add
   const queryClient = useQueryClient();
   const addVipLevelMutation = useMutation({
     mutationFn: async (params: MemberTable) => {
-      const res = await navService.AddVipLevel(params);
+      const res = await memberService.AddVipLevel(params);
       return res.data;
     },
     onSuccess: () => {
@@ -296,7 +359,7 @@ function AddOrEditModel({ title, show, formValue, onOk, onCancel, addFlag }: Add
   const editVipLevelMutation = useMutation({
     mutationFn: async (params: { levelId: number; data: MemberTable }) => {
       const { levelId, data } = params;
-      const res = await navService.EditVipLevel(levelId, data);
+      const res = await memberService.EditVipLevel(levelId, data);
       return res.data;
     },
     onSuccess: () => {
@@ -417,7 +480,7 @@ function CreateCardModel({ title, show, formValue, onOk, onCancel }: CreateCardM
   const queryClient = useQueryClient();
   const createCounponMutation = useMutation({
     mutationFn: async (params: CouponCreateReq) => {
-      const res = await navService.CouponCreate(params);
+      const res = await memberService.CouponCreate(params);
       return res.data;
     },
     onSuccess: () => {

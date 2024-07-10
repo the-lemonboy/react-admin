@@ -92,7 +92,7 @@ EditorOrAddModelProps) {
       >
         <Form.Item<NewsCategory> label="所属板块" name="area_id">
           <Select>
-            {theasaurusList?.data.map((item: Theasaurus, index) => (
+            {theasaurusList?.data.map((item: Theasaurus, index: number) => (
               <Select.Option key={index} value={item.id}>
                 {item.title}
               </Select.Option>

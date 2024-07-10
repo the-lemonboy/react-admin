@@ -42,7 +42,7 @@ export interface MemberTable {
   description0: string; // 微信端描述
   id: number;
   kind: number;
-  opt_status: true;
+  opt_status: boolean;
   order_n: number;
   others: string;
   pay_channel: string;
@@ -50,6 +50,18 @@ export interface MemberTable {
   title: string;
   tweet_total_of_day: number;
   twtter_total: number;
+}
+export interface UserTable {
+  avatar: string;
+  created_time: string;
+  id: number;
+  mobile_number: string;
+  name: string;
+  suspended: boolean;
+  user_type: number;
+  vip_id: number;
+  web_site_id: string;
+  web_site_name: string;
 }
 export interface CouponTableType {
   id: number;

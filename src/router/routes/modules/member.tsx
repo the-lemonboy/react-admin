@@ -9,6 +9,7 @@ import { AppRouteObject } from '#/router';
 // Lazy load components
 const MemberLevelPage = lazy(() => import('@/pages/member/rssdao/member-level'));
 const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
+const UserPage = lazy(() => import('@/pages/member/rssdao/user'));
 
 const member: AppRouteObject = {
   order: 3,
@@ -45,6 +46,11 @@ const member: AppRouteObject = {
           path: 'consumer-card',
           element: <ConsumerCardPage />,
           meta: { label: 'sys.menu.rssdao.consumer-card', key: '/member/rssdao/consumer-card' },
+        },
+        {
+          path: 'user',
+          element: <UserPage />,
+          meta: { label: 'sys.menu.rssdao.user', key: '/member/rssdao/user' },
         },
       ],
     },
