@@ -105,7 +105,7 @@ export default function MediaManagement() {
           }
         >
           <Table
-            rowKey="media_key"
+            rowKey="id"
             size="small"
             columns={columns}
             dataSource={tableList?.data}

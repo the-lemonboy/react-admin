@@ -31,6 +31,14 @@ export interface ChangeMediaStatusReq {
   media_title: string;
   opt_status: boolean;
 }
+export interface UpdateNewsReq {
+  area_id: string;
+  c_id: string;
+  opt_status: boolean;
+  p_c_id: string;
+  title: string;
+  word_key: string;
+}
 export enum NewsType {
   AddMedia = '/api/nav/media/add',
   MediaList = '/api/nav/media/list',
@@ -43,6 +51,8 @@ export enum NewsType {
   GetTheasaurusList = '/api/nav/media_content/area/list',
   GetCategoryList = '/api/nav/media_content/category/list',
   AddCategory = '/api/nav/media_content/category/add',
+  UpdateCategory = '/api/nav/media_content/category/update',
+  // DelCateGory = ''
 }
 
 const AddMedia = (data: any) => apiClient.post<any>({ url: NewsType.AddMedia, data });
@@ -59,13 +69,20 @@ const AddTheasaurus = (data: AddTheasaurusReq) =>
   apiClient.post<any>({ url: NewsType.AddTheasaurus, data });
 const ChangeTheasaurusStatus = (data: AddTheasaurusReq) =>
   apiClient.post<any>({ url: NewsType.ChangeTheasaurusStatus, data });
+const DelCateGory = (category_id: any) =>
+  apiClient.get<any>({ url: `/api/nav/media_content/category/del/${category_id}` });
+const UpdateCategory = (data: UpdateNewsReq) =>
+  apiClient.post<any>({ url: NewsType.UpdateCategory, data });
 export default {
   AddMedia,
   GetMediaList,
   ChangeMediaStatus,
+  AddCategory,
   // CreateMedia,
   GetTheasaurusList,
   GetCategoryList,
   AddTheasaurus,
   ChangeTheasaurusStatus,
+  DelCateGory,
+  UpdateCategory,
 };

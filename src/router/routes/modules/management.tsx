@@ -11,7 +11,7 @@ const WebsiteManagementPage = lazy(() => import('@/pages/management/website-mana
 // const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
 // const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
 // const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
-
+const websiteCategoryTagPage = lazy(() => import('@/pages/management/category-tag'));
 const management: AppRouteObject = {
   order: 2,
   path: 'management',
@@ -38,38 +38,14 @@ const management: AppRouteObject = {
         key: '/management/website-management',
       },
     },
-    // {
-    //   path: 'member-level', // 修改路径为连字符命名法
-    //   element: <MemberLevelPage />,
-    //   meta: {
-    //     label: 'sys.menu.system.member-level',
-    //     key: '/management/system/member-level',
-    //   },
-    // },
-    // {
-    //   path: 'consumer-card', // 修改路径为连字符命名法
-    //   element: <ConsumerCardPage />,
-    //   meta: {
-    //     label: 'sys.menu.system.consumer-card',
-    //     key: '/management/system/consumer-card',
-    //   },
-    // },
-    // {
-    //   path: 'media-management', // 修改路径为连字符命名法
-    //   element: <MediaManagementPage />,
-    //   meta: {
-    //     label: 'sys.menu.media-management', // 修正meta标签
-    //     key: '/management/media-management',
-    //   },
-    // },
-    // {
-    //   path: 'thesaurus-tag', // 修改路径为连字符命名法，并修正为ThesaurusTagPage
-    //   element: <ThesaurusTagPage />,
-    //   meta: {
-    //     label: 'sys.menu.thesaurus-tag', // 修正meta标签
-    //     key: '/management/thesaurus-tag',
-    //   },
-    // },
+    {
+      path: 'website-category', // 修改路径为连字符命名法
+      element: <websiteCategoryTagPage />,
+      meta: {
+        label: 'sys.menu.system.website-management',
+        key: '/management/website-category',
+      },
+    },
   ],
 };
 

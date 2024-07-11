@@ -39,19 +39,6 @@ export default function NewsCategoryTag() {
       total: tableList?.count,
     },
   });
-
-  useEffect(() => {
-    if (tableList) {
-      setTableParams((prev) => ({
-        ...prev,
-        pagination: {
-          ...prev.pagination,
-          total: tableList?.count,
-        },
-      }));
-    }
-  }, [tableList]);
-
   const handleTableChange: TableProps<UserTable>['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 10;

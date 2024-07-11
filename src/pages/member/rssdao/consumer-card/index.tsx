@@ -31,6 +31,7 @@ export default function MemberLevelPage() {
     queryKey: ['couponList', query],
     queryFn: () => fetchCouponList(query),
   });
+  console.log(data,"this is dfata")
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -38,6 +39,10 @@ export default function MemberLevelPage() {
       total: data?.count,
     },
   });
+  // const [dataList, setData] = useState<CouponTableType[]>([]);
+  // useEffect(() => {
+  //   setData(data.data);
+  // }, [data]);
   useEffect(() => {
     if (data) {
       setTableParams((prev) => ({
@@ -85,7 +90,7 @@ export default function MemberLevelPage() {
       setAddInfoModelProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const onChanheCouponStatus = (checked: boolean, record: CouponTableType) => {
+  const onChanheCouponStatus = (checked: boolean, record: CouponTableType, e) => {
     if (record.mobile_number && record.c_no) {
       changeDistributedMutation.mutate({
         account: record.mobile_number,
@@ -129,7 +134,7 @@ export default function MemberLevelPage() {
           checkedChildren="已分发"
           unCheckedChildren="未分发"
           defaultChecked={record.distributed}
-          onChange={(checked) => onChanheCouponStatus(checked, record)}
+          onClick={(checked, e) => onChanheCouponStatus(checked, record, e)}
         />
       ),
     },

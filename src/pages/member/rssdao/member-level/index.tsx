@@ -70,6 +70,7 @@ export default function MemberLevelPage() {
     queryKey: ['memberList', query],
     queryFn: () => fetchWebsiteList(query),
   });
+  console.log(data)
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,

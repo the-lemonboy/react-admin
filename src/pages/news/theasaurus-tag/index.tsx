@@ -116,7 +116,7 @@ export default function ThesaurusTag() {
           }
         >
           <Table
-            rowKey="media_key"
+            rowKey="id"
             size="small"
             columns={columns}
             dataSource={tableList?.data}
