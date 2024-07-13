@@ -21,7 +21,7 @@ i18n
   .init({
     debug: true,
     lng: defaultLng, // localstorage -> i18nextLng: en_US
-    fallbackLng: LocalEnum.en_US,
+    fallbackLng: LocalEnum.zh_CN,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

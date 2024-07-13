@@ -101,6 +101,7 @@
       "workbench": "Workbench",
       "analysis": "Analysis",
       "management": "Management",
+      "news": "News",
       "user": {
         "index": "User",
         "profile": "Profile",
@@ -109,14 +110,14 @@
       "system": {
         "index": "System",
         "website-management": "Website Management",
-        "official-account": "Official Account",
-        "member-level": "Member Level",
-        "consumer-card": "Consumer Card"
+        "website-category": "Website Category"
         
       },
       "media-management": "media",
       "theasaurus-tag": "Theasaurus",
       "newscatagory-tag": "News Category",
+      "news-list": "News List",
+      "article-list": "Article List",
       "category-tag": "Category",
       "member": "Member",
       "wechat":{
@@ -142,18 +143,16 @@
       "chart": "Chart",
       "functions": "Functions",
       "clipboard": "Clipboard",
-      "menulevel": {
-        "index": "Menu Level",
-        "1a": "Menu Level 1a",
-        "1b": {
-          "index": "Menu Level 1b",
-          "2a": "Menu Level 2a",
-          "2b": {
-            "index": "Menu Level 2b",
-            "3a": "Menu Level 3a",
-            "3b": "Menu Level 3b"
-          }
-        }
+      "pilot-special": "pilot",
+      "knowledge-planet":{
+        "index": "Knowledge Planet",
+        "category-tag": "category",
+        "theasaurus-tag": "theasaurus"
+      },
+      "TG-community":{
+        "index": "TG Community",
+        "category-tag": "category",
+        "theasaurus-tag": "theasaurus"
       },
       "disabled": "Item Disabled",
       "label": "Item Label",

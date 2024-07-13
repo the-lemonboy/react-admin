@@ -9,6 +9,8 @@ import { AppRouteObject } from '#/router';
 const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
 const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
 const NewsCategoryTagPage = lazy(() => import('@/pages/news/category-tag'));
+const ArticleListPage = lazy(() => import('@/pages/news/article-list'));
+const NewsListPage = lazy(() => import('@/pages/news/news-list'));
 const news: AppRouteObject = {
   order: 4,
   path: 'news',
@@ -36,7 +38,7 @@ const news: AppRouteObject = {
       },
     },
     {
-      path: 'theasaurus-tag', // 修改路径为连字符命名法
+      path: 'theasaurus-tag',
       element: <ThesaurusTagPage />,
       meta: {
         label: 'sys.menu.theasaurus-tag',
@@ -44,11 +46,27 @@ const news: AppRouteObject = {
       },
     },
     {
-      path: 'newscategory', // 修改路径为连字符命名法
+      path: 'newscategory',
       element: <NewsCategoryTagPage />,
       meta: {
         label: 'sys.menu.newscatagory-tag',
         key: '/news/newscategory',
+      },
+    },
+    {
+      path: 'newslist',
+      element: <NewsListPage />,
+      meta: {
+        label: 'sys.menu.news-list',
+        key: '/news/newslist',
+      },
+    },
+    {
+      path: 'articlelist',
+      element: <ArticleListPage />,
+      meta: {
+        label: 'sys.menu.article-list',
+        key: '/news/articlelist',
       },
     },
   ],

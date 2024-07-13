@@ -9,6 +9,10 @@ export interface AddCateGoryReq {
   p_c_id: string;
   title: string;
 }
+export interface ChangeCategoryStatusReq {
+  cid: string;
+  opt: Boolean;
+}
 export interface DelCateGoryReq {
   cid: string;
 }
@@ -64,6 +68,7 @@ export enum NavType {
   AddWebsite = '/api/nav/website/add',
   DelWebSite = '/api/nav/website/del',
   EditorWebsite = '/api/nav/website/edit',
+  UpdateCategory = '/api/nav/category/edit',
 }
 const WebsiteList = (data: GetWebsiteListRes) =>
   apiClient.post<GetWebsiteListRes>({ url: NavType.WebsiteLits, data });
@@ -72,7 +77,7 @@ const AddCateGory = (data: AddCateGoryReq) =>
 const DelCateGory = (data: DelCateGoryReq) =>
   apiClient.post<any>({ url: NavType.DelCateGory, data });
 const CateGoryList = () => apiClient.get<any>({ url: NavType.CateGoryList });
-const OptCateGory = (data: AddCateGoryReq) =>
+const OptCateGory = (data: ChangeCategoryStatusReq) =>
   apiClient.post<any>({ url: NavType.OptCateGory, data });
 const AddTag = (data: AddTagReq) => apiClient.post<any>({ url: NavType.AddTag, data });
 const DelTag = (data: DelTagReq) => apiClient.post<any>({ url: NavType.DelTag, data });
@@ -84,6 +89,8 @@ const EditorWebsite = (data: AddWebsiteReq) =>
   apiClient.post<any>({ url: NavType.EditorWebsite, data });
 const GetWebsiteTagList = (data: GetWebsiteTagListReq) =>
   apiClient.get<any>({ url: NavType.GetTagList, params: data });
+const UpdateCategory = (data: AddCateGoryReq) =>
+  apiClient.post<any>({ url: NavType.UpdateCategory, data });
 export default {
   WebsiteList,
   AddCateGory,
@@ -97,5 +104,6 @@ export default {
   AddWebsite,
   DelWebSite,
   EditorWebsite,
+  UpdateCategory,
   // GetWebsiteList,
 };

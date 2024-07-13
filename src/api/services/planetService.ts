@@ -49,43 +49,43 @@ export interface SearchNewsListReq {
   limit: number;
   page: number;
 }
-export enum NewsType {
+export enum PlanetType {
   AddMedia = '/api/nav/media/add',
   MediaList = '/api/nav/media/list',
   ChangeMediaStatus = '/api/nav/media/opt_status',
   // CreateMedia = '/api/nav/media_content/area/update',
-  AddTheasaurus = '/api/nav/media_content/area/add',
-  ChangeTheasaurusStatus = '/api/nav/media_content/area/opt_status',
+  GetTheasaurusList = '/api/nav/navigator/area/list',
+  AddTheasaurus = '/api/nav/navigator/area/add',
+  ChangeTheasaurusStatus = '/api/nav/navigator/area/opt_status',
+  GetCategoryList = '/api/nav/navigator/category/list',
+  AddCategory = '/api/nav/navigator/category/add',
+  UpdateCategory = '/api/nav/navigator/category/update',
+  SearchNewsList = '/api/nav/media/flashnews/list',
   UpdateNews = '/api/news/update',
   DeleteNews = '/api/news/delete',
-  GetTheasaurusList = '/api/nav/media_content/area/list',
-  GetCategoryList = '/api/nav/media_content/category/list',
-  AddCategory = '/api/nav/media_content/category/add',
-  UpdateCategory = '/api/nav/media_content/category/update',
-  SearchNewsList = '/api/nav/media/flashnews/list',
   // DelCateGory = ''
 }
 
-const AddMedia = (data: any) => apiClient.post<any>({ url: NewsType.AddMedia, data });
-const GetMediaList = () => apiClient.get<any>({ url: NewsType.MediaList });
+const AddMedia = (data: any) => apiClient.post<any>({ url: PlanetType.AddMedia, data });
+const GetMediaList = () => apiClient.get<any>({ url: PlanetType.MediaList });
 const ChangeMediaStatus = (data: ChangeMediaStatusReq) =>
-  apiClient.post<any>({ url: NewsType.ChangeMediaStatus, data });
+  apiClient.post<any>({ url: PlanetType.ChangeMediaStatus, data });
 // const CreateMedia = (data: CreateMediaReq) =>
-//   apiClient.post<any>({ url: NewsType.CreateMedia, data });
-const GetTheasaurusList = () => apiClient.get<any>({ url: NewsType.GetTheasaurusList });
+//   apiClient.post<any>({ url: PlanetType.CreateMedia, data });
+const GetTheasaurusList = () => apiClient.get<any>({ url: PlanetType.GetTheasaurusList });
 const GetCategoryList = (data: GetCategoryListReq) =>
-  apiClient.post<any>({ url: NewsType.GetCategoryList, data });
-const AddCategory = (data: any) => apiClient.post<any>({ url: NewsType.AddCategory, data });
+  apiClient.post<any>({ url: PlanetType.GetCategoryList, data });
+const AddCategory = (data: any) => apiClient.post<any>({ url: PlanetType.AddCategory, data });
 const AddTheasaurus = (data: AddTheasaurusReq) =>
-  apiClient.post<any>({ url: NewsType.AddTheasaurus, data });
+  apiClient.post<any>({ url: PlanetType.AddTheasaurus, data });
 const ChangeTheasaurusStatus = (data: AddTheasaurusReq) =>
-  apiClient.post<any>({ url: NewsType.ChangeTheasaurusStatus, data });
+  apiClient.post<any>({ url: PlanetType.ChangeTheasaurusStatus, data });
 const DelCateGory = (category_id: any) =>
   apiClient.get<any>({ url: `/api/nav/media_content/category/del/${category_id}` });
 const UpdateCategory = (data: UpdateNewsReq) =>
-  apiClient.post<any>({ url: NewsType.UpdateCategory, data });
+  apiClient.post<any>({ url: PlanetType.UpdateCategory, data });
 const SearchNewsList = (data: SearchNewsListReq) =>
-  apiClient.post<any>({ url: NewsType.SearchNewsList, data });
+  apiClient.post<any>({ url: PlanetType.SearchNewsList, data });
 export default {
   AddMedia,
   GetMediaList,

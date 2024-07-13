@@ -98,6 +98,7 @@ export default function MemberLevelPage() {
         distributed: checked,
       });
     } else {
+      // record.distributed = checked;
       setAddInfoModelProps((prev) => ({
         ...prev,
         show: true,
@@ -129,11 +130,12 @@ export default function MemberLevelPage() {
       title: '分发状态',
       dataIndex: 'distributed',
       key: 'distributed',
-      render: (_: any, record: any) => (
+      render: (_: any, record: CouponTableType) => (
         <Switch
           checkedChildren="已分发"
           unCheckedChildren="未分发"
           defaultChecked={record.distributed}
+          checked={record.distributed}
           onClick={(checked, e) => onChanheCouponStatus(checked, record, e)}
         />
       ),

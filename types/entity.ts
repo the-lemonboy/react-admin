@@ -87,6 +87,22 @@ export interface ConsumerCard {
   vip_level_id: number;
   web_site_id: string;
 }
+export interface WebsiteCategory {
+  id: number;
+  c_id: string;
+  area_id: '';
+  word_key: string;
+  title: string;
+  UpperTitle: string;
+  level: number;
+  order_n?: number;
+  p_c_id: string;
+  p_c_path: string;
+  opt_status: boolean;
+  created_at?: string;
+  updated_at?: string;
+  del_tag: number;
+}
 export interface Theasaurus {
   id: string;
   title: string;

@@ -109,24 +109,36 @@
       "system": {
         "index": "系统",
         "website-management": "网站导航",
-        "member-level": "会员等级",
-        "consumer-card": "消费卡"
+        "website-category": "标签管理"
       },
-        "theasaurus-tag": "词库分类",
-        "newscatagory-tag": "标签分类",
-        "member": "会员管理",
-        "category-tag": "标签分类",
-        "wechat":{
-          "index": "微信公众号",
-          "official-account": "微信公众号",
-          "recharge-record": "充值记录"
-        },
-        "rssdao": {
-          "index": "RssDAO",
-          "consumer-card": "消费卡",
-          "member-level": "会员等级",
-           "user": "用户管理"
-        },
+      "theasaurus-tag": "词库分类",
+      "newscatagory-tag": "标签分类",
+      "news-list": "快讯列表",
+      "article-list": "文章列表",
+      "member": "会员管理",
+      "category-tag": "标签分类",
+      "wechat": {
+        "index": "微信公众号",
+        "official-account": "微信公众号",
+        "recharge-record": "充值记录"
+      },
+      "rssdao": {
+        "index": "RssDAO",
+        "consumer-card": "消费卡",
+        "member-level": "会员等级",
+        "user": "用户管理"
+      },
+      "pilot-special": "领航者专拦",
+      "knowledge-planet":{
+        "index": "知识星球",
+        "category-tag": "标签管理",
+        "theasaurus-tag": "词库管理"
+      },
+      "TG-community":{
+        "index": "TG社群",
+        "category-tag": "标签管理",
+        "theasaurus-tag": "词库管理"
+      },
       "blog": "博客",
       "components": "组件",
       "icon": "图标",

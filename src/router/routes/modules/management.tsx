@@ -11,7 +11,7 @@ const WebsiteManagementPage = lazy(() => import('@/pages/management/website-mana
 // const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'));
 // const MediaManagementPage = lazy(() => import('@/pages/news/media-management'));
 // const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
-const websiteCategoryTagPage = lazy(() => import('@/pages/management/category-tag'));
+const WebsiteCategoryTagPage = lazy(() => import('@/pages/management/category-tag'));
 const management: AppRouteObject = {
   order: 2,
   path: 'management',
@@ -40,9 +40,9 @@ const management: AppRouteObject = {
     },
     {
       path: 'website-category', // 修改路径为连字符命名法
-      element: <websiteCategoryTagPage />,
+      element: <WebsiteCategoryTagPage />,
       meta: {
-        label: 'sys.menu.system.website-management',
+        label: 'sys.menu.system.website-category',
         key: '/management/website-category',
       },
     },

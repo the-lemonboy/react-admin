@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio } from 'antd';
 import { useEffect } from 'react';
 
-import couponService, { ChangeCouponStatusReq } from '@/api/services/couponService';
+import newsService, { AddTheasaurusReq } from '@/api/services/newsService';
 
 export type EditorOrAddModelProps = {
   title: string;
@@ -10,40 +10,55 @@ export type EditorOrAddModelProps = {
   formValue: any;
   onOk: VoidFunction;
   onCancel: VoidFunction;
+  addFlag: boolean;
 };
 
-function AddInfoModel({ title, show, formValue, onOk, onCancel }: EditorOrAddModelProps) {
+function EditorOrAddModel({
+  title,
+  show,
+  formValue,
+  onOk,
+  onCancel,
+  addFlag,
+}: EditorOrAddModelProps) {
   const [form] = Form.useForm();
+
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
 
   const queryClient = useQueryClient();
-  const changeDistributedMutation = useMutation({
-    mutationFn: async (params: ChangeCouponStatusReq) => {
-      const res = await couponService.ChangeCouponStatus(params);
+  const createMediaMutation = useMutation({
+    mutationFn: async (params: AddTheasaurusReq) => {
+      const res = await newsService.AddTheasaurus(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['couponList']);
+      queryClient.invalidateQueries(['mediaAreaList']);
       onOk();
-      // message.success('修改成功');
     },
-    onError: (err: any) => {
-      // queryClient.invalidateQueries(['couponList']);
-      // messageApi.error(err.message);
-      onCancel();
+    onError: (error) => {
+      console.error('Error adding media:', error);
     },
   });
 
   const handleOk = async () => {
-    const values = await form.validateFields();
-    console.log(values);
-    changeDistributedMutation.mutate(values);
+    try {
+      const values = await form.validateFields();
+      if (addFlag) {
+        createMediaMutation.mutate({
+          title: values.title,
+          opt_status: values.opt_status,
+        });
+      } else {
+        // handle update logic here
+      }
+    } catch (error) {
+      console.error('Validation failed:', error);
+    }
   };
 
   const handleOptStatusChange = (e: any) => {
-    console.log('radio checked', e.target);
     form.setFieldsValue({ opt_status: e.target.value });
   };
 
@@ -56,19 +71,12 @@ function AddInfoModel({ title, show, formValue, onOk, onCancel }: EditorOrAddMod
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<ChangeCouponStatusReq> label="id" name="c_no" rules={[{ required: true }]}>
+        <Form.Item<AddTheasaurusReq> label="名称" name="title" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item<ChangeCouponStatusReq>
-          label="手机号"
-          name="account"
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item<ChangeCouponStatusReq>
-          label="是否分发"
-          name="distributed"
+        <Form.Item<AddTheasaurusReq>
+          label="是否禁用"
+          name="opt_status"
           rules={[{ required: true }]}
         >
           <Radio.Group onChange={handleOptStatusChange} value={form.getFieldValue('opt_status')}>
@@ -81,4 +89,4 @@ function AddInfoModel({ title, show, formValue, onOk, onCancel }: EditorOrAddMod
   );
 }
 
-export default AddInfoModel;
+export default EditorOrAddModel;
