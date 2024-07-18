@@ -132,12 +132,16 @@
       "knowledge-planet":{
         "index": "知识星球",
         "category-tag": "标签管理",
-        "theasaurus-tag": "词库管理"
+        "theasaurus-tag": "词库管理",
+        "knowledge-zone": "领航专栏",
+        "knowledge-content": "专栏内容"
       },
       "TG-community":{
         "index": "TG社群",
         "category-tag": "标签管理",
-        "theasaurus-tag": "词库管理"
+        "theasaurus-tag": "词库管理",
+        "tg-grounp": "TG群组",
+        "tg-grounp-content": "群组内容"
       },
       "blog": "博客",
       "components": "组件",

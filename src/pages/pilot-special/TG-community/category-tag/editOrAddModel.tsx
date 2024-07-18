@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio, Select } from 'antd';
 import { useEffect } from 'react';
 
-import newsService from '@/api/services/newsService';
+import TGService, { AddAreaReq } from '@/api/services/TGService';
 
 import { NewsCategory, Theasaurus } from '#/entity';
 
@@ -33,8 +33,8 @@ EditorOrAddModelProps) {
 
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
-    mutationFn: async (params: NewsCategory) => {
-      const res = await newsService.AddCategory(params);
+    mutationFn: async (params: AddAreaReq) => {
+      const res = await TGService.AddCateGory(params);
       return res.data;
     },
     onSuccess: () => {
@@ -46,12 +46,12 @@ EditorOrAddModelProps) {
     },
   });
   const updateCategoryMutation = useMutation({
-    mutationFn: async (params: NewsCategory) => {
-      const res = await newsService.UpdateCategory(params);
+    mutationFn: async (params: AddAreaReq) => {
+      const res = await TGService.UpdateCategory(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['TGCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -76,8 +76,8 @@ EditorOrAddModelProps) {
     form.setFieldsValue({ opt_status: e.target.value });
   };
   const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryKey: ['TGAreaList'],
+    queryFn: () => TGService.GetAreaList(),
   });
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>

@@ -15,13 +15,13 @@ export interface AddMediaReq {
   opt_status: true;
 }
 export interface AddTheasaurusReq {
-  area_id?: string;
+  area_id: string;
   title: string;
   id?: string;
   opt_status: boolean;
 }
 export interface GetCategoryListReq {
-  area_id?: string;
+  area_id: string;
 }
 export interface AddCategoryReq {
   opt_status: boolean;
@@ -49,6 +49,21 @@ export interface SearchNewsListReq {
   limit: number;
   page: number;
 }
+export interface GetChildCategoryListReq {
+  area_id: string;
+  level: number;
+  p_c_id: string;
+}
+export interface GetNewsListReq {
+  area_id: string;
+  content: string;
+  date_range: string;
+  exchange_media: string;
+  last_level_cats: string;
+  level_cat: string;
+  limit: number;
+  page: number;
+}
 export enum NewsType {
   AddMedia = '/api/nav/media/add',
   MediaList = '/api/nav/media/list',
@@ -62,7 +77,10 @@ export enum NewsType {
   GetCategoryList = '/api/nav/media_content/category/list',
   AddCategory = '/api/nav/media_content/category/add',
   UpdateCategory = '/api/nav/media_content/category/update',
-  SearchNewsList = '/api/nav/media/flashnews/list',
+  SearchNewsList = '/api/nav/media/flashnews/search',
+  GetChildCateGory = '/api/nav/media_content/level/category/list',
+  NewsList = '/api/nav/media/flashnews/list',
+  ArticelList = '/api/nav/media/news/search',
   // DelCateGory = ''
 }
 
@@ -86,6 +104,15 @@ const UpdateCategory = (data: UpdateNewsReq) =>
   apiClient.post<any>({ url: NewsType.UpdateCategory, data });
 const SearchNewsList = (data: SearchNewsListReq) =>
   apiClient.post<any>({ url: NewsType.SearchNewsList, data });
+const GetChildCateGory = (data: GetChildCategoryListReq) =>
+  apiClient.post<any>({ url: NewsType.GetChildCateGory, data });
+const GetNewsList = (data: GetNewsListReq) => apiClient.post<any>({ url: NewsType.NewsList, data });
+const GetArticelList = (data: GetNewsListReq) =>
+  apiClient.post<any>({ url: NewsType.ArticelList, data });
+const GetNewDetail = (flash_key: string) =>
+  apiClient.get<any>({ url: `/api/nav/media/flashnews/${flash_key}` });
+const GetArticelDetail = (news_key: string) =>
+  apiClient.get<any>({ url: `/api/nav/media/news/${news_key}` });
 export default {
   AddMedia,
   GetMediaList,
@@ -99,4 +126,9 @@ export default {
   DelCateGory,
   UpdateCategory,
   SearchNewsList,
+  GetChildCateGory,
+  GetNewsList,
+  GetArticelList,
+  GetNewDetail,
+  GetArticelDetail,
 };

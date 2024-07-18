@@ -36,10 +36,10 @@ export default defineConfig({
     host: true,
     port: 3001,
     proxy: {
-      '/api': {
+      '/dev': {
         target: 'http://43.128.104.20:8095',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/dev/, ''),
         // https://github.com/vitejs/vite/discussions/8998#discussioncomment-4408695
         // agent: new Agent({ keepAlive: true, keepAliveMsecs: 20000 }),
       },

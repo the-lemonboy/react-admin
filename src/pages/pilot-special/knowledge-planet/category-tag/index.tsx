@@ -36,12 +36,12 @@ export default function NewsCategoryTag() {
   const [messageApi, contextHolder] = message.useMessage();
   const [query, setQuery] = useState<{ area_id?: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['newsCategroyList', query],
+    queryKey: ['PlanetCategroyList', query],
     queryFn: () => planetService.GetCategoryList(query),
   });
   const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
-    queryFn: () => planetService.GetTheasaurusList(),
+    queryKey: ['planetAreaList'],
+    queryFn: () => planetService.GetAreaList(),
   });
   const columns: ColumnsType<NewsCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
@@ -117,7 +117,7 @@ export default function NewsCategoryTag() {
   const delCategoryTag = useMutation({
     mutationFn: planetService.DelCateGory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['PlanetCategroyList']);
       messageApi.success('删除成功');
     },
     onError: () => {
@@ -168,9 +168,7 @@ export default function NewsCategoryTag() {
   };
   const [searchFormValues, setSearchFormValues] = useState<SearchFormFieldType>({});
   const onSearchSubmit = async () => {
-    console.log(searchFormValues);
     const values = await searchForm.validateFields();
-    console.log(values);
     setQuery({ ...values });
   };
   return (

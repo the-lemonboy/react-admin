@@ -103,6 +103,27 @@ export interface WebsiteCategory {
   updated_at?: string;
   del_tag: number;
 }
+// export interface NewsCategory {
+//   area_id: string;
+//   c_id: string;
+//   has_next: boolean;
+//   id: number;
+//   level: number;
+//   p_c_id: string;
+//   p_c_path: string;
+//   title: string;
+//   upper_title: string;
+//   word_key: string;
+// }
+export interface NewsSearchList {
+  created_time: string;
+  exchange_media: string;
+  exchange_media_title: string;
+  id: string;
+  news_key: string;
+  pub_time: string;
+  title: string;
+}
 export interface Theasaurus {
   id: string;
   title: string;

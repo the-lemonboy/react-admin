@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio } from 'antd';
 import { useEffect } from 'react';
 
-import newsService, { AddTheasaurusReq } from '@/api/services/newsService';
+import TGService, { AddAreaReq } from '@/api/services/TGService';
 
 export type EditorOrAddModelProps = {
   title: string;
@@ -29,12 +29,12 @@ function EditorOrAddModel({
 
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
-    mutationFn: async (params: AddTheasaurusReq) => {
-      const res = await newsService.AddTheasaurus(params);
+    mutationFn: async (params: AddAreaReq) => {
+      const res = await TGService.AddArea(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['mediaAreaList']);
+      queryClient.invalidateQueries(['TGAreaList']);
       onOk();
     },
     onError: (error) => {

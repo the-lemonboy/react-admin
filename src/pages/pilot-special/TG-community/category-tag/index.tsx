@@ -15,7 +15,7 @@ import {
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import newsService from '@/api/services/newsService';
+import TGService from '@/api/services/TGService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
@@ -36,12 +36,12 @@ export default function NewsCategoryTag() {
   const [messageApi, contextHolder] = message.useMessage();
   const [query, setQuery] = useState<{ area_id?: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['newsCategroyList', query],
-    queryFn: () => newsService.GetCategoryList(query),
+    queryKey: ['TGCategroyList', query],
+    queryFn: () => TGService.GetCategoryList(query),
   });
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryFn: () => TGService.AddArea(),
   });
   const columns: ColumnsType<NewsCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
@@ -115,9 +115,9 @@ export default function NewsCategoryTag() {
   };
   // 删除
   const delCategoryTag = useMutation({
-    mutationFn: newsService.DelCateGory,
+    mutationFn: TGService.DelCateGory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['TGCategroyList']);
       messageApi.success('删除成功');
     },
     onError: () => {

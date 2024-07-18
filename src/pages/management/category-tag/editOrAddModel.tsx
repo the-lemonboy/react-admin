@@ -3,7 +3,7 @@ import { Form, Modal, Input, Radio, TreeSelect } from 'antd';
 import { useEffect, useState } from 'react';
 
 import navService, { AddCateGoryReq } from '@/api/services/navService';
-import { TreeToArray } from '@/utils/tree';
+import { ArrayToTree } from '@/utils/tree';
 
 type OptionType = {
   a_id: string;
@@ -50,7 +50,7 @@ function EditorOrAddModel({
 
   useEffect(() => {
     if (categoryList && categoryList.length > 0) {
-      const tempTreeCategory = TreeToArray(categoryList).map((item) => ({
+      const tempTreeCategory = ArrayToTree(categoryList).map((item) => ({
         title: item.title,
         value: item.c_id,
         key: item.c_id,

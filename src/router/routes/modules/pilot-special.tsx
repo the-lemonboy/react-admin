@@ -12,8 +12,14 @@ const PlanetCategotyPage = lazy(
 const PlanetTheasaurusPage = lazy(
   () => import('@/pages/pilot-special/knowledge-planet/theasaurus-tag'),
 );
+const KnowledgeZonePage = lazy(() => import('@/pages/pilot-special/knowledge-planet/knowledge-zone'));
+const KnowledgeContentPage = lazy(
+  () => import('@/pages/pilot-special/knowledge-planet/knowledge-content'),
+)
 const TGCategoryPage = lazy(() => import('@/pages/pilot-special/TG-community/category-tag'));
 const TGTheasaurusPage = lazy(() => import('@/pages/pilot-special/TG-community/theasaurus-tag'));
+const TGGrounpPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp'));
+const TGGrounpContentPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp-content'));
 const pilotSpecial: AppRouteObject = {
   order: 5,
   path: 'pilot-special',
@@ -46,6 +52,22 @@ const pilotSpecial: AppRouteObject = {
           },
         },
         {
+          path: 'knowledge-zone',
+          element: <KnowledgeZonePage />,
+          meta: {
+            label: 'sys.menu.knowledge-planet.knowledge-zone',
+            key: '/pilot-special/knowledge-planet/knowledge-zone',
+          },
+        },
+        {
+          path: 'knowledge-content',
+          element: <KnowledgeContentPage />,
+          meta: {
+            label: 'sys.menu.knowledge-planet.knowledge-content',
+            key: '/pilot-special/knowledge-planet/knowledge-content',
+          },
+        },
+        {
           path: 'theasaurus-tag',
           element: <PlanetTheasaurusPage />,
           meta: {
@@ -74,6 +96,22 @@ const pilotSpecial: AppRouteObject = {
           meta: {
             label: 'sys.menu.TG-community.theasaurus-tag',
             key: '/pilot-special/TG-community/theasaurus-tag',
+          },
+        },
+        {
+          path: 'tg-grounp',
+          element: <TGGrounpPage />,
+          meta: {
+            label: 'sys.menu.TG-community.tg-grounp',
+            key: '/pilot-special/TG-community/tg-grounp',
+          },
+        },
+        {
+          path: 'tg-grounp-content',
+          element: <TGGrounpContentPage />,
+          meta: {
+            label: 'sys.menu.TG-community.tg-grounp-content',
+            key: '/pilot-special/TG-community/tg-grounp-content',
           },
         },
       ],

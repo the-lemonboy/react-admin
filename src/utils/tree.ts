@@ -13,33 +13,21 @@ export function flattenTrees<T extends { children?: T[] }>(trees: T[] = []): T[]
 }
 
 // 数组转树
-// export function TreeToArray<T extends { children?: T[] }>(arr: T[] = []): T[] {
+// export function ArrayToTree<T extends { children?: T[] }>(arr: T[] = []): T[] {
 //   return chain((node) => {
-//     const children = node.children ? TreeToArray(node.children) : [];
+//     const children = node.children ? ArrayToTree(node.children) : [];
 //     return [...children, node];
 //   }, arr);
 // }
 
-export type TreeOptionType = {
-  a_id: string;
-  c_id: string;
-  created_at: string;
-  del_tag: number;
-  id: number;
-  level: number;
-  opt_status: number;
-  order_n: number;
-  p_c_path: string;
-  p_c_id: string;
-  updated_at: string;
-  title: string;
-  word_key: string;
-  upper_title: string;
-  children?: TreeOptionType[];
+export type TreeNode<T> = T & {
+  children?: TreeNode<T>[];
 };
 
-export function TreeToArray(items: TreeOptionType[]): TreeOptionType[] {
-  const itemMap: { [key: string]: TreeOptionType } = {};
+export function ArrayToTree<T extends { c_id: string; p_c_id?: string }>(
+  items: TreeNode<T>[],
+): TreeNode<T>[] {
+  const itemMap: { [key: string]: TreeNode<T> } = {};
 
   // 将数组转换成以 c_id 为键的映射
   items.forEach((item) => {
@@ -47,7 +35,7 @@ export function TreeToArray(items: TreeOptionType[]): TreeOptionType[] {
     itemMap[item.c_id] = item;
   });
 
-  const tree: TreeOptionType[] = [];
+  const tree: TreeNode<T>[] = [];
 
   // 构建树
   items.forEach((item) => {

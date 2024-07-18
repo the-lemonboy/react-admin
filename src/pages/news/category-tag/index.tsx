@@ -1,25 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Card,
-  Space,
-  message,
-  Switch,
-  Button,
-  TableProps,
-  Form,
-  Row,
-  Col,
-  Select,
-  Popconfirm,
-} from 'antd';
-import Table, { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { Card, Space, message, Switch, Button, Form, Row, Col, Select, Popconfirm } from 'antd';
+import Table from 'antd/es/table';
+import { useEffect, useState } from 'react';
 
 import newsService from '@/api/services/newsService';
+import { ArrayToTree } from '@/utils/tree';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { Theasaurus, NewsCategory } from '#/entity';
+import type { TableColumnsType, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
@@ -30,20 +20,29 @@ interface MediaTableType {
   media_title: string;
   opt_status: boolean;
 }
+interface TreeCategory extends NewsCategory {
+  children?: TreeCategory[];
+}
 type SearchFormFieldType = {};
 export default function NewsCategoryTag() {
   const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
-  const [query, setQuery] = useState<{ area_id?: string }>({ area_id: '' });
+  const [query, setQuery] = useState<{ area_id: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['newsCategroyList', query],
     queryFn: () => newsService.GetCategoryList(query),
   });
+  const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
+  useEffect(() => {
+    if (tableList) {
+      setTreeCategory(ArrayToTree(tableList.data) as TreeCategory[]);
+    }
+  }, [tableList]);
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
     queryFn: () => newsService.GetTheasaurusList(),
   });
-  const columns: ColumnsType<NewsCategory> = [
+  const columns: TableColumnsType<NewsCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
     { title: '名称', dataIndex: 'title', key: 'title' },
     { title: '名称(大写)', dataIndex: 'upper_title', key: 'upper_title' },
@@ -214,7 +213,7 @@ export default function NewsCategoryTag() {
             rowKey="c_id"
             size="small"
             columns={columns}
-            dataSource={tableList?.data}
+            dataSource={treeCategory}
             loading={isLoadingList}
           />
         </Card>

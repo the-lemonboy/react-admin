@@ -26,7 +26,7 @@ import navService, {
 import { Iconify, IconButton } from '@/components/icon';
 import { UploadAvatar } from '@/components/upload/upload-avatar';
 // import OrganizationChart from './organization-chart';
-import { TreeToArray } from '@/utils/tree';
+import { ArrayToTree } from '@/utils/tree';
 
 import { Website } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
@@ -343,7 +343,6 @@ export default function NavWebsitePage() {
     mutationFn: navService.DelCateGory,
     onSuccess: () => {
       // queryClient.invalidateQueries(['websiteList']);
-      console.log('删除成功');
       messageApi.open({
         type: 'success',
         content: '标签删除成功',
@@ -665,7 +664,7 @@ function AddCateGoryModel({
     if (checked) formValue.opt_status = 1;
     else formValue.opt_status = 0;
   };
-  const treeCategory = TreeToArray(categoryList).map((item) => ({
+  const treeCategory = ArrayToTree(categoryList).map((item) => ({
     title: item.title,
     value: item.c_id,
     key: item.c_id,
@@ -774,7 +773,7 @@ function EditorTagModal({
   const [tagValues, setAddTagValues] = useState<string[]>([]);
   const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
 
-  const treeCategory = TreeToArray(categoryList).map((item) => ({
+  const treeCategory = ArrayToTree(categoryList).map((item) => ({
     title: item.title,
     value: item.c_id,
     key: item.c_id,

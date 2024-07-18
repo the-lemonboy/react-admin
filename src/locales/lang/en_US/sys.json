@@ -147,12 +147,16 @@
       "knowledge-planet":{
         "index": "Knowledge Planet",
         "category-tag": "category",
-        "theasaurus-tag": "theasaurus"
+        "theasaurus-tag": "theasaurus",
+         "knowledge-zone": "zone",
+        "knowledge-content": "content"
       },
       "TG-community":{
         "index": "TG Community",
         "category-tag": "category",
-        "theasaurus-tag": "theasaurus"
+        "theasaurus-tag": "theasaurus",
+        "tg-grounp": "grounp",
+        "tg-grounp-content": "content"
       },
       "disabled": "Item Disabled",
       "label": "Item Label",

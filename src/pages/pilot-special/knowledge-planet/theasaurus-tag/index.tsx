@@ -3,7 +3,7 @@ import { Card, Space, message, Switch, Button, TableProps } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import newsService, { AddTheasaurusReq } from '@/api/services/newsService';
+import planetService, { AddAreaReq,ChangeAreaStatusReq } from '@/api/services/planetService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
@@ -20,8 +20,8 @@ export default function ThesaurusTag() {
   const [messageApi, contextHolder] = message.useMessage();
   // const [query, setQuery] = useState<{ limit: number; page: number }>({ limit: 10, page: 1 });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['mediaAreaList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryKey: ['planetAreaList'],
+    queryFn: () => planetService.GetAreaList(),
   });
   const columns: ColumnsType<MediaTableType> = [
     { title: 'ID', dataIndex: 'area_key', key: 'area_key' },
@@ -51,8 +51,8 @@ export default function ThesaurusTag() {
     },
   ];
   const changeTheasaurusStatus = useMutation({
-    mutationFn: (params: AddTheasaurusReq) => {
-      const res = newsService.ChangeTheasaurusStatus(params);
+    mutationFn: (params: ChangeAreaStatusReq) => {
+      const res = planetService.ChangeAreaStatus(params);
       return res;
     },
     onSuccess: () => {
