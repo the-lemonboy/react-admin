@@ -3,11 +3,11 @@ import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import newsService, { GetChildCategoryListReq, GetNewsListReq } from '@/api/services/newsService';
+import planetService, { SearchKnowledgeReq } from '@/api/services/planetService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { NewsSearchList, NewsCategory } from '#/entity';
+import { PlanetKnowledge } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
@@ -17,19 +17,28 @@ interface TableParams {
 export default function NewsList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [articelQuery, setArticelQuery] = useState<GetNewsListReq>({
+  const [articelQuery, setArticelQuery] = useState<SearchKnowledgeReq>({
     limit: 10,
     page: 1,
-    area_id: '',
-    content: '',
-    date_range: '',
-    exchange_media: '',
-    last_level_cats: '',
-    level_cat: '',
+    // area_id: '',
+    // author: '',
+    // comment_count_max: null,
+    // comment_count_min: null,
+    // content: '',
+    // context_annotation: '',
+    // created_at_range: '',
+    // group_id: '',
+    // keyword: [],
+    // like_count_max: null,
+    // like_count_min: null,
+    // p_c_path: '',
+    // read_count_max: null,
+    // read_count_min: null,
+    // topic_id: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['articelList', articelQuery],
-    queryFn: () => newsService.GetArticelList(articelQuery),
+    queryFn: () => planetService.SearchKnowledgeReq(articelQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -61,32 +70,36 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: NewsSearchList) => {
+  const onEditTag = (record: PlanetKnowledge) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
       newId: record.news_key,
     }));
   };
-  const columns: ColumnsType<NewsSearchList> = [
+  const columns: ColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '名称', dataIndex: 'title', key: 'title', width: 300 },
+    { title: '发布者', dataIndex: 'name', key: 'name' },
     {
-      title: '新闻平台',
-      dataIndex: 'exchange_media_title',
-      key: 'exchange_media_title',
-      width: 150,
+      title: '标题',
+      dataIndex: 'title',
+      key: 'title',
     },
-    { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200 },
-    { title: '接受时间', dataIndex: 'created_time', key: 'created_time', width: 200 },
+    { title: '内容', dataIndex: 'content_text', key: 'content_text' },
+    { title: '阅读次数', dataIndex: 'reading_count', key: 'reading_count' },
+    { title: '评论数', dataIndex: 'comments_count', key: 'comments_count' },
+    { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
+    { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
+    { title: '社群名称', dataIndex: 'group.name', key: 'group.name' },
+    { title: '发布时间', dataIndex: 'create_time', key: 'create_time' },
     {
-      title: '状态',
+      title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary" onClick={() => onEditTag(record)}>
-            详细
+            编辑
           </Button>
         </div>
       ),
@@ -154,12 +167,12 @@ export default function NewsList() {
   });
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
   useEffect(() => {
     const fetchCategoryData = async () => {
-      const data = await newsService.GetChildCateGory(categoryQuery);
+      const data = await planetService.GetChildCateGory(categoryQuery);
       if (categoryQuery.level === 0) {
         setLevelOneList(data);
       } else if (categoryQuery.level === 1) {

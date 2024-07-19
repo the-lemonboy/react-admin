@@ -30,6 +30,25 @@ export interface UpdateCategoryReq {
   title: string;
   word_key: string;
 }
+export interface SearchKnowledgeReq {
+  area_id?: string;
+  author?: string;
+  comment_count_max?: number;
+  comment_count_min?: number;
+  content?: string;
+  context_annotation?: string;
+  created_at_range?: string;
+  group_id?: string;
+  keyword?: string[];
+  like_count_max?: number;
+  like_count_min?: number;
+  limit: number;
+  p_c_path?: string;
+  page: number;
+  read_count_max?: number;
+  read_count_min?: number;
+  topic_id?: string;
+}
 export enum PlanetType {
   AddArea = '/api/nav/navigator/area/add',
   GetAreaList = '/api/nav/navigator/area/list',
@@ -38,6 +57,7 @@ export enum PlanetType {
   AddCateGory = '/api/nav/navigator/category/add',
   GetCategoryList = '/api/nav/navigator/category/list',
   UpdateCategory = '/api/nav/navigator/category/update',
+  SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -61,5 +81,5 @@ export default {
   AddCateGory,
   DelCateGory,
   GetCategoryList,
-  UpdateCategory
+  UpdateCategory,
 };
