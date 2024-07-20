@@ -13,9 +13,10 @@ import {
   Popconfirm,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import TGService from '@/api/services/TGService';
+import { ArrayToTree } from '@/utils/tree';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
@@ -30,6 +31,9 @@ interface MediaTableType {
   media_title: string;
   opt_status: boolean;
 }
+interface TreeCategory extends NewsCategory {
+  children?: TreeCategory[];
+}
 type SearchFormFieldType = {};
 export default function NewsCategoryTag() {
   const queryClient = useQueryClient();
@@ -39,6 +43,12 @@ export default function NewsCategoryTag() {
     queryKey: ['TGCategroyList', query],
     queryFn: () => TGService.GetCategoryList(query),
   });
+  const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
+  useEffect(() => {
+    if (tableList) {
+      setTreeCategory(ArrayToTree(tableList?.data) as TreeCategory[]);
+    }
+  }, [tableList]);
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
     queryFn: () => TGService.AddArea(),
@@ -94,6 +104,9 @@ export default function NewsCategoryTag() {
       formValue: {
         p_c_id: record.c_id,
         upper_title: record.title,
+        area_id: record.area_id,
+        opt_status: false,
+        title: '',
       },
       addFlag,
     }));
@@ -157,7 +170,13 @@ export default function NewsCategoryTag() {
       ...prev,
       title: '新增一级标签',
       show: true,
-      formValue: {},
+      formValue: {
+        area_id: '',
+        p_c_id: -1,
+        upper_title: '',
+        title: '',
+        opt_status: true,
+      },
       addFlag,
     }));
   };
@@ -214,7 +233,7 @@ export default function NewsCategoryTag() {
             rowKey="c_id"
             size="small"
             columns={columns}
-            dataSource={tableList?.data}
+            dataSource={treeCategory}
             loading={isLoadingList}
           />
         </Card>

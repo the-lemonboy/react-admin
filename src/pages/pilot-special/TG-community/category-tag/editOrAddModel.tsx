@@ -38,7 +38,7 @@ EditorOrAddModelProps) {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['TGCategroyList']);
       onOk();
     },
     onError: (error) => {

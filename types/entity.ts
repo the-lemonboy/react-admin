@@ -148,6 +148,62 @@ export interface NewsCategory {
   created_at: string;
   updated_at: string;
 }
+export interface PlanetKnowledge {
+  annotation: string;
+  anonymous: boolean;
+  answer: string;
+  answered: boolean;
+  comments: string;
+  comments_count: number;
+  content_search_text: string;
+  content_text: string;
+  create_time: string;
+  digested: boolean;
+  expired: boolean;
+  group: {
+    background_url: string;
+    category: [
+      {
+        area_id: string;
+        c_path: string;
+        current: number;
+        p_c_path: string;
+        p_c_path_title: string;
+      },
+      {
+        area_id: string;
+        c_path: string;
+        current: number;
+        p_c_path: string;
+        p_c_path_title: string;
+      },
+    ];
+    group_id: number;
+    name: string;
+    type: string;
+  };
+  id: string;
+  images: string;
+  index_time: string;
+  likes_count: number;
+  modify_time: string;
+  owner: {
+    alias: string;
+    avatar_url: string;
+    description: string;
+    location: string;
+    name: string;
+    user_id: number;
+  };
+  readers_count: number;
+  reading_count: number;
+  rewards_count: number;
+  silenced: false;
+  sticky: false;
+  title: string;
+  topic_id: number;
+  type: string;
+}
 export interface Media {
   id?: number;
   media_key?: string;

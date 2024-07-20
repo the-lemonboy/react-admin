@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio, Select } from 'antd';
 import { useEffect } from 'react';
 
-import planetService from '@/api/services/planetService';
+import planetService, { AddCategoryReq } from '@/api/services/planetService';
 
 import { NewsCategory, Theasaurus } from '#/entity';
 
@@ -33,12 +33,12 @@ EditorOrAddModelProps) {
 
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
-    mutationFn: async (params: NewsCategory) => {
-      const res = await planetService.AddCategory(params);
+    mutationFn: async (params: AddCategoryReq) => {
+      const res = await planetService.AddCateGory(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['PlanetCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -46,12 +46,12 @@ EditorOrAddModelProps) {
     },
   });
   const updateCategoryMutation = useMutation({
-    mutationFn: async (params: NewsCategory) => {
+    mutationFn: async (params: AddCategoryReq) => {
       const res = await planetService.UpdateCategory(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['newsCategroyList']);
+      queryClient.invalidateQueries(['PlanetCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -77,7 +77,7 @@ EditorOrAddModelProps) {
   };
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => planetService.GetTheasaurusList(),
+    queryFn: () => planetService.GetAreaList(),
   });
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
