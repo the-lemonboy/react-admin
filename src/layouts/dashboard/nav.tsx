@@ -6,9 +6,9 @@ import { m } from 'framer-motion';
 import { CSSProperties, useEffect, useState } from 'react';
 import { useLocation, useMatches, useNavigate } from 'react-router-dom';
 
+import Logo from '@/assets/images/logo.jpg';
 import MotionContainer from '@/components/animate/motion-container';
 import { varSlide } from '@/components/animate/variants';
-import Logo from '@/components/logo';
 import Scrollbar from '@/components/scrollbar';
 import { useRouteToMenuFn, usePermissionRoutes, useFlattenedRoutes } from '@/router/hooks';
 import { menuFilter } from '@/router/utils';
@@ -127,11 +127,12 @@ export default function Nav(props: Props) {
     >
       <div className="relative flex h-20 items-center justify-center py-4">
         <MotionContainer className="flex items-center">
-          <Logo />
+          {/* <Logo /> */}
+          <img src={Logo} alt="logo" className="h-8	 w-8 rounded" />
           {themeLayout !== ThemeLayout.Mini && (
             <m.div variants={slideInLeft}>
               <span className="ml-2 text-xl font-bold" style={{ color: colorPrimary }}>
-              RSSDAO Admin
+                RSSDAO Admin
               </span>
             </m.div>
           )}

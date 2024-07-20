@@ -39,7 +39,6 @@ function EditorOrAddModel({
   onOk,
   onCancel,
   addFlag,
-  categoryList,
 }: EditorOrAddModelProps) {
   const [form] = Form.useForm();
   const [treeCategory, setTreeCategory] = useState<any>([]);

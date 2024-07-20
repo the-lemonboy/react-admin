@@ -2,15 +2,13 @@ import { Drawer } from 'antd';
 import Color from 'color';
 import { CSSProperties, useState } from 'react';
 
-import { IconButton, Iconify, SvgIcon } from '@/components/icon';
+import { IconButton, SvgIcon } from '@/components/icon';
 import LocalePicker from '@/components/locale-picker';
-import Logo from '@/components/logo';
 import { useSettings } from '@/store/settingStore';
 import { useResponsive, useThemeToken } from '@/theme/hooks';
 
 import AccountDropdown from '../_common/account-dropdown';
 import BreadCrumb from '../_common/bread-crumb';
-import NoticeButton from '../_common/notice';
 import SearchBar from '../_common/search-bar';
 import SettingButton from '../_common/setting-button';
 
@@ -66,7 +64,7 @@ export default function Header({ className = '', offsetTop = false }: Props) {
                 <SvgIcon icon="ic-menu" size="24" />
               </IconButton>
             ) : (
-              <Logo />
+              <SvgIcon icon="ic-logo" className="ant-menu-item-icon" size="24" />
             )}
             <div className="ml-4 hidden md:block">{breadCrumb ? <BreadCrumb /> : null}</div>
           </div>
@@ -74,13 +72,13 @@ export default function Header({ className = '', offsetTop = false }: Props) {
           <div className="flex">
             <SearchBar />
             <LocalePicker />
-            <IconButton onClick={() => window.open('https://github.com/d3george/slash-admin')}>
+            {/* <IconButton onClick={() => window.open('https://github.com/d3george/slash-admin')}>
               <Iconify icon="mdi:github" size={24} />
-            </IconButton>
-            <IconButton onClick={() => window.open('https://discord.gg/fXemAXVNDa')}>
+            </IconButton> */}
+            {/* <IconButton onClick={() => window.open('https://discord.gg/fXemAXVNDa')}>
               <Iconify icon="carbon:logo-discord" size={24} />
-            </IconButton>
-            <NoticeButton />
+            </IconButton> */}
+            {/* <NoticeButton /> */}
             <SettingButton />
             <AccountDropdown />
           </div>

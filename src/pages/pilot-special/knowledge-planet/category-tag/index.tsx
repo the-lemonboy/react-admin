@@ -109,6 +109,8 @@ export default function NewsCategoryTag() {
         title: '',
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   const onEditTag = (record: NewsCategory, addFlag: boolean) => {
@@ -124,6 +126,8 @@ export default function NewsCategoryTag() {
         opt_status: record.opt_status,
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 删除
@@ -168,7 +172,7 @@ export default function NewsCategoryTag() {
   const onCreateNewsCategory = (addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
-      title: '新增一级标签',
+      title: '新增标签',
       show: true,
       formValue: {
         area_id: '',
@@ -178,6 +182,8 @@ export default function NewsCategoryTag() {
         opt_status: true,
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 搜索

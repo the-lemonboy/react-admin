@@ -21,7 +21,7 @@ interface MediaTableType {
   opt_status: boolean;
 }
 interface TreeCategory extends NewsCategory {
-  children?: TreeCategory[];
+  children: TreeCategory[];
 }
 type SearchFormFieldType = {};
 export default function NewsCategoryTag() {
@@ -88,13 +88,14 @@ export default function NewsCategoryTag() {
   const onAddChildTag = (record: NewsCategory, addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
-      title: '新增标签',
+      title: '新增下级标签',
       show: true,
       formValue: {
         p_c_id: record.c_id,
         upper_title: record.title,
       },
       addFlag,
+      addChildFlag: true,
     }));
   };
   const onEditTag = (record: NewsCategory, addFlag: boolean) => {
@@ -110,6 +111,8 @@ export default function NewsCategoryTag() {
         opt_status: record.opt_status,
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 删除
@@ -154,10 +157,12 @@ export default function NewsCategoryTag() {
   const onCreateNewsCategory = (addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
-      title: '新增一级标签',
+      title: '新增标签',
       show: true,
       formValue: {},
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 搜索

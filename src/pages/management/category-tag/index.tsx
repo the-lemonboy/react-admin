@@ -1,14 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Switch, Button, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import navService, { DelCateGoryReq, ChangeCategoryStatusReq } from '@/api/services/navService';
+import { ArrayToTree } from '@/utils/tree';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { WebsiteCategory } from '#/entity';
+import { WebsiteCategory, NewsCategory } from '#/entity';
 
+interface TreeCategory extends NewsCategory {
+  children?: TreeCategory[];
+}
 type SearchFormFieldType = {};
 export default function WebsiteCategoryTag() {
   const queryClient = useQueryClient();
@@ -24,6 +28,12 @@ export default function WebsiteCategoryTag() {
   //     setOptionsDataList(res);
   //   });
   // }, []);
+  const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
+  useEffect(() => {
+    if (tableList) {
+      setTreeCategory(ArrayToTree(tableList) as TreeCategory[]);
+    }
+  }, [tableList]);
   console.log(tableList, 'optionsDataList');
   const columns: ColumnsType<WebsiteCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
@@ -156,7 +166,11 @@ export default function WebsiteCategoryTag() {
       ...prev,
       title: '新增标签',
       show: true,
-      formValue: {},
+      formValue: {
+        p_c_id: -1,
+        opt_status: '',
+        title: '',
+      },
       addFlag,
       categoryList: tableList,
     }));
@@ -214,7 +228,7 @@ export default function WebsiteCategoryTag() {
             rowKey="c_id"
             size="small"
             columns={columns}
-            dataSource={tableList}
+            dataSource={treeCategory}
             loading={isLoadingList}
           />
         </Card>

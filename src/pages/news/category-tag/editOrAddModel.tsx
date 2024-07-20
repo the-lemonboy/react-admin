@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { Form, Modal, Input, Radio, Select } from 'antd';
+import { Form, Modal, Input, Radio, Select, TreeSelect } from 'antd';
 import { useEffect } from 'react';
 
 import newsService from '@/api/services/newsService';
@@ -13,9 +13,27 @@ export type EditorOrAddModelProps = {
   onOk: VoidFunction;
   onCancel: VoidFunction;
   addFlag: boolean;
-  // categoryList: Array<CategoryType>;
+  treeCategory: NewsCategory; // 后面改
+  addChildFlag: boolean;
 };
-
+interface TreeNode<T> {
+  children?: TreeNode<T>[];
+}
+interface TreeCategory extends NewsCategory {
+  children?: TreeCategory[];
+}
+interface NewTreeNode {
+  title: string;
+  value: string;
+  key: string;
+  children?: NewTreeNode[];
+}
+interface DefaultOptionType {
+  title: string;
+  value: string;
+  key: string;
+  children?: DefaultOptionType[];
+}
 function EditorOrAddModel({
   title,
   show,
@@ -23,10 +41,11 @@ function EditorOrAddModel({
   onOk,
   onCancel,
   addFlag,
+  treeCategory,
+  addChildFlag,
 }: // categoryList,
 EditorOrAddModelProps) {
   const [form] = Form.useForm();
-
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
@@ -79,6 +98,25 @@ EditorOrAddModelProps) {
     queryKey: ['theasaurusList'],
     queryFn: () => newsService.GetTheasaurusList(),
   });
+  // tree
+  const SelectParent = (newValue: string[]) => {
+    form.setFieldsValue({ p_c_id: newValue });
+  };
+  const transformTree = (tree: TreeCategory[]): NewTreeNode[] => {
+    return tree?.map((item) => {
+      const newNode: NewTreeNode = {
+        title: item.title,
+        value: item.c_id,
+        key: item.c_id,
+      };
+      if (item.children && item.children.length > 0) {
+        newNode.children = transformTree(item.children);
+      }
+      return newNode;
+    });
+  };
+  const newTree: DefaultOptionType[] = transformTree(treeCategory);
+  console.log(newTree);
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -98,10 +136,24 @@ EditorOrAddModelProps) {
           </Select>
         </Form.Item>
         <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
-          <Input />
+          <Input disabled />
         </Form.Item>
-        <Form.Item<NewsCategory> label="上级名称" name="upper_title" rules={[{ required: true }]}>
-          <Input />
+        <Form.Item<NewsCategory> label="上级名称" name="upper_title" required>
+          {addChildFlag ? (
+            <Input disabled />
+          ) : (
+            <TreeSelect
+              showSearch
+              style={{ width: '100%' }}
+              value={formValue.p_c_id}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              placeholder="Please select"
+              allowClear
+              treeDefaultExpandAll
+              onChange={SelectParent}
+              treeData={newTree}
+            />
+          )}
         </Form.Item>
         <Form.Item<NewsCategory> label="标题" name="title" rules={[{ required: true }]}>
           <Input />
