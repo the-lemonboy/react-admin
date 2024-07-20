@@ -137,9 +137,6 @@ EditorOrAddModelProps) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
-          <Input disabled />
-        </Form.Item>
         <Form.Item<NewsCategory> label="上级名称" name="upper_title" rules={[{ required: true }]}>
           {addChildFlag ? (
             <Input disabled />
@@ -156,6 +153,9 @@ EditorOrAddModelProps) {
               treeData={newTree}
             />
           )}
+        </Form.Item>
+        <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
+          <Input />
         </Form.Item>
         <Form.Item<NewsCategory> label="标题" name="title" rules={[{ required: true }]}>
           <Input />

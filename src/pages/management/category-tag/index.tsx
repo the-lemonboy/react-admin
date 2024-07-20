@@ -87,6 +87,7 @@ export default function WebsiteCategoryTag() {
         upper_title: record.title,
       },
       addFlag,
+      treeCategory,
     }));
   };
   const onEditTag = (record: WebsiteCategory, addFlag: boolean) => {
@@ -100,6 +101,7 @@ export default function WebsiteCategoryTag() {
         opt_status: record.opt_status,
       },
       addFlag,
+      treeCategory,
     }));
   };
   // 删除
@@ -172,7 +174,7 @@ export default function WebsiteCategoryTag() {
         title: '',
       },
       addFlag,
-      categoryList: tableList,
+      categoryList: treeCategory,
     }));
   };
   // 搜索

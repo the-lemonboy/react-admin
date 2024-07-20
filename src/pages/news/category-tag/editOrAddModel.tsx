@@ -116,7 +116,6 @@ EditorOrAddModelProps) {
     });
   };
   const newTree: DefaultOptionType[] = transformTree(treeCategory);
-  console.log(newTree);
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -135,9 +134,6 @@ EditorOrAddModelProps) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
-          <Input disabled />
-        </Form.Item>
         <Form.Item<NewsCategory> label="上级名称" name="upper_title" required>
           {addChildFlag ? (
             <Input disabled />
@@ -154,6 +150,9 @@ EditorOrAddModelProps) {
               treeData={newTree}
             />
           )}
+        </Form.Item>
+        <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
+          <Input disabled />
         </Form.Item>
         <Form.Item<NewsCategory> label="标题" name="title" rules={[{ required: true }]}>
           <Input />

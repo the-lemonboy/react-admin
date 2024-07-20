@@ -51,7 +51,7 @@ export default function NewsCategoryTag() {
   }, [tableList]);
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => TGService.AddArea(),
+    queryFn: () => TGService.GetAreaList(),
   });
   const columns: ColumnsType<NewsCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
@@ -99,7 +99,7 @@ export default function NewsCategoryTag() {
   const onAddChildTag = (record: NewsCategory, addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
-      title: '新增标签',
+      title: '新增下级标签',
       show: true,
       formValue: {
         p_c_id: record.c_id,
@@ -109,6 +109,8 @@ export default function NewsCategoryTag() {
         title: '',
       },
       addFlag,
+      treeCategory,
+      addChildFlag: true,
     }));
   };
   const onEditTag = (record: NewsCategory, addFlag: boolean) => {
@@ -124,6 +126,8 @@ export default function NewsCategoryTag() {
         opt_status: record.opt_status,
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 删除
@@ -168,7 +172,7 @@ export default function NewsCategoryTag() {
   const onCreateNewsCategory = (addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
-      title: '新增一级标签',
+      title: '新增标签',
       show: true,
       formValue: {
         area_id: '',
@@ -178,6 +182,8 @@ export default function NewsCategoryTag() {
         opt_status: true,
       },
       addFlag,
+      treeCategory,
+      addChildFlag: false,
     }));
   };
   // 搜索

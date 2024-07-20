@@ -3,7 +3,6 @@ import { Form, Modal, Input, Radio, TreeSelect } from 'antd';
 import { useEffect, useState } from 'react';
 
 import navService, { AddCateGoryReq } from '@/api/services/navService';
-import { ArrayToTree } from '@/utils/tree';
 
 type OptionType = {
   a_id: string;
@@ -29,7 +28,7 @@ export type EditorOrAddModelProps = {
   onOk: VoidFunction;
   onCancel: VoidFunction;
   addFlag: boolean;
-  categoryList: Array<OptionType>;
+  treeCategory: Array<OptionType>;
 };
 
 function EditorOrAddModel({
@@ -39,31 +38,14 @@ function EditorOrAddModel({
   onOk,
   onCancel,
   addFlag,
+  treeCategory,
 }: EditorOrAddModelProps) {
   const [form] = Form.useForm();
-  const [treeCategory, setTreeCategory] = useState<any>([]);
+  // const [treeCategory, setTreeCategory] = useState<any>([]);
 
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-
-  useEffect(() => {
-    if (categoryList && categoryList.length > 0) {
-      const tempTreeCategory = ArrayToTree(categoryList).map((item) => ({
-        title: item.title,
-        value: item.c_id,
-        key: item.c_id,
-        children: item.children
-          ? item.children.map((child) => ({
-              title: child.title,
-              value: child.c_id,
-              key: child.c_id,
-            }))
-          : [],
-      }));
-      setTreeCategory(tempTreeCategory);
-    }
-  }, [categoryList]);
 
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
@@ -109,7 +91,24 @@ function EditorOrAddModel({
   const onStatusChange = (e: any) => {
     form.setFieldsValue({ opt_status: e.target.value ? 1 : 0 });
   };
-
+  // tree
+  const SelectParent = (newValue: string[]) => {
+    form.setFieldsValue({ p_c_id: newValue });
+  };
+  const transformTree = (tree: TreeCategory[]): NewTreeNode[] => {
+    return tree?.map((item) => {
+      const newNode: NewTreeNode = {
+        title: item.title,
+        value: item.c_id,
+        key: item.c_id,
+      };
+      if (item.children && item.children.length > 0) {
+        newNode.children = transformTree(item.children);
+      }
+      return newNode;
+    });
+  };
+  const newTree: DefaultOptionType[] = transformTree(treeCategory);
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -129,7 +128,7 @@ function EditorOrAddModel({
             allowClear
             treeDefaultExpandAll
             onChange={(value) => form.setFieldsValue({ p_c_id: value })}
-            treeData={treeCategory}
+            treeData={newTree}
           />
         </Form.Item>
         <Form.Item<AddCateGoryReq> label="标题" name="title" rules={[{ required: true }]}>
