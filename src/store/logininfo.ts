@@ -7,7 +7,7 @@ const res = {
       'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/427.jpg',
     createdAt: '2025-05-13T19:45:01.709Z',
     updatedAt: '2024-06-26T20:00:03.626Z',
-    password: 'demo1234',
+    password: '123456',
     role: {
       id: '4281707933534332',
       name: 'Admin',

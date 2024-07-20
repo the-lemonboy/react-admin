@@ -23,7 +23,6 @@ export function flattenTrees<T extends { children?: T[] }>(trees: T[] = []): T[]
 export type TreeNode<T> = T & {
   children?: TreeNode<T>[];
 };
-
 export function ArrayToTree<T extends { c_id: string; p_c_id?: string }>(
   items: TreeNode<T>[],
 ): TreeNode<T>[] {
