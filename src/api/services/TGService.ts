@@ -30,6 +30,10 @@ export interface UpdateCategoryReq {
   title: string;
   word_key: string;
 }
+export interface ChangeCategoryStatusReq {
+  c_id: string;
+  opt_status: boolean;
+}
 export enum TGType {
   AddArea = '/api/nav/navigator/tg/area/add',
   GetAreaList = '/api/nav/navigator/tg/area/list',
@@ -38,6 +42,7 @@ export enum TGType {
   AddCateGory = '/api/nav/navigator/tg/category/add',
   GetCategoryList = '/api/nav/navigator/tg/category/list',
   UpdateCategory = '/api/nav/navigator/tg/category/update',
+  ChangeCategoryStatus = '/api/nav/navigator/tg/category/opt_status',
 }
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data });
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
@@ -52,6 +57,7 @@ const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: TGType.GetCategoryList, data });
 const UpdateCategory = (data: UpdateCategoryReq) =>
   apiClient.post({ url: TGType.UpdateCategory, data });
+const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) => apiClient.post({ url: TGType.ChangeCategoryStatus, data });
 export default {
   AddArea,
   GetAreaList,
@@ -62,4 +68,5 @@ export default {
   DelCateGory,
   GetCategoryList,
   UpdateCategory,
+  ChangeCategoryStatus,
 };

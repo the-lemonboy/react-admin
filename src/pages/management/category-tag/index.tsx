@@ -111,7 +111,7 @@ export default function WebsiteCategoryTag() {
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['websiteCategroyList']);
+      queryClient.invalidateQueries(['WebsiteCategroyList']);
       messageApi.success('删除成功');
     },
     onError: () => {
@@ -119,7 +119,7 @@ export default function WebsiteCategoryTag() {
     },
   });
   const onDelTag = (record: WebsiteCategory) => {
-    delCategoryTag.mutate(record.c_id);
+    delCategoryTag.mutate({ cid: record.c_id });
   };
   const changeCategoryStatus = useMutation({
     mutationFn: async (params: ChangeCategoryStatusReq) => {
@@ -174,7 +174,7 @@ export default function WebsiteCategoryTag() {
         title: '',
       },
       addFlag,
-      categoryList: treeCategory,
+      treeCategory,
     }));
   };
   // 搜索

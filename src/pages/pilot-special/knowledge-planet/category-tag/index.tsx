@@ -20,13 +20,13 @@ import { ArrayToTree } from '@/utils/tree';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { Theasaurus, NewsCategory } from '#/entity';
+import { Theasaurus, PlanetCategory } from '#/entity';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
-interface TreeCategory extends NewsCategory {
+interface TreeCategory extends PlanetCategory {
   children?: TreeCategory[];
 }
 interface MediaTableType {
@@ -53,7 +53,7 @@ export default function NewsCategoryTag() {
     queryKey: ['planetAreaList'],
     queryFn: () => planetService.GetAreaList(),
   });
-  const columns: ColumnsType<NewsCategory> = [
+  const columns: ColumnsType<PlanetCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
     { title: '名称', dataIndex: 'title', key: 'title' },
     { title: '名称(大写)', dataIndex: 'upper_title', key: 'upper_title' },
@@ -67,7 +67,7 @@ export default function NewsCategoryTag() {
           checkedChildren="开放"
           unCheckedChildren="禁用"
           defaultChecked={!record.opt_status}
-          onChange={(checked) => onChangeMediaStatus(checked, record)}
+          onChange={(checked) => onChangeStatus(checked, record)}
         />
       ),
     },
@@ -96,7 +96,7 @@ export default function NewsCategoryTag() {
       ),
     },
   ];
-  const onAddChildTag = (record: NewsCategory, addFlag: boolean) => {
+  const onAddChildTag = (record: PlanetCategory, addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       title: '新增标签',
@@ -113,7 +113,7 @@ export default function NewsCategoryTag() {
       addChildFlag: false,
     }));
   };
-  const onEditTag = (record: NewsCategory, addFlag: boolean) => {
+  const onEditTag = (record: PlanetCategory, addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       title: '编辑标签',
@@ -141,13 +141,25 @@ export default function NewsCategoryTag() {
       messageApi.error('删除失败');
     },
   });
-  const onDelTag = (record: NewsCategory) => {
+  const onDelTag = (record: PlanetCategory) => {
     delCategoryTag.mutate(record.c_id);
   };
-  const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
+  const changeCategoryStatus = useMutation({
+    mutationFn: planetService.ChangeCategoryStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['PlanetCategroyList']);
+      messageApi.success('修改成功');
+    },
+    onError: () => {
+      messageApi.error('修改失败');
+    },
+  });
+  const onChangeStatus = (checked: boolean, record: PlanetCategory) => {
     // 修改分发状态逻辑
-    // 记得取反
-    console.log('Media status changed:', checked, record);
+    changeCategoryStatus.mutate({
+      c_id: record.c_id,
+      opt_status: !checked,
+    });
   };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({

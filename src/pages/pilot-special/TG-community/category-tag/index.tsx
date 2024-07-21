@@ -144,10 +144,22 @@ export default function NewsCategoryTag() {
   const onDelTag = (record: NewsCategory) => {
     delCategoryTag.mutate(record.c_id);
   };
-  const onChangeMediaStatus = (checked: boolean, record: MediaTableType) => {
+  const changeCategoryTag = useMutation({
+    mutationFn: TGService.ChangeCategoryStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['TGCategroyList']);
+      messageApi.success('修改成功');
+    },
+    onError: () => {
+      messageApi.error('修改失败');
+    },
+  });
+  const onChangeMediaStatus = (checked: boolean, record: NewsCategory) => {
     // 修改分发状态逻辑
-    // 记得取反
-    console.log('Media status changed:', checked, record);
+    changeCategoryTag.mutate({
+      c_id: record.c_id,
+      opt_status: !checked,
+    });
   };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({

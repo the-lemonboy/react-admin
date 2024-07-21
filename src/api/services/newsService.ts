@@ -1,3 +1,4 @@
+import { ap } from 'ramda';
 import apiClient from '../apiClient';
 
 export interface GetMediaListReq {
@@ -64,6 +65,10 @@ export interface GetNewsListReq {
   limit: number;
   page: number;
 }
+export interface ChangeCategoryStatusReq {
+  c_id: string;
+  opt_status: boolean;
+}
 export enum NewsType {
   AddMedia = '/api/nav/media/add',
   MediaList = '/api/nav/media/list',
@@ -81,6 +86,7 @@ export enum NewsType {
   GetChildCateGory = '/api/nav/media_content/level/category/list',
   NewsList = '/api/nav/media/flashnews/list',
   ArticelList = '/api/nav/media/news/search',
+  ChangeCategoryStatus = '/api/nav/media_content/category/opt_status'
   // DelCateGory = ''
 }
 
@@ -113,6 +119,7 @@ const GetNewDetail = (flash_key: string) =>
   apiClient.get<any>({ url: `/api/nav/media/flashnews/${flash_key}` });
 const GetArticelDetail = (news_key: string) =>
   apiClient.get<any>({ url: `/api/nav/media/news/${news_key}` });
+const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) => apiClient.post<any>({ url: NewsType.ChangeCategoryStatus, data });
 export default {
   AddMedia,
   GetMediaList,
@@ -131,4 +138,5 @@ export default {
   GetArticelList,
   GetNewDetail,
   GetArticelDetail,
+  ChangeCategoryStatus
 };

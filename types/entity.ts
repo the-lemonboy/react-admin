@@ -148,6 +148,21 @@ export interface NewsCategory {
   created_at: string;
   updated_at: string;
 }
+export interface PlanetCategory {
+  c_id: string;
+  area_id: string;
+  area_title: string;
+  word_key: string;
+  title: string;
+  upper_title: string;
+  level: number;
+  order_n: number;
+  p_c_id: number;
+  p_c_path: string;
+  opt_status: boolean;
+  created_at: string;
+  updated_at: string;
+}
 export interface PlanetKnowledge {
   annotation: string;
   anonymous: boolean;

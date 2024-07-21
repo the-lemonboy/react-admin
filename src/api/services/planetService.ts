@@ -49,12 +49,17 @@ export interface SearchKnowledgeReq {
   read_count_min?: number;
   topic_id?: string;
 }
+export interface ChangeCategoryStatusReq {
+  c_id: string;
+  opt_status: boolean;
+}
 export enum PlanetType {
   AddArea = '/api/nav/navigator/area/add',
   GetAreaList = '/api/nav/navigator/area/list',
   ChangeAreaStatus = '/api/nav/navigator/area/opt_status',
   UpDateArea = '/api/nav/navigator/area/update',
   AddCateGory = '/api/nav/navigator/category/add',
+  ChangeCategoryStatus = '/api/nav/navigator/category/opt_status',
   GetCategoryList = '/api/nav/navigator/category/list',
   UpdateCategory = '/api/nav/navigator/category/update',
   SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
@@ -67,6 +72,8 @@ const ChangeAreaStatus = (data: ChangeAreaStatusReq) =>
 const UpDateArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.UpDateArea, data });
 const GetArea = (id: string) => apiClient.get({ url: `/api/nav/navigator/area/${id}` });
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: PlanetType.AddCateGory, data });
+const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
+  apiClient.post({ url: PlanetType.ChangeCategoryStatus, data });
 const DelCateGory = (id: string) => apiClient.get({ url: `/api/nav/navigator/category/del/${id}` });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: PlanetType.GetCategoryList, data });
@@ -82,4 +89,5 @@ export default {
   DelCateGory,
   GetCategoryList,
   UpdateCategory,
+  ChangeCategoryStatus,
 };

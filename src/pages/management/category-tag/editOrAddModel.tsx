@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Form, Modal, Input, Radio, TreeSelect } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import navService, { AddCateGoryReq } from '@/api/services/navService';
 
@@ -54,7 +54,7 @@ function EditorOrAddModel({
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['websiteCategroyList']);
+      queryClient.invalidateQueries(['WebsiteCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -67,7 +67,7 @@ function EditorOrAddModel({
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['websiteCategroyList']);
+      queryClient.invalidateQueries(['WebsiteCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -89,7 +89,8 @@ function EditorOrAddModel({
   };
 
   const onStatusChange = (e: any) => {
-    form.setFieldsValue({ opt_status: e.target.value ? 1 : 0 });
+    console.log('radio checked', e.target.value);
+    form.setFieldsValue({ opt_status: !!e.target.value });
   };
   // tree
   const SelectParent = (newValue: string[]) => {
@@ -109,6 +110,7 @@ function EditorOrAddModel({
     });
   };
   const newTree: DefaultOptionType[] = transformTree(treeCategory);
+  console.log(newTree, treeCategory);
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -136,8 +138,8 @@ function EditorOrAddModel({
         </Form.Item>
         <Form.Item<AddCateGoryReq> label="是否禁用" name="opt_status" rules={[{ required: true }]}>
           <Radio.Group onChange={onStatusChange} value={form.getFieldValue('opt_status')}>
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
+            <Radio value>是</Radio>
+            <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
       </Form>
