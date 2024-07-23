@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import newsService, { AddMediaReq } from '@/api/services/newsService';
 import { ArrayToTree } from '@/utils/tree';
 
-import { NewsCategory } from '#/entity';
+import { NewsCategory, PlanetKnowledge } from '#/entity';
 import type { TableColumnsType } from 'antd';
 
 interface TreeCategory extends NewsCategory {
@@ -17,9 +17,10 @@ export type EditorOrAddModelProps = {
   onOk: VoidFunction;
   onCancel: VoidFunction;
   newId: string;
+  tableValue: PlanetKnowledge;
 };
 
-function EditorOrAddModel({ title, show, onOk, onCancel, newId }: EditorOrAddModelProps) {
+function EditorOrAddModel({ title, show, onOk, onCancel, newId, tableValue }: EditorOrAddModelProps) {
   const [queryNewsCategory, setQueryNewsCategory] = useState<{ area_id: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingCategoryList } = useQuery({
     queryKey: ['newsCategroyList', queryNewsCategory],
@@ -44,8 +45,11 @@ function EditorOrAddModel({ title, show, onOk, onCancel, newId }: EditorOrAddMod
     },
     enabled: !!newId, // 当 newId 存在时启用查询
   });
-  
-  console.log(detailArticle);
+
+  const { data: categoryList } = useQuery({
+    queryKey: ['categoryList'],
+    queryFn: () => newsService.GetCategoryList({ area_id: form }),
+  });
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
     mutationFn: async (params: AddMediaReq) => {

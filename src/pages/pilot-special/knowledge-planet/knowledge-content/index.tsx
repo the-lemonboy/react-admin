@@ -20,25 +20,25 @@ export default function NewsList() {
   const [articelQuery, setArticelQuery] = useState<SearchKnowledgeReq>({
     limit: 10,
     page: 1,
-    // area_id: '',
-    // author: '',
-    // comment_count_max: null,
-    // comment_count_min: null,
-    // content: '',
-    // context_annotation: '',
-    // created_at_range: '',
-    // group_id: '',
-    // keyword: [],
-    // like_count_max: null,
-    // like_count_min: null,
-    // p_c_path: '',
-    // read_count_max: null,
-    // read_count_min: null,
-    // topic_id: '',
+    area_id: '',
+    author: '',
+    comment_count_max: -1,
+    comment_count_min: -1,
+    content: '',
+    context_annotation: '',
+    created_at_range: '',
+    group_id: '',
+    keyword: [],
+    like_count_max: -1,
+    like_count_min: -1,
+    p_c_path: '',
+    read_count_max: -1,
+    read_count_min: -1,
+    topic_id: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['articelList', articelQuery],
-    queryFn: () => planetService.SearchKnowledgeReq(articelQuery),
+    queryFn: () => planetService.SearchKnowledge(articelQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -79,14 +79,53 @@ export default function NewsList() {
   };
   const columns: ColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '发布者', dataIndex: 'name', key: 'name' },
+    {
+      title: '发布者',
+      dataIndex: 'owner',
+      key: 'owner.name',
+      render: (owner) => owner?.name,
+    },
     {
       title: '标题',
-      dataIndex: 'title',
-      key: 'title',
+      dataIndex: 'content_search_text',
+      key: 'content_search_text',
+      width: 200,
+      render: (_, record) => (
+        <div
+          className="ellipsis"
+          style={{
+            float: 'left',
+            maxWidth: '100px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {record.content_search_text}
+        </div>
+      ),
     },
-    { title: '内容', dataIndex: 'content_text', key: 'content_text' },
-    { title: '阅读次数', dataIndex: 'reading_count', key: 'reading_count' },
+    {
+      title: '内容',
+      dataIndex: 'content_text',
+      key: 'content_text',
+      width: 200,
+      render: (_, record) => (
+        <div
+          className="ellipsis"
+          style={{
+            float: 'left',
+            maxWidth: '100px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {record.content_text}
+        </div>
+      ),
+    },
+    { title: '阅读次数', dataIndex: 'readers_count', key: 'readers_count' },
     { title: '评论数', dataIndex: 'comments_count', key: 'comments_count' },
     { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
     { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },

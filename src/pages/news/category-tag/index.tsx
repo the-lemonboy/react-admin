@@ -15,11 +15,6 @@ type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
-interface MediaTableType {
-  media_key: string;
-  media_title: string;
-  opt_status: boolean;
-}
 interface TreeCategory extends NewsCategory {
   children: TreeCategory[];
 }
