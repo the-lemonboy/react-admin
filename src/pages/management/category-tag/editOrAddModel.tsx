@@ -4,6 +4,23 @@ import { useEffect } from 'react';
 
 import navService, { AddCateGoryReq } from '@/api/services/navService';
 
+import { NewsCategory } from '#/entity';
+
+interface TreeCategory extends NewsCategory {
+  children?: TreeCategory[];
+}
+interface NewTreeNode {
+  title: string;
+  value: string;
+  key: string;
+  children?: NewTreeNode[];
+}
+interface DefaultOptionType {
+  title: string;
+  value: string;
+  key: string;
+  children?: DefaultOptionType[];
+}
 type OptionType = {
   a_id: string;
   c_id: string;
@@ -110,7 +127,6 @@ function EditorOrAddModel({
     });
   };
   const newTree: DefaultOptionType[] = transformTree(treeCategory);
-  console.log(newTree, treeCategory);
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form

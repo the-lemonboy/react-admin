@@ -138,67 +138,67 @@ export default function NewsList() {
       }));
     },
   });
-  const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  const [CategoryIds, setCategoryIds] = useState({
-    categoryIdOne: '',
-    categoryIdTwo: '',
-    categoryIdThree: '',
-  });
-  const [levelOneList, setLevelOneList] = useState([]);
-  const [levelTwoList, setLevelTwoList] = useState([]);
-  const [levelThreeList, setLevelThreeList] = useState([]);
-  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-    area_id: '',
-    level: -1,
-    p_c_id: '',
-  });
-  const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
-  });
-  // 查询标签
-  useEffect(() => {
-    const fetchCategoryData = async () => {
-      const data = await newsService.GetChildCateGory(categoryQuery);
-      if (categoryQuery.level === 0) {
-        setLevelOneList(data);
-      } else if (categoryQuery.level === 1) {
-        setLevelTwoList(data);
-      } else if (categoryQuery.level === 2) {
-        setLevelThreeList(data);
-      }
-    };
+  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  // const [CategoryIds, setCategoryIds] = useState({
+  //   categoryIdOne: '',
+  //   categoryIdTwo: '',
+  //   categoryIdThree: '',
+  // });
+  // const [levelOneList, setLevelOneList] = useState([]);
+  // const [levelTwoList, setLevelTwoList] = useState([]);
+  // const [levelThreeList, setLevelThreeList] = useState([]);
+  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+  //   area_id: '',
+  //   level: -1,
+  //   p_c_id: '',
+  // });
+  // const { data: theasaurusList } = useQuery({
+  //   queryKey: ['theasaurusList'],
+  //   queryFn: () => newsService.GetTheasaurusList(),
+  // });
+  // // 查询标签
+  // useEffect(() => {
+  //   const fetchCategoryData = async () => {
+  //     const data = await newsService.GetChildCateGory(categoryQuery);
+  //     if (categoryQuery.level === 0) {
+  //       setLevelOneList(data);
+  //     } else if (categoryQuery.level === 1) {
+  //       setLevelTwoList(data);
+  //     } else if (categoryQuery.level === 2) {
+  //       setLevelThreeList(data);
+  //     }
+  //   };
 
-    fetchCategoryData();
-  }, [categoryQuery]);
-  const onChangeTheasaurusTag = (e: any) => {
-    setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  };
-  const onChangeCategoryOneTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  };
-  const onChangeCategoryTwoTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  };
-  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 10,
-      page: 1,
-      content: data as string,
-    }));
-  };
+  //   fetchCategoryData();
+  // }, [categoryQuery]);
+  // const onChangeTheasaurusTag = (e: any) => {
+  //   setTheasaurusTagId(e.target.value);
+  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  // };
+  // const onChangeCategoryOneTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  // };
+  // const onChangeCategoryTwoTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  // };
+  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+  //   const data = checkedValues.reduce((pre, cur) => {
+  //     return `${pre} ${cur}`;
+  //   }, '');
+  //   setArticelQuery((prev) => ({
+  //     ...prev,
+  //     limit: 10,
+  //     page: 1,
+  //     content: data as string,
+  //   }));
+  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        <Card>
+        {/* <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -245,7 +245,7 @@ export default function NewsList() {
               />
             </div>
           )}
-        </Card>
+        </Card> */}
         <Card title="媒体管理">
           <Table
             rowKey="id"

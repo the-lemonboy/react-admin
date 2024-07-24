@@ -1,13 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import newsService, { GetChildCategoryListReq, GetNewsListReq } from '@/api/services/newsService';
+import TGService, { SearchTGReq } from '@/api/services/TGService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { NewsSearchList, NewsCategory } from '#/entity';
+import { TG } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
@@ -17,19 +17,23 @@ interface TableParams {
 export default function NewsList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [articelQuery, setArticelQuery] = useState<GetNewsListReq>({
-    limit: 10,
-    page: 1,
+  const [articelQuery, setArticelQuery] = useState<SearchTGReq>({
     area_id: '',
+    author: '',
     content: '',
-    date_range: '',
-    exchange_media: '',
-    last_level_cats: '',
-    level_cat: '',
+    created_at_range: '',
+    group_id: '',
+    keyword: [],
+    limit: 10,
+    message_id: '',
+    msg_type: '',
+    p_c_path: '',
+    page: 1,
+    topic_id: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['articelList', articelQuery],
-    queryFn: () => newsService.GetArticelList(articelQuery),
+    queryFn: () => TGService.SearchTG(articelQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -61,32 +65,77 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: NewsSearchList) => {
+  const onEditTag = (record: TG) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
-      newId: record.news_key,
+      tableValue: record,
+      theasaurusList,
     }));
   };
   const columns: ColumnsType<NewsSearchList> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '名称', dataIndex: 'title', key: 'title', width: 300 },
     {
-      title: '新闻平台',
-      dataIndex: 'exchange_media_title',
-      key: 'exchange_media_title',
-      width: 150,
+      title: '发布者',
+      dataIndex: 'owner',
+      key: 'owner.name',
+      width: 100,
+      render: (owner) => owner?.name,
     },
-    { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200 },
-    { title: '接受时间', dataIndex: 'created_time', key: 'created_time', width: 200 },
     {
-      title: '状态',
+      title: '标题',
+      dataIndex: 'content_search_text',
+      key: 'content_search_text',
+      width: 200,
+      render: (_, record) => (
+        <div
+          className="ellipsis"
+          style={{
+            float: 'left',
+            maxWidth: '100px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {record.content_search_text}
+        </div>
+      ),
+    },
+    {
+      title: '内容',
+      dataIndex: 'content_text',
+      key: 'content_text',
+      width: 200,
+      render: (_, record) => (
+        <div
+          className="ellipsis"
+          style={{
+            float: 'left',
+            maxWidth: '100px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {record.content_text}
+        </div>
+      ),
+    },
+    { title: '阅读次数', dataIndex: 'readers_count', key: 'readers_count' },
+    { title: '评论数', dataIndex: 'comments_count', key: 'comments_count' },
+    { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
+    { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
+    { title: '社群名称', dataIndex: 'group.name', key: 'group.name' },
+    { title: '发布时间', dataIndex: 'create_time', key: 'create_time' },
+    {
+      title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary" onClick={() => onEditTag(record)}>
-            详细
+            编辑
           </Button>
         </div>
       ),
@@ -138,67 +187,67 @@ export default function NewsList() {
       }));
     },
   });
-  const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  const [CategoryIds, setCategoryIds] = useState({
-    categoryIdOne: '',
-    categoryIdTwo: '',
-    categoryIdThree: '',
-  });
-  const [levelOneList, setLevelOneList] = useState([]);
-  const [levelTwoList, setLevelTwoList] = useState([]);
-  const [levelThreeList, setLevelThreeList] = useState([]);
-  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-    area_id: '',
-    level: -1,
-    p_c_id: '',
-  });
+  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  // const [CategoryIds, setCategoryIds] = useState({
+  //   categoryIdOne: '',
+  //   categoryIdTwo: '',
+  //   categoryIdThree: '',
+  // });
+  // const [levelOneList, setLevelOneList] = useState([]);
+  // const [levelTwoList, setLevelTwoList] = useState([]);
+  // const [levelThreeList, setLevelThreeList] = useState([]);
+  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+  //   area_id: '',
+  //   level: -1,
+  //   p_c_id: '',
+  // });
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryFn: () => TGService.GetAreaList(),
   });
   // 查询标签
-  useEffect(() => {
-    const fetchCategoryData = async () => {
-      const data = await newsService.GetChildCateGory(categoryQuery);
-      if (categoryQuery.level === 0) {
-        setLevelOneList(data);
-      } else if (categoryQuery.level === 1) {
-        setLevelTwoList(data);
-      } else if (categoryQuery.level === 2) {
-        setLevelThreeList(data);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategoryData = async () => {
+  //     const data = await newsService.GetChildCateGory(categoryQuery);
+  //     if (categoryQuery.level === 0) {
+  //       setLevelOneList(data);
+  //     } else if (categoryQuery.level === 1) {
+  //       setLevelTwoList(data);
+  //     } else if (categoryQuery.level === 2) {
+  //       setLevelThreeList(data);
+  //     }
+  //   };
 
-    fetchCategoryData();
-  }, [categoryQuery]);
-  const onChangeTheasaurusTag = (e: any) => {
-    setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  };
-  const onChangeCategoryOneTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  };
-  const onChangeCategoryTwoTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  };
-  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 10,
-      page: 1,
-      content: data as string,
-    }));
-  };
+  //   fetchCategoryData();
+  // }, [categoryQuery]);
+  // const onChangeTheasaurusTag = (e: any) => {
+  //   setTheasaurusTagId(e.target.value);
+  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  // };
+  // const onChangeCategoryOneTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  // };
+  // const onChangeCategoryTwoTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  // };
+  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+  //   const data = checkedValues.reduce((pre, cur) => {
+  //     return `${pre} ${cur}`;
+  //   }, '');
+  //   setArticelQuery((prev) => ({
+  //     ...prev,
+  //     limit: 10,
+  //     page: 1,
+  //     content: data as string,
+  //   }));
+  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        <Card>
+        {/* <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -245,7 +294,7 @@ export default function NewsList() {
               />
             </div>
           )}
-        </Card>
+        </Card> */}
         <Card title="媒体管理">
           <Table
             rowKey="id"

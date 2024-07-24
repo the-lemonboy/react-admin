@@ -1,14 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Modal, Table } from 'antd';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Modal, Table, Form, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
-import newsService, { AddMediaReq } from '@/api/services/newsService';
+import planetService, { SetCategroyTagsReq } from '@/api/services/planetService';
 import { ArrayToTree } from '@/utils/tree';
 
-import { NewsCategory, PlanetKnowledge } from '#/entity';
-import type { TableColumnsType } from 'antd';
+import { PlanetCategory, PlanetKnowledge, Theasaurus } from '#/entity';
+import type { TableColumnsType, TableProps } from 'antd';
 
-interface TreeCategory extends NewsCategory {
+type TableRowSelection<T> = TableProps<T>['rowSelection'];
+interface TreeCategory extends PlanetCategory {
   children?: TreeCategory[];
 }
 export type EditorOrAddModelProps = {
@@ -16,73 +17,139 @@ export type EditorOrAddModelProps = {
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  newId: string;
   tableValue: PlanetKnowledge;
+  theasaurusList: Theasaurus;
 };
 
-function EditorOrAddModel({ title, show, onOk, onCancel, newId, tableValue }: EditorOrAddModelProps) {
+function EditorOrAddModel({
+  title,
+  show,
+  onOk,
+  onCancel,
+  tableValue,
+  theasaurusList,
+}: EditorOrAddModelProps) {
+  const [form] = Form.useForm();
+  const [formValue, setFormValue] = useState<PlanetKnowledge>();
+  useEffect(() => {
+    form.setFieldsValue({ ...formValue });
+  }, [formValue, form]);
   const [queryNewsCategory, setQueryNewsCategory] = useState<{ area_id: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingCategoryList } = useQuery({
     queryKey: ['newsCategroyList', queryNewsCategory],
-    queryFn: () => newsService.GetCategoryList(queryNewsCategory),
+    queryFn: () => planetService.GetCategoryList(queryNewsCategory),
   });
-  const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
+  const [treeCategory, setTreeCategory] = useState<PlanetKnowledge[]>([]);
   useEffect(() => {
     if (tableList) {
-      setTreeCategory(ArrayToTree(tableList.data) as TreeCategory[]);
+      setTreeCategory(ArrayToTree(tableList.data) as PlanetKnowledge[]);
     }
   }, [tableList]);
-  const columns: TableColumnsType<NewsCategory> = [
+  const columns: TableColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
     { title: '名称', dataIndex: 'title', key: 'title' },
     { title: '名称(大写)', dataIndex: 'upper_title', key: 'upper_title' },
     { title: '所属板块', dataIndex: 'area_title', key: 'area_title' },
   ];
-  const { data: detailArticle } = useQuery({
-    queryKey: ['detailArticle', newId],
-    queryFn: () => {
-      return newsService.GetArticelDetail(newId);
-    },
-    enabled: !!newId, // 当 newId 存在时启用查询
-  });
+  // const { data: categoryList } = useQuery({
+  //   queryKey: ['categoryList'],
+  //   queryFn: () => planetService.GetCategoryList({ area_id: form }),
+  // });
 
-  const { data: categoryList } = useQuery({
-    queryKey: ['categoryList'],
-    queryFn: () => newsService.GetCategoryList({ area_id: form }),
-  });
-  const queryClient = useQueryClient();
-  const createMediaMutation = useMutation({
-    mutationFn: async (params: AddMediaReq) => {
-      const res = await newsService.AddMedia(params);
+  // 查找路径
+  const findPath = (tree: TreeNode[], id: string): TreeNode[] => {
+    const path: TreeNode[] = [];
+    const findNodePath = (nodes: TreeNode[], targetId: string): boolean => {
+      for (const node of nodes) {
+        if (node.c_id === targetId) {
+          path.unshift(node);
+          return true;
+        }
+        if (node.children && findNodePath(node.children, targetId)) {
+          path.unshift(node);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    findNodePath(tree, id);
+    return path;
+  };
+  const [selectedPath, setSelectedPath] = useState<string[]>([]);
+  const handleOptStatusChange = (e: any) => {
+    form.setFieldsValue({ opt_status: e.target.value });
+  };
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    const newSelectedPaths: string[] = newSelectedRowKeys.map((item) => {
+      const pathNodes = findPath(treeCategory, item.toString());
+      const path = pathNodes.map((node) => node.c_id).join('/');
+      return path;
+    });
+    setSelectedPath(newSelectedPaths);
+    console.log('selectedRowKeys changed: ', newSelectedPaths);
+  };
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const rowSelection: TableRowSelection<PlanetCategory> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const setCategoryTags = useMutation({
+    mutationFn: async (params: SetCategroyTagsReq) => {
+      const res = await planetService.SetCategroyTags(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['memberList']);
       onOk();
     },
     onError: (error) => {
       console.error('Error adding media:', error);
     },
   });
-
   const handleOk = async () => {
     try {
-      // createMediaMutation.mutate(values);
+      const values = await form.validateFields();
+      const paramsValue = selectedPath.map((item) => {
+        return {
+          area_id: values.area_id,
+          c_id: tableValue.id,
+          p_c_path: item,
+        };
+      });
+      const params = {
+        category_paths: paramsValue,
+        group_id: tableValue.group.group_id,
+      };
+      setCategoryTags.mutate(params);
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
-
-  const handleOptStatusChange = (e: any) => {
-    form.setFieldsValue({ opt_status: e.target.value });
-  };
-
   return (
     <Modal width={1000} title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+      <Form
+        initialValues={formValue}
+        form={form}
+        labelCol={{ span: 2 }}
+        wrapperCol={{ span: 8 }}
+        layout="horizontal"
+      >
+        <Form.Item<PlanetCategory> label="所属板块" name="area_id">
+          <Select>
+            {theasaurusList?.data.map((item: Theasaurus, index) => (
+              <Select.Option key={index} value={item.id}>
+                {item.title}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
       <Table
         rowKey="c_id"
         size="small"
-        pagination={false}
+        rowSelection={rowSelection}
+        // pagination={false}
         columns={columns}
         dataSource={treeCategory}
         loading={isLoadingCategoryList}

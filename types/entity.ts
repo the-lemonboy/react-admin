@@ -219,6 +219,37 @@ export interface PlanetKnowledge {
   topic_id: number;
   type: string;
 }
+export interface TG {
+  bot: {
+    bot_avatar: string;
+    bot_id: string;
+    bot_name: string;
+  };
+  created_at: string; // "2024-04-13 05:59:56"
+  group: {
+    category: string | null;
+    group_avatar: string;
+    group_id: string;
+    group_name: string;
+  };
+  group_id: string;
+  id: string;
+  m_author: string;
+  message: {
+    file_url: string;
+    msg_type: string;
+    text: string;
+  };
+  msg_time: string; // "2024-04-13 05:59:35"
+  topic: {
+    category: string | null;
+    topic_avatar: string;
+    topic_id: string;
+    topic_name: string;
+  };
+  topic_id: string;
+}
+
 export interface Media {
   id?: number;
   media_key?: string;

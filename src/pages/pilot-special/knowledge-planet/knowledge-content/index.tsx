@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -74,7 +74,8 @@ export default function NewsList() {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
-      newId: record.news_key,
+      tableValue: record,
+      theasaurusList,
     }));
   };
   const columns: ColumnsType<PlanetKnowledge> = [
@@ -83,6 +84,7 @@ export default function NewsList() {
       title: '发布者',
       dataIndex: 'owner',
       key: 'owner.name',
+      width: 100,
       render: (owner) => owner?.name,
     },
     {
@@ -190,15 +192,15 @@ export default function NewsList() {
       }));
     },
   });
-  const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  const [CategoryIds, setCategoryIds] = useState({
-    categoryIdOne: '',
-    categoryIdTwo: '',
-    categoryIdThree: '',
-  });
-  const [levelOneList, setLevelOneList] = useState([]);
-  const [levelTwoList, setLevelTwoList] = useState([]);
-  const [levelThreeList, setLevelThreeList] = useState([]);
+  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  // const [CategoryIds, setCategoryIds] = useState({
+  //   categoryIdOne: '',
+  //   categoryIdTwo: '',
+  //   categoryIdThree: '',
+  // });
+  // const [levelOneList, setLevelOneList] = useState([]);
+  // const [levelTwoList, setLevelTwoList] = useState([]);
+  // const [levelThreeList, setLevelThreeList] = useState([]);
   const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
     area_id: '',
     level: -1,
@@ -223,34 +225,34 @@ export default function NewsList() {
 
     fetchCategoryData();
   }, [categoryQuery]);
-  const onChangeTheasaurusTag = (e: any) => {
-    setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  };
-  const onChangeCategoryOneTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  };
-  const onChangeCategoryTwoTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  };
-  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 10,
-      page: 1,
-      content: data as string,
-    }));
-  };
+  // const onChangeTheasaurusTag = (e: any) => {
+  //   setTheasaurusTagId(e.target.value);
+  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  // };
+  // const onChangeCategoryOneTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  // };
+  // const onChangeCategoryTwoTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  // };
+  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+  //   const data = checkedValues.reduce((pre, cur) => {
+  //     return `${pre} ${cur}`;
+  //   }, '');
+  //   setArticelQuery((prev) => ({
+  //     ...prev,
+  //     limit: 10,
+  //     page: 1,
+  //     content: data as string,
+  //   }));
+  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        <Card>
+        {/* <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -297,7 +299,7 @@ export default function NewsList() {
               />
             </div>
           )}
-        </Card>
+        </Card> */}
         <Card title="媒体管理">
           <Table
             rowKey="id"

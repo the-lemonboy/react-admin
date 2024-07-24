@@ -73,7 +73,7 @@ export enum PlanetType {
   GetCategoryList = '/api/nav/navigator/category/list',
   UpdateCategory = '/api/nav/navigator/category/update',
   SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
-  SetCategroyTags = '/api/nav/navigator/group/category_setting',
+  SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });

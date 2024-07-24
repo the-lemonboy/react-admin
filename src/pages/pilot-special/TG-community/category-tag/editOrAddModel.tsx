@@ -1,78 +1,108 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { Form, Modal, Input, Radio, Select, TreeSelect } from 'antd';
-import { useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Modal, Table, Form, Select } from 'antd';
+import { useEffect, useState } from 'react';
 
-import TGService, { AddAreaReq } from '@/api/services/TGService';
+import planetService, { SetCategroyTagsReq } from '@/api/services/planetService';
+import { ArrayToTree } from '@/utils/tree';
 
-import { NewsCategory, Theasaurus } from '#/entity';
+import { PlanetCategory, PlanetKnowledge, Theasaurus } from '#/entity';
+import type { TableColumnsType, TableProps } from 'antd';
 
+type TableRowSelection<T> = TableProps<T>['rowSelection'];
+interface TreeCategory extends PlanetCategory {
+  children?: TreeCategory[];
+}
 export type EditorOrAddModelProps = {
   title: string;
   show: boolean;
-  formValue: any;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  addFlag: boolean;
-  treeCategory: NewsCategory; // 后面改
-  addChildFlag: boolean;
-  // categoryList: Array<CategoryType>;
+  c_id: string;
+  tableValue: PlanetKnowledge;
+  theasaurusList: Theasaurus;
 };
-interface TreeNode<T> {
-  children?: TreeNode<T>[];
-}
-interface TreeCategory extends NewsCategory {
-  children?: TreeCategory[];
-}
-interface NewTreeNode {
-  title: string;
-  value: string;
-  key: string;
-  children?: NewTreeNode[];
-}
-interface DefaultOptionType {
-  title: string;
-  value: string;
-  key: string;
-  children?: DefaultOptionType[];
-}
+
 function EditorOrAddModel({
   title,
   show,
-  formValue,
   onOk,
   onCancel,
-  addFlag,
-  treeCategory,
-  addChildFlag,
-}: // categoryList,
-EditorOrAddModelProps) {
+  c_id,
+  tableValue,
+  theasaurusList,
+}: EditorOrAddModelProps) {
   const [form] = Form.useForm();
-
+  const [formValue, setFormValue] = useState<PlanetKnowledge>();
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-
-  const queryClient = useQueryClient();
-  const createMediaMutation = useMutation({
-    mutationFn: async (params: AddAreaReq) => {
-      const res = await TGService.AddCateGory(params);
-      return res.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['TGCategroyList']);
-      onOk();
-    },
-    onError: (error) => {
-      console.error('Error adding media:', error);
-    },
+  const [queryNewsCategory, setQueryNewsCategory] = useState<{ area_id: string }>({ area_id: '' });
+  const { data: tableList, isLoading: isLoadingCategoryList } = useQuery({
+    queryKey: ['newsCategroyList', queryNewsCategory],
+    queryFn: () => planetService.GetCategoryList(queryNewsCategory),
   });
-  const updateCategoryMutation = useMutation({
-    mutationFn: async (params: AddAreaReq) => {
-      const res = await TGService.UpdateCategory(params);
+  const [treeCategory, setTreeCategory] = useState<PlanetKnowledge[]>([]);
+  useEffect(() => {
+    if (tableList) {
+      setTreeCategory(ArrayToTree(tableList.data) as PlanetKnowledge[]);
+    }
+  }, [tableList]);
+  const columns: TableColumnsType<PlanetKnowledge> = [
+    { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
+    { title: '名称', dataIndex: 'title', key: 'title' },
+    { title: '名称(大写)', dataIndex: 'upper_title', key: 'upper_title' },
+    { title: '所属板块', dataIndex: 'area_title', key: 'area_title' },
+  ];
+  // const { data: categoryList } = useQuery({
+  //   queryKey: ['categoryList'],
+  //   queryFn: () => planetService.GetCategoryList({ area_id: form }),
+  // });
+
+  // 查找路径
+  const findPath = (tree: TreeNode[], id: string): TreeNode[] => {
+    const path: TreeNode[] = [];
+    const findNodePath = (nodes: TreeNode[], targetId: string): boolean => {
+      for (const node of nodes) {
+        if (node.c_id === targetId) {
+          path.unshift(node);
+          return true;
+        }
+        if (node.children && findNodePath(node.children, targetId)) {
+          path.unshift(node);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    findNodePath(tree, id);
+    return path;
+  };
+  const [selectedPath, setSelectedPath] = useState<string[]>([]);
+  const handleOptStatusChange = (e: any) => {
+    form.setFieldsValue({ opt_status: e.target.value });
+  };
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    const newSelectedPaths: string[] = newSelectedRowKeys.map((item) => {
+      const pathNodes = findPath(treeCategory, item.toString());
+      const path = pathNodes.map((node) => node.c_id).join('/');
+      return path;
+    });
+    setSelectedPath(newSelectedPaths);
+    console.log('selectedRowKeys changed: ', newSelectedPaths);
+  };
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const rowSelection: TableRowSelection<PlanetCategory> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const setCategoryTags = useMutation({
+    mutationFn: async (params: SetCategroyTagsReq) => {
+      const res = await planetService.SetCategroyTags(params);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['TGCategroyList']);
       onOk();
     },
     onError: (error) => {
@@ -82,52 +112,31 @@ EditorOrAddModelProps) {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      if (addFlag) {
-        createMediaMutation.mutate(values);
-      } else {
-        // handle update logic here
-        updateCategoryMutation.mutate(values);
-      }
+      const params = selectedPath.map((item) => {
+        return {
+          category_paths: {
+            area_id: values.area_id,
+            c_id: tableValue.id,
+            p_c_path: item,
+          },
+          group_id: tableValue.group.group_id,
+        };
+      });
+      setCategoryTags.mutate(params);
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
-
-  const handleOptStatusChange = (e: any) => {
-    form.setFieldsValue({ opt_status: e.target.value });
-  };
-  const { data: theasaurusList } = useQuery({
-    queryKey: ['TGAreaList'],
-    queryFn: () => TGService.GetAreaList(),
-  });
-  // tree
-  const SelectParent = (newValue: string[]) => {
-    form.setFieldsValue({ p_c_id: newValue });
-  };
-  const transformTree = (tree: TreeCategory[]): NewTreeNode[] => {
-    return tree?.map((item) => {
-      const newNode: NewTreeNode = {
-        title: item.title,
-        value: item.c_id,
-        key: item.c_id,
-      };
-      if (item.children && item.children.length > 0) {
-        newNode.children = transformTree(item.children);
-      }
-      return newNode;
-    });
-  };
-  const newTree: DefaultOptionType[] = transformTree(treeCategory);
   return (
-    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+    <Modal width={1000} title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
         initialValues={formValue}
         form={form}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 2 }}
+        wrapperCol={{ span: 8 }}
         layout="horizontal"
       >
-        <Form.Item<NewsCategory> label="所属板块" name="area_id">
+        <Form.Item<PlanetCategory> label="所属板块" name="area_id">
           <Select>
             {theasaurusList?.data.map((item: Theasaurus, index) => (
               <Select.Option key={index} value={item.id}>
@@ -136,36 +145,16 @@ EditorOrAddModelProps) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item<NewsCategory> label="上级名称" name="upper_title" required>
-          {addChildFlag ? (
-            <Input disabled />
-          ) : (
-            <TreeSelect
-              showSearch
-              style={{ width: '100%' }}
-              value={formValue.p_c_id}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              placeholder="Please select"
-              allowClear
-              treeDefaultExpandAll
-              onChange={SelectParent}
-              treeData={newTree}
-            />
-          )}
-        </Form.Item>
-        <Form.Item<NewsCategory> label="上级ID" name="p_c_id" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item<NewsCategory> label="标题" name="title" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item<NewsCategory> label="是否禁用" name="opt_status" rules={[{ required: true }]}>
-          <Radio.Group onChange={handleOptStatusChange} value={form.getFieldValue('opt_status')}>
-            <Radio value>是</Radio>
-            <Radio value={false}>否</Radio>
-          </Radio.Group>
-        </Form.Item>
       </Form>
+      <Table
+        rowKey="c_id"
+        size="small"
+        rowSelection={rowSelection}
+        // pagination={false}
+        columns={columns}
+        dataSource={treeCategory}
+        loading={isLoadingCategoryList}
+      />
     </Modal>
   );
 }

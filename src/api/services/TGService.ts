@@ -34,6 +34,31 @@ export interface ChangeCategoryStatusReq {
   c_id: string;
   opt_status: boolean;
 }
+interface CategoryPath {
+  area_id: string;
+  c_id: string;
+  p_c_path: string;
+}
+
+export interface SetCategroyTagsReq {
+  category_paths: CategoryPath[];
+  group_id: string;
+  topic_id: string;
+}
+export interface SearchTGReq {
+  area_id: string;
+  author: string;
+  content: string;
+  created_at_range: string;
+  group_id: string;
+  keyword: string[];
+  limit: number;
+  message_id: string;
+  msg_type: string;
+  p_c_path: string;
+  page: number;
+  topic_id: string;
+}
 export enum TGType {
   AddArea = '/api/nav/navigator/tg/area/add',
   GetAreaList = '/api/nav/navigator/tg/area/list',
@@ -43,6 +68,8 @@ export enum TGType {
   GetCategoryList = '/api/nav/navigator/tg/category/list',
   UpdateCategory = '/api/nav/navigator/tg/category/update',
   ChangeCategoryStatus = '/api/nav/navigator/tg/category/opt_status',
+  SearchTG = '/api/nav/navigator/zsxq/topic/topic_search',
+  SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
 }
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data });
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
@@ -57,7 +84,11 @@ const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: TGType.GetCategoryList, data });
 const UpdateCategory = (data: UpdateCategoryReq) =>
   apiClient.post({ url: TGType.UpdateCategory, data });
-const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) => apiClient.post({ url: TGType.ChangeCategoryStatus, data });
+const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
+  apiClient.post({ url: TGType.ChangeCategoryStatus, data });
+const SearchTG = (data: SearchTGReq) => apiClient.post({ url: TGType.SearchTG, data });
+const SetCategroyTags = (data: CategoryPath) =>
+  apiClient.post({ url: TGType.SetCategroyTags, data });
 export default {
   AddArea,
   GetAreaList,
@@ -69,4 +100,6 @@ export default {
   GetCategoryList,
   UpdateCategory,
   ChangeCategoryStatus,
+  SearchTG,
+  SetCategroyTags,
 };
