@@ -63,6 +63,11 @@ export interface SetCategroyTagsReq {
   category_paths: CategoryPath[];
   group_id: string;
 }
+export interface GetChildCateGoryReq {
+  area_id: string;
+  level: number;
+  p_c_id: string;
+}
 export enum PlanetType {
   AddArea = '/api/nav/navigator/area/add',
   GetAreaList = '/api/nav/navigator/area/list',
@@ -74,6 +79,7 @@ export enum PlanetType {
   UpdateCategory = '/api/nav/navigator/category/update',
   SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
   SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
+  GetChildCateGory = '/api/nav/navigator/category/level',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -98,6 +104,8 @@ const GetCateGoryTagList = (group_id: string) =>
   apiClient.get({ url: `/api/nav/navigator/zxsq/group/${group_id}/categories` });
 const DelCateGoryTag = (group_id: string, category_id: string) =>
   apiClient.get({ url: `/api/nav/navigator/zxsq/group/${group_id}/del_category/${category_id}` });
+const GetChildCateGory = (data: GetChildCateGoryReq) =>
+  apiClient.post({ url: PlanetType.GetChildCateGory, data });
 export default {
   AddArea,
   GetAreaList,
@@ -113,4 +121,5 @@ export default {
   SearchKnowledge,
   GetCateGoryTagList,
   DelCateGoryTag,
+  GetChildCateGory,
 };

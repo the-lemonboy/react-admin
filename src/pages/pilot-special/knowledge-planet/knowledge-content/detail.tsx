@@ -1,10 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
-import { Form, Modal, Popconfirm, Tag, message } from 'antd';
-import Table, { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
-import planetService, {} from '@/api/services/planetService';
-import { fn } from 'numeral';
-interface DetailModelProps {
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Form, Input, Modal, Popconfirm, Tag, message } from 'antd';
+import { useEffect } from 'react';
+
+import planetService from '@/api/services/planetService';
+
+const { TextArea } = Input;
+export interface DetailModelProps {
   title;
   show;
   formValue;
@@ -18,11 +19,12 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-  const {data: tagList} = useQuery({
-    queryKey: ['PlanetTagList'],
-    fn: planetService.GetCateGoryTagList,
-  })
-  console.log(tagList);
+  const { data: tagList } = useQuery({
+    queryKey: ['PlanetTagList', formValue?.group?.group_id],
+    queryFn: () => planetService.GetCateGoryTagList(formValue?.group?.group_id),
+    enabled: !!formValue?.group?.group_id,
+  });
+  console.log(formValue);
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
@@ -32,9 +34,9 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
     }
   };
   const fetchDelCategoryTag = useMutation({
-    mutationFn: navService.DelTag,
+    mutationFn: planetService.DelCateGoryTag,
     onSuccess: () => {
-      queryClient.invalidateQueries(['websiteTagList']);
+      // queryClient.invalidateQueries(['websiteTagList']);
       message.success('标签删除成功');
     },
     onError: (error) => {
@@ -86,7 +88,17 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
             </div>
           )}
         </Form.Item>
+        <Form.Item label="发布者" name="owner.name">
+          <Input />
+        </Form.Item>
+        <Form.Item label="内容" name="content_text">
+          <TextArea rows={4} />
+        </Form.Item>
+        <Form.Item label="发布者" name="owner.name">
+          <Input />
+        </Form.Item>
       </Form>
     </Modal>
   );
 }
+export default DetailModel;

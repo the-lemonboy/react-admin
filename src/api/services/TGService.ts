@@ -59,6 +59,11 @@ export interface SearchTGReq {
   page: number;
   topic_id: string;
 }
+export interface GetChildCateGoryReq {
+  area_id: string;
+  level: number;
+  p_c_id: string;
+}
 export enum TGType {
   AddArea = '/api/nav/navigator/tg/area/add',
   GetAreaList = '/api/nav/navigator/tg/area/list',
@@ -68,8 +73,9 @@ export enum TGType {
   GetCategoryList = '/api/nav/navigator/tg/category/list',
   UpdateCategory = '/api/nav/navigator/tg/category/update',
   ChangeCategoryStatus = '/api/nav/navigator/tg/category/opt_status',
-  SearchTG = '/api/nav/navigator/zsxq/topic/topic_search',
+  SearchTG = '/api/nav/navigator/tg/message/message_search',
   SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
+  GetChildCateGory = '/api/nav/navigator/tg/category/level'
 }
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data });
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
@@ -89,6 +95,8 @@ const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
 const SearchTG = (data: SearchTGReq) => apiClient.post({ url: TGType.SearchTG, data });
 const SetCategroyTags = (data: CategoryPath) =>
   apiClient.post({ url: TGType.SetCategroyTags, data });
+const GetChildCateGory = (data: GetChildCateGoryReq) =>
+  apiClient.post({ url: TGType.GetChildCateGory, data });
 export default {
   AddArea,
   GetAreaList,
@@ -102,4 +110,5 @@ export default {
   ChangeCategoryStatus,
   SearchTG,
   SetCategroyTags,
+  GetChildCateGory
 };

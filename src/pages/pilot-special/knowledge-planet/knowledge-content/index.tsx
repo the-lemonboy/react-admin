@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button } from 'antd';
+import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import planetService, { SearchKnowledgeReq } from '@/api/services/planetService';
 
+import DetailModel, { DetailModelProps } from './detail';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { PlanetKnowledge } from '#/entity';
@@ -78,18 +79,24 @@ export default function NewsList() {
       theasaurusList,
     }));
   };
-  const [detailModelProps, setDetailModelProps] = useState<EditorOrAddModelProps>({
+  const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
     title: '详细',
-    show:false,
-    formValue:{},
-    onOk:() =>{
+    show: false,
+    formValue: {},
+    onOk: () => {
       setDetailModelProps((prev) => ({ ...prev, show: false }));
     },
     onCancel: () => {
       setDetailModelProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const onDetail = (record: PlanetKnowledge) => {};
+  const onDetail = (record: PlanetKnowledge) => {
+    setDetailModelProps((prev) => ({
+      ...prev,
+      show: true,
+      formValue: record,
+    }));
+  };
   const columns: ColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
     {
@@ -207,15 +214,15 @@ export default function NewsList() {
       }));
     },
   });
-  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  // const [CategoryIds, setCategoryIds] = useState({
-  //   categoryIdOne: '',
-  //   categoryIdTwo: '',
-  //   categoryIdThree: '',
-  // });
-  // const [levelOneList, setLevelOneList] = useState([]);
-  // const [levelTwoList, setLevelTwoList] = useState([]);
-  // const [levelThreeList, setLevelThreeList] = useState([]);
+  const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  const [CategoryIds, setCategoryIds] = useState({
+    categoryIdOne: '',
+    categoryIdTwo: '',
+    categoryIdThree: '',
+  });
+  const [levelOneList, setLevelOneList] = useState([]);
+  const [levelTwoList, setLevelTwoList] = useState([]);
+  const [levelThreeList, setLevelThreeList] = useState([]);
   const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
     area_id: '',
     level: -1,
@@ -226,48 +233,48 @@ export default function NewsList() {
     queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
-  // useEffect(() => {
-  //   const fetchCategoryData = async () => {
-  //     const data = await planetService.GetChildCateGory(categoryQuery);
-  //     if (categoryQuery.level === 0) {
-  //       setLevelOneList(data);
-  //     } else if (categoryQuery.level === 1) {
-  //       setLevelTwoList(data);
-  //     } else if (categoryQuery.level === 2) {
-  //       setLevelThreeList(data);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      const data = await planetService.GetChildCateGory(categoryQuery);
+      if (categoryQuery.level === 0) {
+        setLevelOneList(data);
+      } else if (categoryQuery.level === 1) {
+        setLevelTwoList(data);
+      } else if (categoryQuery.level === 2) {
+        setLevelThreeList(data);
+      }
+    };
 
-  //   fetchCategoryData();
-  // }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setArticelQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
+    fetchCategoryData();
+  }, [categoryQuery]);
+  const onChangeTheasaurusTag = (e: any) => {
+    setTheasaurusTagId(e.target.value);
+    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  };
+  const onChangeCategoryOneTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  };
+  const onChangeCategoryTwoTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  };
+  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+    const data = checkedValues.reduce((pre, cur) => {
+      return `${pre} ${cur}`;
+    }, '');
+    setArticelQuery((prev) => ({
+      ...prev,
+      limit: 10,
+      page: 1,
+      content: data as string,
+    }));
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
+        <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -314,7 +321,7 @@ export default function NewsList() {
               />
             </div>
           )}
-        </Card> */}
+        </Card>
         <Card title="媒体管理">
           <Table
             rowKey="id"
@@ -327,6 +334,7 @@ export default function NewsList() {
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
+        <DetailModel {...detailModelProps} />
       </Space>
     </>
   );
