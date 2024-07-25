@@ -78,6 +78,18 @@ export default function NewsList() {
       theasaurusList,
     }));
   };
+  const [detailModelProps, setDetailModelProps] = useState<EditorOrAddModelProps>({
+    title: '详细',
+    show:false,
+    formValue:{},
+    onOk:() =>{
+      setDetailModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setDetailModelProps((prev) => ({ ...prev, show: false }));
+    },
+  });
+  const onDetail = (record: PlanetKnowledge) => {};
   const columns: ColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
     {
@@ -107,26 +119,26 @@ export default function NewsList() {
         </div>
       ),
     },
-    {
-      title: '内容',
-      dataIndex: 'content_text',
-      key: 'content_text',
-      width: 200,
-      render: (_, record) => (
-        <div
-          className="ellipsis"
-          style={{
-            float: 'left',
-            maxWidth: '100px',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {record.content_text}
-        </div>
-      ),
-    },
+    // {
+    //   title: '内容',
+    //   dataIndex: 'content_text',
+    //   key: 'content_text',
+    //   width: 200,
+    //   render: (_, record) => (
+    //     <div
+    //       className="ellipsis"
+    //       style={{
+    //         float: 'left',
+    //         maxWidth: '100px',
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow: 'ellipsis',
+    //       }}
+    //     >
+    //       {record.content_text}
+    //     </div>
+    //   ),
+    // },
     { title: '阅读次数', dataIndex: 'readers_count', key: 'readers_count' },
     { title: '评论数', dataIndex: 'comments_count', key: 'comments_count' },
     { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
@@ -139,8 +151,11 @@ export default function NewsList() {
       key: 'opt_status',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button type="primary" onClick={() => onEditTag(record)}>
-            编辑
+          <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
+            详细
+          </Button>
+          <Button type="default" onClick={() => onEditTag(record)}>
+            新增标签
           </Button>
         </div>
       ),
@@ -211,20 +226,20 @@ export default function NewsList() {
     queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
-  useEffect(() => {
-    const fetchCategoryData = async () => {
-      const data = await planetService.GetChildCateGory(categoryQuery);
-      if (categoryQuery.level === 0) {
-        setLevelOneList(data);
-      } else if (categoryQuery.level === 1) {
-        setLevelTwoList(data);
-      } else if (categoryQuery.level === 2) {
-        setLevelThreeList(data);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategoryData = async () => {
+  //     const data = await planetService.GetChildCateGory(categoryQuery);
+  //     if (categoryQuery.level === 0) {
+  //       setLevelOneList(data);
+  //     } else if (categoryQuery.level === 1) {
+  //       setLevelTwoList(data);
+  //     } else if (categoryQuery.level === 2) {
+  //       setLevelThreeList(data);
+  //     }
+  //   };
 
-    fetchCategoryData();
-  }, [categoryQuery]);
+  //   fetchCategoryData();
+  // }, [categoryQuery]);
   // const onChangeTheasaurusTag = (e: any) => {
   //   setTheasaurusTagId(e.target.value);
   //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
