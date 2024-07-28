@@ -37,7 +37,7 @@ export default defineConfig({
     port: 3001,
     proxy: {
       '/dev': {
-        target: 'http://43.128.104.20:8095',
+        target: 'http://main.rssdao.cn',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/dev/, ''),
         // https://github.com/vitejs/vite/discussions/8998#discussioncomment-4408695
