@@ -64,6 +64,10 @@ export interface GetChildCateGoryReq {
   level: number;
   p_c_id: string;
 }
+export interface GetGroupListReq {
+  page: number;
+  limit: number;
+}
 export enum TGType {
   AddArea = '/api/nav/navigator/tg/area/add',
   GetAreaList = '/api/nav/navigator/tg/area/list',
@@ -75,7 +79,8 @@ export enum TGType {
   ChangeCategoryStatus = '/api/nav/navigator/tg/category/opt_status',
   SearchTG = '/api/nav/navigator/tg/message/message_search',
   SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
-  GetChildCateGory = '/api/nav/navigator/tg/category/level'
+  GetChildCateGory = '/api/nav/navigator/tg/category/level',
+  GetGroupList = '/api/nav/navigator/tg/topic/list',
 }
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data });
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
@@ -97,6 +102,7 @@ const SetCategroyTags = (data: CategoryPath) =>
   apiClient.post({ url: TGType.SetCategroyTags, data });
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: TGType.GetChildCateGory, data });
+const GetGroupList = (data: GetGroupListReq) => apiClient.post({ url: TGType.GetGroupList, data });
 export default {
   AddArea,
   GetAreaList,
@@ -110,5 +116,6 @@ export default {
   ChangeCategoryStatus,
   SearchTG,
   SetCategroyTags,
-  GetChildCateGory
+  GetChildCateGory,
+  GetGroupList,
 };

@@ -63,7 +63,6 @@ function EditorOrAddModel({
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
-
   const queryClient = useQueryClient();
   const createMediaMutation = useMutation({
     mutationFn: async (params: AddCateGoryReq) => {
@@ -98,7 +97,12 @@ function EditorOrAddModel({
       if (addFlag) {
         createMediaMutation.mutate(values);
       } else {
-        updateCategoryMutation.mutate(values);
+        const query = {
+          cid: formValue.c_id,
+          opt: values.opt_status,
+          title: values.title,
+        };
+        updateCategoryMutation.mutate(query);
       }
     } catch (error) {
       console.error('Validation failed:', error);
@@ -106,7 +110,6 @@ function EditorOrAddModel({
   };
 
   const onStatusChange = (e: any) => {
-    console.log('radio checked', e.target.value);
     form.setFieldsValue({ opt_status: !!e.target.value });
   };
   // tree

@@ -203,7 +203,19 @@ export default function NavWebsitePage() {
       align: 'center',
       width: 300,
     },
-    { title: '链接', dataIndex: 'link', align: 'center', width: 300 },
+    {
+      title: '链接',
+      dataIndex: 'link',
+      align: 'center',
+      width: 300,
+      render: (link: string) => {
+        return (
+          <a href={link} target="_blank" rel="noreferrer">
+            {link}
+          </a>
+        );
+      },
+    },
     {
       title: 'Action',
       key: 'operation',
@@ -629,7 +641,7 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
         </Form.Item>
         <Form.Item<Website> label="icon" name="icon" required>
           <UploadAvatar
-            action="/api/api/nav/website/icon/upload"
+            action="api/nav/website/icon/upload"
             onImageUrlChange={handleImageUrlChange}
           />
         </Form.Item>
@@ -871,7 +883,7 @@ function EditorTagModal({
         </Form.Item>
         <Form.Item label="已有标签" name="url">
           {websiteTagList && (
-            <div className="mb-4 flex flex-wrap items-center">
+            <div className=" flex flex-wrap items-center">
               {websiteTagList.map((item: TagInfo) => (
                 <Popconfirm
                   key={item.id}
@@ -884,13 +896,13 @@ function EditorTagModal({
                   onCancel={() => setVisiblePopconfirm(null)}
                 >
                   <Tag
+                    className="m-0"
                     closable
                     closeIcon={<CloseCircleOutlined />}
                     onClose={(e) => {
                       e.preventDefault();
                       setVisiblePopconfirm(item.id);
                     }}
-                    style={{ marginBottom: '8px', marginRight: '8px' }}
                   >
                     {item.title}
                   </Tag>

@@ -74,19 +74,21 @@ export default function NewsList() {
     }));
   };
   const columns: ColumnsType<NewsSearchList> = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
+    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
     {
       title: '发布者',
-      dataIndex: 'group_id',
-      key: 'group_id',
+      dataIndex: 'm_author',
+      key: 'm_author',
       width: 100,
-      render: (owner) => owner?.name,
+      align: 'center',
+      render: (name: string) => (name === 'unknown' ? '未知' : name),
     },
     {
-      title: '标题',
-      dataIndex: 'content_search_text',
-      key: 'content_search_text',
-      width: 200,
+      title: '话题',
+      dataIndex: 'topic.topic_name',
+      key: 'topic.topic_name',
+      align: 'center',
+      width: 100,
       render: (_, record) => (
         <div
           className="ellipsis"
@@ -98,36 +100,38 @@ export default function NewsList() {
             textOverflow: 'ellipsis',
           }}
         >
-          {record.content_search_text}
+          {record.topic.topic_name}
         </div>
       ),
     },
     {
-      title: '内容',
+      title: '消息内容',
       dataIndex: 'message.text',
       key: 'message.text',
       width: 200,
+      align: 'center',
       render: (_, record) => (
         <div
           className="ellipsis"
           style={{
             float: 'left',
-            maxWidth: '100px',
+            maxWidth: '200px',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
           }}
         >
-          {record.content_text}
+          {record.message.text}
         </div>
       ),
     },
-    { title: '社群名称', dataIndex: 'group.group_name', key: 'group.group_name' },
-    { title: '发布时间', dataIndex: 'create_time', key: 'create_time' },
+    { title: '社群名称', dataIndex: 'group[group_name]', key: 'group' },
+    { title: '发布时间', dataIndex: 'created_at', key: 'created_at', align: 'center' },
     {
       title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
+      align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary" onClick={() => onEditTag(record)}>
@@ -213,7 +217,6 @@ export default function NewsList() {
         setLevelThreeList(data);
       }
     };
-
     fetchCategoryData();
   }, [categoryQuery]);
   const onChangeTheasaurusTag = (e: any) => {
@@ -291,7 +294,7 @@ export default function NewsList() {
             </div>
           )}
         </Card>
-        <Card title="媒体管理">
+        <Card title="群组内容">
           <Table
             rowKey="id"
             size="small"

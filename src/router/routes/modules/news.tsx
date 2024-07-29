@@ -12,7 +12,7 @@ const NewsCategoryTagPage = lazy(() => import('@/pages/news/category-tag'));
 const ArticleListPage = lazy(() => import('@/pages/news/article-list'));
 const NewsListPage = lazy(() => import('@/pages/news/news-list'));
 const news: AppRouteObject = {
-  order: 4,
+  order: 3,
   path: 'news',
   element: (
     <Suspense fallback={<CircleLoading />}>

@@ -83,8 +83,10 @@ export default function WebsiteCategoryTag() {
       title: '新增标签',
       show: true,
       formValue: {
+        ...record,
         p_c_id: record.c_id,
         upper_title: record.title,
+        title: '',
       },
       addFlag,
       treeCategory,
@@ -96,6 +98,7 @@ export default function WebsiteCategoryTag() {
       title: '编辑标签',
       show: true,
       formValue: {
+        ...record,
         p_c_id: record.p_c_id,
         title: record.title,
         opt_status: record.opt_status,

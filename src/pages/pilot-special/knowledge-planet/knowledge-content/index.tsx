@@ -71,14 +71,14 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: PlanetKnowledge) => {
-    setEditorOrAddModelProps((prev) => ({
-      ...prev,
-      show: true,
-      tableValue: record,
-      theasaurusList,
-    }));
-  };
+  // const onEditTag = (record: PlanetKnowledge) => {
+  //   setEditorOrAddModelProps((prev) => ({
+  //     ...prev,
+  //     show: true,
+  //     tableValue: record,
+  //     theasaurusList,
+  //   }));
+  // };
   const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
     title: '详细',
     show: false,
@@ -161,9 +161,9 @@ export default function NewsList() {
           <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
             详细
           </Button>
-          <Button type="default" onClick={() => onEditTag(record)}>
+          {/* <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
-          </Button>
+          </Button> */}
         </div>
       ),
     },
@@ -195,25 +195,25 @@ export default function NewsList() {
     });
   };
 
-  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-    title: '标签管理',
-    show: false,
-    newId: '',
-    onOk: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-      // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['mediaList']);
-    },
-    onCancel: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-    },
-  });
+  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+  //   title: '标签管理',
+  //   show: false,
+  //   newId: '',
+  //   onOk: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //     // 重新获取数据或更新缓存
+  //     queryClient.invalidateQueries(['mediaList']);
+  //   },
+  //   onCancel: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //   },
+  // });
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
   const [CategoryIds, setCategoryIds] = useState({
     categoryIdOne: '',
@@ -333,7 +333,7 @@ export default function NewsList() {
             onChange={handleTableChange}
           />
         </Card>
-        <EditorOrAddModel {...editorOrAddModelProps} />
+        {/* <EditorOrAddModel {...editorOrAddModelProps} /> */}
         <DetailModel {...detailModelProps} />
       </Space>
     </>

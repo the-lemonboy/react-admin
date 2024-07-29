@@ -68,6 +68,10 @@ export interface GetChildCateGoryReq {
   level: number;
   p_c_id: string;
 }
+export interface GetGroupListReq {
+  limit: number;
+  page: number;
+}
 export enum PlanetType {
   AddArea = '/api/nav/navigator/area/add',
   GetAreaList = '/api/nav/navigator/area/list',
@@ -80,6 +84,7 @@ export enum PlanetType {
   SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
   SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
   GetChildCateGory = '/api/nav/navigator/category/level',
+  GetGroupList = '/api/nav/navigator/zxsq/group_list',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -106,6 +111,8 @@ const DelCateGoryTag = (group_id: string, category_id: string) =>
   apiClient.get({ url: `/api/nav/navigator/zxsq/group/${group_id}/del_category/${category_id}` });
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: PlanetType.GetChildCateGory, data });
+const GetGroupList = (data: GetGroupListReq) =>
+  apiClient.post({ url: PlanetType.GetGroupList, data });
 export default {
   AddArea,
   GetAreaList,
@@ -122,4 +129,5 @@ export default {
   GetCateGoryTagList,
   DelCateGoryTag,
   GetChildCateGory,
+  GetGroupList,
 };

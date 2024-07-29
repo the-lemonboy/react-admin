@@ -17,6 +17,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import { useState, useEffect } from 'react';
 
 import memberService, { GetUserListReq, SuspendedUserReq } from '@/api/services/memberService';
+import { Iconify } from '@/components/icon';
 
 import { UserTable } from '#/entity';
 import type { GetProp } from 'antd';
@@ -25,29 +26,42 @@ type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
+
 export default function NewsCategoryTag() {
   const [messageApi, contextHolder] = message.useMessage();
   const [query, setQuery] = useState<GetUserListReq>({ page: 1, limit: 10 });
+
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['userList', query],
     queryFn: () => memberService.GetUserList(query),
+    keepPreviousData: true,
   });
+
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10,
-      total: tableList?.count,
+      total: tableList?.count || 0,
     },
   });
+
+  useEffect(() => {
+    if (tableList?.count !== undefined) {
+      setTableParams((prev) => ({
+        ...prev,
+        pagination: {
+          ...prev.pagination,
+          total: tableList.count,
+        },
+      }));
+    }
+  }, [tableList]);
+
   const handleTableChange: TableProps<UserTable>['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 10;
     setQuery({ ...query, page: current, limit: pageSize });
     setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      // 清空数据
-      setData([]); // 确保这里有数据清空逻辑
-    }
   };
 
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -78,7 +92,12 @@ export default function NewsCategoryTag() {
       dataIndex: 'avatar',
       align: 'center',
       width: 80,
-      render: (text: string) => <img src={text} alt="icon" style={{ width: 30, height: 30 }} />,
+      render: (text: string) =>
+        text ? (
+          <img className="m-auto" src={text} alt="icon" style={{ width: 30, height: 30 }} />
+        ) : (
+          <Iconify icon="carbon:user-avatar-filled" size={24} />
+        ),
     },
     { title: '手机', dataIndex: 'mobile_number', key: 'mobile_number' },
     { title: '站点', dataIndex: 'web_site_name', key: 'web_site_name' },
@@ -99,8 +118,7 @@ export default function NewsCategoryTag() {
 
   const changeUserStatus = useMutation({
     mutationFn: (param: SuspendedUserReq) => {
-      const res = memberService.SuspendedUser(param);
-      return res;
+      return memberService.SuspendedUser(param);
     },
     onSuccess: () => {
       messageApi.success('操作成功');
@@ -111,11 +129,9 @@ export default function NewsCategoryTag() {
   });
 
   const onChangeMediaStatus = (checked: boolean, record: UserTable) => {
-    // 修改用户状态逻辑
     changeUserStatus.mutate({ id: record.id, suspended: !checked });
   };
 
-  // 搜索
   const [searchForm] = Form.useForm();
 
   const onSearchFormReset = () => {
@@ -176,12 +192,13 @@ export default function NewsCategoryTag() {
         </Card>
         <Card title="用户管理">
           <Table
-            rowKey="id" // 使用正确的唯一标识符，例如 id
+            rowKey="id"
             size="small"
+            scroll={{ x: 'max-content' }}
             columns={columns}
             dataSource={tableList?.data}
-            loading={isLoadingList}
             pagination={tableParams.pagination}
+            loading={isLoadingList}
             onChange={handleTableChange}
           />
         </Card>

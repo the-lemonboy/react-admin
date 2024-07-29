@@ -12,7 +12,7 @@ const ConsumerCardPage = lazy(() => import('@/pages/member/rssdao/consumer-card'
 const UserPage = lazy(() => import('@/pages/member/rssdao/user'));
 
 const member: AppRouteObject = {
-  order: 3,
+  order: 1,
   path: 'member',
   element: (
     <Suspense fallback={<CircleLoading />}>

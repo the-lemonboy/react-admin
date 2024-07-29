@@ -1,35 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import newsService, { GetChildCategoryListReq, GetNewsListReq } from '@/api/services/newsService';
+import planetService, { GetGroupListReq } from '@/api/services/planetService';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { NewsSearchList, NewsCategory } from '#/entity';
+import { PlanetKnowledge } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
-export default function NewsList() {
+export default function KnowledgeGrounp() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [articelQuery, setArticelQuery] = useState<GetNewsListReq>({
+  const [articelQuery, setArticelQuery] = useState<GetGroupListReq>({
     limit: 10,
     page: 1,
-    area_id: '',
-    content: '',
-    date_range: '',
-    exchange_media: '',
-    last_level_cats: '',
-    level_cat: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['articelList', articelQuery],
-    queryFn: () => newsService.GetArticelList(articelQuery),
+    queryKey: ['GrounpList', articelQuery],
+    queryFn: () => planetService.GetGroupList(articelQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -61,32 +55,67 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: NewsSearchList) => {
+  const onEditTag = (record: PlanetKnowledge) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
-      newId: record.news_key,
+      tableValue: record,
+      theasaurusList,
     }));
   };
-  const columns: ColumnsType<NewsSearchList> = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '名称', dataIndex: 'title', key: 'title', width: 300 },
+  // const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
+  //   title: '详细',
+  //   show: false,
+  //   formValue: {},
+  //   onOk: () => {
+  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
+  //   },
+  //   onCancel: () => {
+  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
+  //   },
+  // });
+  // const onDetail = (record: PlanetKnowledge) => {
+  //   setDetailModelProps((prev) => ({
+  //     ...prev,
+  //     show: true,
+  //     formValue: record,
+  //   }));
+  // };
+  const columns: ColumnsType<PlanetKnowledge> = [
+    { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
-      title: '新闻平台',
-      dataIndex: 'exchange_media_title',
-      key: 'exchange_media_title',
-      width: 150,
+      title: '群组名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 100,
+      align: 'center',
     },
-    { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200 },
-    { title: '接受时间', dataIndex: 'created_time', key: 'created_time', width: 200 },
     {
-      title: '状态',
+      title: '标题',
+      dataIndex: 'type',
+      key: 'type',
+      width: 200,
+      align: 'center',
+      render: (type: string) => {
+        if (type === 'pay') {
+          return <Tag color="orange">付费</Tag>;
+        }
+        return <Tag color="green">免费</Tag>;
+      },
+    },
+    {
+      title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
+      width: 120,
+      align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button type="primary" onClick={() => onEditTag(record)}>
+          {/* <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
             详细
+          </Button> */}
+          <Button type="primary" onClick={() => onEditTag(record)}>
+            新增标签
           </Button>
         </div>
       ),
@@ -139,14 +168,14 @@ export default function NewsList() {
     },
   });
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  const [CategoryIds, setCategoryIds] = useState({
-    categoryIdOne: '',
-    categoryIdTwo: '',
-    categoryIdThree: '',
-  });
-  const [levelOneList, setLevelOneList] = useState([]);
-  const [levelTwoList, setLevelTwoList] = useState([]);
-  const [levelThreeList, setLevelThreeList] = useState([]);
+  // const [CategoryIds, setCategoryIds] = useState({
+  //   categoryIdOne: '',
+  //   categoryIdTwo: '',
+  //   categoryIdThree: '',
+  // });
+  // const [levelOneList, setLevelOneList] = useState([]);
+  // const [levelTwoList, setLevelTwoList] = useState([]);
+  // const [levelThreeList, setLevelThreeList] = useState([]);
   const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
     area_id: '',
     level: -1,
@@ -154,12 +183,12 @@ export default function NewsList() {
   });
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => newsService.GetTheasaurusList(),
+    queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
   useEffect(() => {
     const fetchCategoryData = async () => {
-      const data = await newsService.GetChildCateGory(categoryQuery);
+      const data = await planetService.GetChildCateGory(categoryQuery);
       if (categoryQuery.level === 0) {
         setLevelOneList(data);
       } else if (categoryQuery.level === 1) {
@@ -171,34 +200,34 @@ export default function NewsList() {
 
     fetchCategoryData();
   }, [categoryQuery]);
-  const onChangeTheasaurusTag = (e: any) => {
-    setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  };
-  const onChangeCategoryOneTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  };
-  const onChangeCategoryTwoTag = (e: any) => {
-    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  };
-  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 10,
-      page: 1,
-      content: data as string,
-    }));
-  };
+  // const onChangeTheasaurusTag = (e: any) => {
+  //   setTheasaurusTagId(e.target.value);
+  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  // };
+  // const onChangeCategoryOneTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  // };
+  // const onChangeCategoryTwoTag = (e: any) => {
+  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  // };
+  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+  //   const data = checkedValues.reduce((pre, cur) => {
+  //     return `${pre} ${cur}`;
+  //   }, '');
+  //   setArticelQuery((prev) => ({
+  //     ...prev,
+  //     limit: 10,
+  //     page: 1,
+  //     content: data as string,
+  //   }));
+  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        <Card>
+        {/* <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -245,8 +274,8 @@ export default function NewsList() {
               />
             </div>
           )}
-        </Card>
-        <Card title="媒体管理">
+        </Card> */}
+        <Card title="领航专栏">
           <Table
             rowKey="id"
             size="small"
@@ -258,6 +287,7 @@ export default function NewsList() {
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
+        {/* <DetailModel {...detailModelProps} /> */}
       </Space>
     </>
   );

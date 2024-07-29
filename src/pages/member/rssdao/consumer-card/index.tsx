@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Switch } from 'antd';
+import { Card, Space, message, Switch, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -31,7 +31,6 @@ export default function MemberLevelPage() {
     queryKey: ['couponList', query],
     queryFn: () => fetchCouponList(query),
   });
-  console.log(data,"this is dfata")
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -124,6 +123,12 @@ export default function MemberLevelPage() {
       title: '种类',
       dataIndex: 'vip_level_name',
       key: 'vip_level_name',
+    },
+    {
+      title: '绑定状态',
+      dataIndex: 'binding_status',
+      key: 'binding_status',
+      render: (value) => (value ? <Tag color="orange">已绑定</Tag> : <Tag color="red">未绑定</Tag>),
     },
     { title: '手机号', dataIndex: 'mobile_number', key: 'mobile_number' },
     {

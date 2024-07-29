@@ -23,7 +23,7 @@ const TGTheasaurusPage = lazy(() => import('@/pages/pilot-special/TG-community/t
 const TGGrounpPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp'));
 const TGGrounpContentPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp-content'));
 const pilotSpecial: AppRouteObject = {
-  order: 5,
+  order: 4,
   path: 'pilot-special',
   element: (
     <Suspense fallback={<CircleLoading />}>
@@ -61,14 +61,14 @@ const pilotSpecial: AppRouteObject = {
             key: '/pilot-special/knowledge-planet/category-tag',
           },
         },
-        // {
-        //   path: 'knowledge-zone',
-        //   element: <KnowledgeZonePage />,
-        //   meta: {
-        //     label: 'sys.menu.knowledge-planet.knowledge-zone',
-        //     key: '/pilot-special/knowledge-planet/knowledge-zone',
-        //   },
-        // },
+        {
+          path: 'knowledge-zone',
+          element: <KnowledgeZonePage />,
+          meta: {
+            label: 'sys.menu.knowledge-planet.knowledge-zone',
+            key: '/pilot-special/knowledge-planet/knowledge-zone',
+          },
+        },
         {
           path: 'knowledge-content',
           element: <KnowledgeContentPage />,
@@ -100,14 +100,14 @@ const pilotSpecial: AppRouteObject = {
             key: '/pilot-special/TG-community/category-tag',
           },
         },
-        // {
-        //   path: 'tg-grounp',
-        //   element: <TGGrounpPage />,
-        //   meta: {
-        //     label: 'sys.menu.TG-community.tg-grounp',
-        //     key: '/pilot-special/TG-community/tg-grounp',
-        //   },
-        // },
+        {
+          path: 'tg-grounp',
+          element: <TGGrounpPage />,
+          meta: {
+            label: 'sys.menu.TG-community.tg-grounp',
+            key: '/pilot-special/TG-community/tg-grounp',
+          },
+        },
         {
           path: 'tg-grounp-content',
           element: <TGGrounpContentPage />,
