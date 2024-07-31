@@ -38,12 +38,12 @@ function LoginForm() {
         size="large"
         initialValues={{
           remember: true,
-          username: DEFAULT_USER.username,
-          password: DEFAULT_USER.password,
+          // username: DEFAULT_USER.username,
+          // password: DEFAULT_USER.password,
         }}
         onFinish={handleFinish}
       >
-        <div className="mb-4 flex flex-col">
+        {/* <div className="mb-4 flex flex-col">
           <Alert
             type="info"
             description={
@@ -72,7 +72,7 @@ function LoginForm() {
             }
             showIcon
           />
-        </div>
+        </div> */}
 
         <Form.Item
           name="username"
