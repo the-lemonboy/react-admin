@@ -63,12 +63,10 @@ export default function NewsList() {
   };
   const columns: ColumnsType<Media> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '名称', dataIndex: 'title', key: 'title', width: 300 },
+    { title: '名称', dataIndex: 'title', key: 'title' },
     {
       title: '新闻平台',
       dataIndex: 'exchange_media_title',
-      key: 'exchange_media_title',
-      width: 150,
     },
     { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200 },
     { title: '接受时间', dataIndex: 'created_time', key: 'created_time', width: 200 },
@@ -76,6 +74,7 @@ export default function NewsList() {
       title: '状态',
       dataIndex: 'opt_status',
       key: 'opt_status',
+      align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary">详细</Button>
