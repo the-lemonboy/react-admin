@@ -195,7 +195,9 @@ export default function NavWebsitePage() {
       dataIndex: 'icon',
       align: 'center',
       width: 80,
-      render: (text: string) => <img src={text} alt="icon" style={{ width: 30, height: 30 }} />,
+      render: (text: string) => (
+        <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
+      ),
     },
     {
       title: '描述',

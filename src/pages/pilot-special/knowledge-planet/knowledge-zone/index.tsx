@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import planetService, { GetGroupListReq } from '@/api/services/planetService';
 
+import DelTagModel, { DelTagModelProps } from './delTag';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { PlanetKnowledge } from '#/entity';
@@ -63,24 +64,24 @@ export default function KnowledgeGrounp() {
       theasaurusList,
     }));
   };
-  // const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
-  //   title: '详细',
-  //   show: false,
-  //   formValue: {},
-  //   onOk: () => {
-  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  //   onCancel: () => {
-  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  // });
-  // const onDetail = (record: PlanetKnowledge) => {
-  //   setDetailModelProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     formValue: record,
-  //   }));
-  // };
+  const [delTagModelProps, setDelTagModelProps] = useState<DelTagModelProps>({
+    title: '删除标签',
+    show: false,
+    formValue: {},
+    onOk: () => {
+      setDelTagModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setDelTagModelProps((prev) => ({ ...prev, show: false }));
+    },
+  });
+  const onDelTag = (record: PlanetKnowledge) => {
+    setDelTagModelProps((prev) => ({
+      ...prev,
+      show: true,
+      formValue: record,
+    }));
+  };
   const columns: ColumnsType<PlanetKnowledge> = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
@@ -111,10 +112,10 @@ export default function KnowledgeGrounp() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          {/* <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
-            详细
-          </Button> */}
-          <Button type="primary" onClick={() => onEditTag(record)}>
+          <Button className="mr-2" type="primary" onClick={() => onDelTag(record)}>
+            删除标签
+          </Button>
+          <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
           </Button>
         </div>
@@ -287,7 +288,7 @@ export default function KnowledgeGrounp() {
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
-        {/* <DetailModel {...detailModelProps} /> */}
+        <DelTagModel {...delTagModelProps} />
       </Space>
     </>
   );

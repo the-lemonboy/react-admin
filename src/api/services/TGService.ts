@@ -72,7 +72,7 @@ export enum TGType {
   AddArea = '/api/nav/navigator/tg/area/add',
   GetAreaList = '/api/nav/navigator/tg/area/list',
   ChangeAreaStatus = '/api/nav/navigator/tg/area/opt_status',
-  UpDateArea = '/api/nav/navigator/tg/area/update',
+  UpdateArea = '/api/nav/navigator/tg/area/update',
   AddCateGory = '/api/nav/navigator/tg/category/add',
   GetCategoryList = '/api/nav/navigator/tg/category/list',
   UpdateCategory = '/api/nav/navigator/tg/category/update',
@@ -86,7 +86,7 @@ const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
 const ChangeAreaStatus = (data: ChangeAreaStatusReq) =>
   apiClient.post({ url: TGType.ChangeAreaStatus, data });
-const UpDateArea = (data: AddAreaReq) => apiClient.post({ url: TGType.UpDateArea, data });
+const UpdateArea = (data: AddAreaReq) => apiClient.post({ url: TGType.UpdateArea, data });
 const GetArea = (id: string) => apiClient.get({ url: `/api/nav/navigator/tg/area/${id}` });
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: TGType.AddCateGory, data });
 const DelCateGory = (id: string) =>
@@ -107,7 +107,7 @@ export default {
   AddArea,
   GetAreaList,
   ChangeAreaStatus,
-  UpDateArea,
+  UpdateArea,
   GetArea,
   AddCateGory,
   DelCateGory,

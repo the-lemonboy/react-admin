@@ -1,12 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button, Radio, Checkbox, Tooltip } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import planetService, { SearchKnowledgeReq } from '@/api/services/planetService';
 
 import DetailModel, { DetailModelProps } from './detail';
-import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { PlanetKnowledge } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
@@ -112,18 +111,20 @@ export default function NewsList() {
       key: 'content_search_text',
       width: 200,
       render: (_, record) => (
-        <div
-          className="ellipsis"
-          style={{
-            float: 'left',
-            maxWidth: '100px',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {record.content_search_text}
-        </div>
+        <Tooltip title={record.content_search_text}>
+          <div
+            className="ellipsis"
+            style={{
+              float: 'left',
+              maxWidth: '100px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {record.content_search_text}
+          </div>
+        </Tooltip>
       ),
     },
     // {

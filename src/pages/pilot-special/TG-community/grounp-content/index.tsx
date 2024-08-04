@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button, Radio, Checkbox, Tooltip } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -111,18 +111,20 @@ export default function NewsList() {
       width: 200,
       align: 'center',
       render: (_, record) => (
-        <div
-          className="ellipsis"
-          style={{
-            float: 'left',
-            maxWidth: '200px',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {record.message.text}
-        </div>
+        <Tooltip title={record.message.text}>
+          <div
+            className="ellipsis"
+            style={{
+              float: 'left',
+              maxWidth: '200px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {record.message.text}
+          </div>
+        </Tooltip>
       ),
     },
     { title: '社群名称', dataIndex: 'group[group_name]', key: 'group' },

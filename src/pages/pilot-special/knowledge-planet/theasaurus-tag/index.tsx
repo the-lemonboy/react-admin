@@ -45,7 +45,7 @@ export default function ThesaurusTag() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button>编辑</Button>
+          <Button type='primary' onClick={() => onEditAreaTag(record)}>编辑</Button>
         </div>
       ),
     },
@@ -92,7 +92,15 @@ export default function ThesaurusTag() {
     },
     addFlag: true,
   });
-
+  const onEditAreaTag = (record: Theasaurus) => {
+    setEditorOrAddModelProps((prev) => ({
+      ...prev,
+      title: '编辑媒体',
+      show: true,
+      formValue: record,
+      addFlag: false,
+    }));
+  };
   const onCreateMedia = (addFlag: boolean) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,

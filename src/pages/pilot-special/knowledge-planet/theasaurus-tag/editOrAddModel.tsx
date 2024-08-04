@@ -41,7 +41,19 @@ function EditorOrAddModel({
       console.error('Error adding media:', error);
     },
   });
-
+  const updateAreaMutation = useMutation({
+    mutationFn: async (params: AddAreaReq) => {
+      const res = await planetService.UpdateArea(params);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['planetAreaList']);
+      onOk();
+    },
+    onError: (error) => {
+      console.error('Error adding media:', error);
+    },
+  });
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -52,6 +64,12 @@ function EditorOrAddModel({
         });
       } else {
         // handle update logic here
+        updateAreaMutation.mutate({
+          id: formValue.id,
+          area_key: formValue.area_key,
+          opt_status: values.opt_status,
+          title: values.title,
+        });
       }
     } catch (error) {
       console.error('Validation failed:', error);
@@ -71,14 +89,10 @@ function EditorOrAddModel({
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item<AddTheasaurusReq> label="名称" name="title" rules={[{ required: true }]}>
+        <Form.Item<AddAreaReq> label="名称" name="title" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item<AddTheasaurusReq>
-          label="是否禁用"
-          name="opt_status"
-          rules={[{ required: true }]}
-        >
+        <Form.Item<AddAreaReq> label="是否禁用" name="opt_status" rules={[{ required: true }]}>
           <Radio.Group onChange={handleOptStatusChange} value={form.getFieldValue('opt_status')}>
             <Radio value>是</Radio>
             <Radio value={false}>否</Radio>

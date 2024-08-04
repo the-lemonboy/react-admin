@@ -1,30 +1,36 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { CloseCircleOutlined } from '@ant-design/icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Form, Input, Modal, Popconfirm, Tag, message } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import planetService from '@/api/services/planetService';
 
+import { CategroyTag } from '../../types';
+
 const { TextArea } = Input;
-export interface DetailModelProps {
-  title;
-  show;
-  formValue;
-  onOk;
-  onCancel;
-  // categoryList,
+
+export interface DelTagModelProps {
+  title: string;
+  show: boolean;
+  formValue: any;
+  onOk: VoidFunction;
+  onCancel: VoidFunction;
 }
+
 // 新增目录标签
-function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProps) {
+function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProps) {
   const [form] = Form.useForm();
+  const queryClient = useQueryClient();
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
+
   const { data: tagList } = useQuery({
-    queryKey: ['PlanetTagList', formValue?.group?.group_id],
-    queryFn: () => planetService.GetCateGoryTagList(formValue?.group?.group_id),
-    enabled: !!formValue?.group?.group_id,
+    queryKey: ['PlanetTagList', formValue?.id],
+    queryFn: () => planetService.GetCateGoryTagList(formValue?.id),
+    enabled: !!formValue?.id,
   });
-  console.log(formValue);
+
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
@@ -33,10 +39,12 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
       console.error('Validation failed:', error);
     }
   };
+
   const fetchDelCategoryTag = useMutation({
-    mutationFn: planetService.DelCateGoryTag,
+    mutationFn: ({ group_id, category_id }: { group_id: string; category_id: string }) =>
+      planetService.DelCateGoryTag(group_id, category_id),
     onSuccess: () => {
-      // queryClient.invalidateQueries(['websiteTagList']);
+      queryClient.invalidateQueries(['PlanetTagList']);
       message.success('标签删除成功');
     },
     onError: (error) => {
@@ -45,10 +53,14 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
     },
   });
 
-  const delCategoryTag = (tagValue: TagInfo) => {
-    fetchDelCategoryTag.mutate({ cid: tagValue.c_id, wid: tagValue.w_id });
-    setVisiblePopconfirm(null); // Hide the Popconfirm
+  const [visiblePopconfirm, setVisiblePopconfirm] = useState<string | null>(null);
+
+  const delCategoryTag = (tagValue: CategroyTag) => {
+    console.log(formValue, tagValue);
+    fetchDelCategoryTag.mutate({ group_id: formValue.id, category_id: tagValue.area_id });
+    setVisiblePopconfirm(null); // 隐藏 Popconfirm
   };
+
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -60,28 +72,28 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
       >
         <Form.Item label="已有标签" name="url">
           {tagList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              {tagList.map((item: TagInfo) => (
+            <div className="flex flex-wrap items-center">
+              {tagList.map((item: CategroyTag) => (
                 <Popconfirm
                   key={item.id}
                   title="确定删除这个标签吗?"
                   okText="确定"
                   cancelText="取消"
                   placement="left"
-                  open={visiblePopconfirm === item.id}
+                  open={visiblePopconfirm === item.area_id}
                   onConfirm={() => delCategoryTag(item)}
                   onCancel={() => setVisiblePopconfirm(null)}
                 >
                   <Tag
+                    className="m-0"
                     closable
                     closeIcon={<CloseCircleOutlined />}
                     onClose={(e) => {
                       e.preventDefault();
-                      setVisiblePopconfirm(item.id);
+                      setVisiblePopconfirm(item.area_id);
                     }}
-                    style={{ marginBottom: '8px', marginRight: '8px' }}
                   >
-                    {item.title}
+                    {item.area_title}
                   </Tag>
                 </Popconfirm>
               ))}
@@ -94,11 +106,9 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
         <Form.Item label="内容" name="content_text">
           <TextArea rows={4} />
         </Form.Item>
-        <Form.Item label="发布者" name="owner.name">
-          <Input />
-        </Form.Item>
       </Form>
     </Modal>
   );
 }
-export default DetailModel;
+
+export default DelTagModel;

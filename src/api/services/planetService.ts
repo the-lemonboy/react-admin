@@ -76,7 +76,7 @@ export enum PlanetType {
   AddArea = '/api/nav/navigator/area/add',
   GetAreaList = '/api/nav/navigator/area/list',
   ChangeAreaStatus = '/api/nav/navigator/area/opt_status',
-  UpDateArea = '/api/nav/navigator/area/update',
+  UpdateArea = '/api/nav/navigator/area/update',
   AddCateGory = '/api/nav/navigator/category/add',
   ChangeCategoryStatus = '/api/nav/navigator/category/opt_status',
   GetCategoryList = '/api/nav/navigator/category/list',
@@ -91,7 +91,7 @@ const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, 
 const GetAreaList = () => apiClient.get({ url: PlanetType.GetAreaList });
 const ChangeAreaStatus = (data: ChangeAreaStatusReq) =>
   apiClient.post({ url: PlanetType.ChangeAreaStatus, data });
-const UpDateArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.UpDateArea, data });
+const UpdateArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.UpdateArea, data });
 const GetArea = (id: string) => apiClient.get({ url: `/api/nav/navigator/area/${id}` });
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: PlanetType.AddCateGory, data });
 const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
@@ -117,7 +117,7 @@ export default {
   AddArea,
   GetAreaList,
   ChangeAreaStatus,
-  UpDateArea,
+  UpdateArea,
   GetArea,
   AddCateGory,
   DelCateGory,
