@@ -1,5 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox, Tooltip } from 'antd';
+import {
+  Card,
+  Space,
+  message,
+  Button,
+  Radio,
+  Checkbox,
+  Tooltip,
+  Form,
+  Row,
+  Col,
+  Select,
+  Input,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +27,7 @@ type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
-export default function NewsList() {
+export default function TGGrounpContentList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [articelQuery, setArticelQuery] = useState<SearchTGReq>({
@@ -86,7 +99,7 @@ export default function NewsList() {
     {
       title: '话题',
       dataIndex: 'topic.topic_name',
-      key: 'topic.topic_name',
+      key: '[topic, topic_name]',
       align: 'center',
       width: 100,
       render: (_, record) => (
@@ -127,7 +140,7 @@ export default function NewsList() {
         </Tooltip>
       ),
     },
-    { title: '社群名称', dataIndex: 'group[group_name]', key: 'group' },
+    { title: '社群名称', dataIndex: ['group', 'group_name'], key: 'group.group_name' },
     { title: '发布时间', dataIndex: 'created_at', key: 'created_at', align: 'center' },
     {
       title: '操作',
@@ -162,13 +175,13 @@ export default function NewsList() {
       });
     },
   });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
@@ -244,10 +257,55 @@ export default function NewsList() {
       content: data as string,
     }));
   };
+  // 搜索
+  const [searchForm] = Form.useForm();
+  const onSearchFormReset = () => {
+    searchForm.resetFields();
+  };
+  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const onSearchSubmit = async () => {
+    const values = await searchForm.validateFields();
+    setArticelQuery({ ...values, page: 1, limit: 10 });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
+        <Card>
+          <Form form={searchForm} initialValues={searchFormValues}>
+            <Row gutter={[16, 16]}>
+              <Col span={24} lg={6}>
+                <Form.Item label="板块" name="area_id" className="!mb-0">
+                  <Select>
+                    {theasaurusList?.data.map((item: Theasaurus, index) => (
+                      <Select.Option key={index} value={item.id}>
+                        {item.title}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="发布者" name="author" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="社群Id" name="group_id" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <div className="flex justify-end">
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
         <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>

@@ -46,18 +46,18 @@ export interface SetCategroyTagsReq {
   topic_id: string;
 }
 export interface SearchTGReq {
-  area_id: string;
-  author: string;
-  content: string;
-  created_at_range: string;
-  group_id: string;
-  keyword: string[];
+  area_id?: string;
+  author?: string;
+  content?: string;
+  created_at_range?: string;
+  group_id?: string;
+  keyword?: string[];
   limit: number;
-  message_id: string;
-  msg_type: string;
-  p_c_path: string;
+  message_id?: string;
+  msg_type?: string;
+  p_c_path?: string;
   page: number;
-  topic_id: string;
+  topic_id?: string;
 }
 export interface GetChildCateGoryReq {
   area_id: string;

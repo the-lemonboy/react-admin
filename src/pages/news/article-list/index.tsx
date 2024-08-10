@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox } from 'antd';
+import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Select, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -111,14 +111,6 @@ export default function NewsList() {
       });
     },
   });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
-
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
     show: false,
@@ -155,6 +147,10 @@ export default function NewsList() {
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
     queryFn: () => newsService.GetTheasaurusList(),
+  });
+  const { data: ArticleKeywordList } = useQuery({
+    queryKey: ['ArticleKeywordList'],
+    queryFn: () => newsService.GetArticleKeyword(),
   });
   // 查询标签
   useEffect(() => {
@@ -194,10 +190,61 @@ export default function NewsList() {
       content: data as string,
     }));
   };
+  // 搜索
+  const [searchForm] = Form.useForm();
+  const onSearchFormReset = () => {
+    searchForm.resetFields();
+  };
+  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const onSearchSubmit = async () => {
+    const values = await searchForm.validateFields();
+    setArticelQuery({ ...values, page: 1, limit: 10 });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
+        <Card>
+          <Form form={searchForm} initialValues={searchFormValues}>
+            <Row gutter={[16, 16]}>
+              <Col span={24} lg={6}>
+                <Form.Item label="板块" name="area_id" className="!mb-0">
+                  <Select>
+                    {theasaurusList?.data.map((item: any, index: number) => (
+                      <Select.Option key={index} value={item.id}>
+                        {item.title}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="新闻平台" name="exchange_media" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="关键词" name="content" className="!mb-0">
+                  <Select>
+                    {ArticleKeywordList?.map((item: any, index: number) => (
+                      <Select.Option key={index} value={item.keyword}>
+                        {item.title}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <div className="flex justify-end">
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
         <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>

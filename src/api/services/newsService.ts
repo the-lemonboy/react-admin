@@ -1,4 +1,3 @@
-import { ap } from 'ramda';
 import apiClient from '../apiClient';
 
 export interface GetMediaListReq {
@@ -86,7 +85,9 @@ export enum NewsType {
   GetChildCateGory = '/api/nav/media_content/level/category/list',
   NewsList = '/api/nav/media/flashnews/list',
   ArticelList = '/api/nav/media/news/search',
-  ChangeCategoryStatus = '/api/nav/media_content/category/opt_status'
+  ChangeCategoryStatus = '/api/nav/media_content/category/opt_status',
+  GetArticleKeyword = '/api/nav/media/news/keyword_rc5',
+  GetNewsKeyword = '/api/nav/media/flashnews/keyword_rc5',
   // DelCateGory = ''
 }
 
@@ -119,7 +120,10 @@ const GetNewDetail = (flash_key: string) =>
   apiClient.get<any>({ url: `/api/nav/media/flashnews/${flash_key}` });
 const GetArticelDetail = (news_key: string) =>
   apiClient.get<any>({ url: `/api/nav/media/news/${news_key}` });
-const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) => apiClient.post<any>({ url: NewsType.ChangeCategoryStatus, data });
+const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
+  apiClient.post<any>({ url: NewsType.ChangeCategoryStatus, data });
+const GetArticleKeyword = () => apiClient.get<any>({ url: NewsType.GetArticleKeyword });
+const GetNewsKeyword = () => apiClient.get<any>({ url: NewsType.GetNewsKeyword });
 export default {
   AddMedia,
   GetMediaList,
@@ -138,5 +142,7 @@ export default {
   GetArticelList,
   GetNewDetail,
   GetArticelDetail,
-  ChangeCategoryStatus
+  ChangeCategoryStatus,
+  GetArticleKeyword,
+  GetNewsKeyword,
 };
