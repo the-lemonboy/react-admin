@@ -12,6 +12,9 @@ import {
   Switch,
   TreeSelect,
   message,
+  Tooltip,
+  Col,
+  Row,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -19,9 +22,9 @@ import { useEffect, useState } from 'react';
 
 import navService, {
   AddWebsiteReq,
-  GetWebsiteListRes,
   AddCateGoryReq,
   AddTagReq,
+  SearchWebsiteReq,
 } from '@/api/services/navService';
 import { Iconify, IconButton } from '@/components/icon';
 import { UploadAvatar } from '@/components/upload/upload-avatar';
@@ -53,31 +56,20 @@ type OptionType = {
   children?: OptionType[];
 };
 // ------------
-type SearchFormFieldType = Pick<Website, 'title'>;
+// type SearchFormFieldType = Pick<Website, 'title'>;
 export default function NavWebsitePage() {
   const [messageApi, contextHolder] = message.useMessage();
-  // 多级单选框
-  // const { data: optionsDataList, isLoading: isLoadingCg } = useQuery<OptionType[], Error>({
-  //   queryKey: ['websiteOptions'],
-  //   queryFn: async () => {
-  //     console.log('this is data');
-  //     const res = await navService.CateGoryList();
-  //     console.log(res, 'this is data');
-  //     return res; // 返回响应对象的数据部分，确保返回的是 OptionType[] 类型的数组
-  //   },
-  // });
-  // console.log(optionsDataList);
   const [optionsDataList, setOptionsDataList] = useState([]);
   useEffect(() => {
     navService.CateGoryList().then((res) => {
       setOptionsDataList(res);
     });
   }, []);
-  const fetchWebsiteList = async (params: GetWebsiteListRes) => {
-    const res = await navService.WebsiteList(params);
+  const fetchWebsiteList = async (params: SearchWebsiteReq) => {
+    const res = await navService.SearchWebsite(params);
     return res;
   };
-  const [query, setQuery] = useState<GetWebsiteListRes>({ limit: 10, page: 1 });
+  const [query, setQuery] = useState<SearchWebsiteReq>({ limit: 10, page: 1 });
 
   // 使用 useQuery 获取数据
   const { data, isLoading } = useQuery({
@@ -116,7 +108,7 @@ export default function NavWebsitePage() {
   // 新建网站
   // const [websiteData, setWebsiteData] = useState<Website[]>([]);
   // 新增or编辑弹框
-  const [searchForm] = Form.useForm();
+  // const [searchForm] = Form.useForm();
   const [websiteModalProps, setWebsiteModalProps] = useState<WebsiteModalProps>({
     formValue: {
       hash_key: '',
@@ -201,9 +193,25 @@ export default function NavWebsitePage() {
     },
     {
       title: '描述',
-      dataIndex: 'description',
-      align: 'center',
-      width: 300,
+      dataIndex: 'content_search_text',
+      key: 'content_search_text',
+      width: 200,
+      render: (_, record) => (
+        <Tooltip title={record.description}>
+          <div
+            className="ellipsis"
+            style={{
+              float: 'left',
+              maxWidth: '100px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {record.description}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '链接',
@@ -258,10 +266,6 @@ export default function NavWebsitePage() {
     onSelectAll: (selected, selectedRows, changeRows) => {
       console.log(selected, selectedRows, changeRows);
     },
-  };
-
-  const onSearchFormReset = () => {
-    searchForm.resetFields();
   };
 
   const onCreate = () => {
@@ -380,41 +384,44 @@ export default function NavWebsitePage() {
     }
   };
   // --------------删除目录标签 end
+  // 搜索
+  const [searchForm] = Form.useForm();
+  const onSearchFormReset = () => {
+    searchForm.resetFields();
+  };
+  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const onSearchSubmit = async () => {
+    const values = await searchForm.validateFields();
+    setQuery({ ...values, page: 1, limit: 10 });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
-        <Form form={searchForm}>
-          <Row gutter={[16, 16]}>
-            <Col span={24} lg={6}>
-              <Form.Item<SearchFormFieldType> label="Name" name="name" className="!mb-0">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24} lg={6}>
-              <Form.Item<SearchFormFieldType> label="Status" name="status" className="!mb-0">
-                <Select>
-                  <Select.Option value="enable">
-                    <ProTag color="success">Enable</ProTag>
-                  </Select.Option>
-                  <Select.Option value="disable">
-                    <ProTag color="error">Disable</ProTag>
-                  </Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={24} lg={12}>
-              <div className="flex justify-end">
-                <Button onClick={onSearchFormReset}>Reset</Button>
-                <Button type="primary" className="ml-4">
-                  Search
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </Form>
-      </Card> */}
+        <Card>
+          <Form form={searchForm} initialValues={searchFormValues}>
+            <Row gutter={[16, 16]}>
+              <Col span={24} lg={6}>
+                <Form.Item label="名称" name="title" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="描述" name="description" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={12}>
+                <div className="flex justify-end">
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
         <Card
           title="目录操作"
           extra={
@@ -563,7 +570,6 @@ export default function NavWebsitePage() {
             columns={columns}
             dataSource={data?.data}
             pagination={tableParams.pagination}
-            rowSelection={{ ...rowSelection }}
             loading={isLoading}
             onChange={handleTableChange}
           />
@@ -623,6 +629,7 @@ function WebsiteModal({ title, show, formValue, onOk, onCancel }: WebsiteModalPr
   const handleImageUrlChange = (url: string) => {
     form.setFieldsValue({ icon: url }); // 更新表单中的 icon 字段值
   };
+
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form

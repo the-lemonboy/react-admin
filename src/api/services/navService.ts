@@ -36,11 +36,11 @@ export interface GetWebsiteTagListReq {
   w_id: string;
 }
 export interface SearchWebsiteReq {
-  description: String;
+  description?: String;
   limit: number;
-  p_c_path: String;
+  p_c_path?: String;
   page: number;
-  title: String;
+  title?: String;
 }
 export interface GetWebsiteListReq {
   cid: string;
