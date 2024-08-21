@@ -34,7 +34,6 @@ export default function WebsiteCategoryTag() {
       setTreeCategory(ArrayToTree(tableList) as TreeCategory[]);
     }
   }, [tableList]);
-  console.log(tableList, 'optionsDataList');
   const columns: ColumnsType<WebsiteCategory> = [
     { title: 'ID', dataIndex: 'c_id', key: 'c_id' },
     { title: '名称', dataIndex: 'title', key: 'title' },
@@ -224,9 +223,15 @@ export default function WebsiteCategoryTag() {
         <Card
           title="标签管理"
           extra={
-            <Button type="primary" onClick={() => onCreateWebsiteCategory(true)}>
-              新增
-            </Button>
+            <div>
+              {/* <Button onClick={() => onCreateWebsiteCategory(true)}>展开所有子标签</Button>
+              <Button className="ml-2" onClick={() => onCreateWebsiteCategory(true)}>
+                关闭所有子标签
+              </Button> */}
+              <Button className="ml-2" type="primary" onClick={() => onCreateWebsiteCategory(true)}>
+                新增
+              </Button>
+            </div>
           }
         >
           <Table

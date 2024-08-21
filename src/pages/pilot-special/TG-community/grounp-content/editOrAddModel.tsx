@@ -77,9 +77,6 @@ function EditorOrAddModel({
     return path;
   };
   const [selectedPath, setSelectedPath] = useState<string[]>([]);
-  const handleOptStatusChange = (e: any) => {
-    form.setFieldsValue({ opt_status: e.target.value });
-  };
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
     const newSelectedPaths: string[] = newSelectedRowKeys.map((item) => {
