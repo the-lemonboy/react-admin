@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   Card,
   Space,
@@ -28,7 +28,7 @@ interface TableParams {
   pagination?: TablePaginationConfig;
 }
 export default function NewsList() {
-  const queryClient = useQueryClient(); // 全局声明
+  // const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [articelQuery, setArticelQuery] = useState<SearchKnowledgeReq>({
     limit: 10,
@@ -182,32 +182,32 @@ export default function NewsList() {
       ),
     },
   ];
-  const changeMediaStatus = useMutation({
-    mutationFn: (params: Media) => {
-      const res = newsService.ChangeMediaStatus(params);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['mediaList']);
-      messageApi.open({
-        type: 'success',
-        content: '状态修改成功',
-      });
-    },
-    onError: () => {
-      messageApi.open({
-        type: 'error',
-        content: '状态修改失败',
-      });
-    },
-  });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
+  // const changeMediaStatus = useMutation({
+  //   mutationFn: (params: Media) => {
+  //     const res = newsService.ChangeMediaStatus(params);
+  //     return res;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['mediaList']);
+  //     messageApi.open({
+  //       type: 'success',
+  //       content: '状态修改成功',
+  //     });
+  //   },
+  //   onError: () => {
+  //     messageApi.open({
+  //       type: 'error',
+  //       content: '状态修改失败',
+  //     });
+  //   },
+  // });
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
 
   // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
   //   title: '标签管理',
@@ -237,7 +237,7 @@ export default function NewsList() {
   const [levelOneList, setLevelOneList] = useState([]);
   const [levelTwoList, setLevelTwoList] = useState([]);
   const [levelThreeList, setLevelThreeList] = useState([]);
-  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+  const [categoryQuery, setCategoryQuery] = useState({
     area_id: '',
     level: -1,
     p_c_id: '',
@@ -289,7 +289,7 @@ export default function NewsList() {
   const onSearchFormReset = () => {
     searchForm.resetFields();
   };
-  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const [searchFormValues, setSearchFormValues] = useState<SearchKnowledgeReq>();
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
     setArticelQuery({ ...values, page: 1, limit: 10 });
