@@ -202,7 +202,7 @@ export default function NavWebsitePage() {
             className="ellipsis"
             style={{
               float: 'left',
-              maxWidth: '100px',
+              maxWidth: '180px',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',

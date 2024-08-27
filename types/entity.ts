@@ -283,3 +283,21 @@ export interface Role {
   desc?: string;
   permission?: Permission[];
 }
+
+export interface Tweet {
+  id: number;
+  tweet_id: string;
+  author_id: string;
+  name: string;
+  username: string;
+  profile_image_url0: string;
+  text: string;
+  lang: string;
+  like_count: number;
+  reply_count: number;
+  retweet_count: number;
+  quote_count: number;
+  hidden: boolean;
+  created_at: string;  // This is likely a date string
+  created_time: string; // This is also likely a date string
+}

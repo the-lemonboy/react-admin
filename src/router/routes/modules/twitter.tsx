@@ -6,114 +6,95 @@ import { CircleLoading } from '@/components/loading';
 
 import { AppRouteObject } from '#/router';
 
-const PlanetCategotyPage = lazy(
-  () => import('@/pages/pilot-special/knowledge-planet/category-tag'),
-);
-const PlanetTheasaurusPage = lazy(
-  () => import('@/pages/pilot-special/knowledge-planet/theasaurus-tag'),
-);
-const KnowledgeZonePage = lazy(
-  () => import('@/pages/pilot-special/knowledge-planet/knowledge-zone'),
-);
-const KnowledgeContentPage = lazy(
-  () => import('@/pages/pilot-special/knowledge-planet/knowledge-content'),
-);
-const TGCategoryPage = lazy(() => import('@/pages/pilot-special/TG-community/category-tag'));
-const TGTheasaurusPage = lazy(() => import('@/pages/pilot-special/TG-community/theasaurus-tag'));
-const TGGrounpPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp'));
-const TGGrounpContentPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp-content'));
+const TwitterCategoryPage = lazy(() => import('@/pages/twitter/tag-management/category-tag'));
+const TwitterTheasaurusPage = lazy(() => import('@/pages/twitter/tag-management/theasaurus-tag'));
+const CountPage = lazy(() => import('@/pages/twitter/twitter-management/count'));
+const ArticelPage = lazy(() => import('@/pages/twitter/articel-management/content'));
+const SessionPage = lazy(() => import('@/pages/twitter/articel-management/session'));
 const pilotSpecial: AppRouteObject = {
   order: 4,
-  path: 'pilot-special',
+  path: 'twitter-management',
   element: (
     <Suspense fallback={<CircleLoading />}>
       <Outlet />
     </Suspense>
   ),
   meta: {
-    label: 'sys.menu.pilot-special',
+    label: 'sys.menu.twitter-management',
     icon: <SvgIcon icon="ic_pilot" className="ant-menu-item-icon" size="24" />,
-    key: '/pilot-special',
+    key: '/twitter-management',
   },
   children: [
     {
       index: true,
-      element: <Navigate to="knowledge-planet" replace />,
+      element: <Navigate to="twitter-management" replace />,
     },
     {
-      path: 'knowledge-planet',
-      meta: { label: 'sys.menu.knowledge-planet.index', key: '/pilot-special/knowledge-planet' },
+      path: 'tag-management',
+      meta: {
+        label: 'sys.menu.tag-management.index',
+        key: '/twitter-management/tag-management',
+      },
       children: [
         { index: true, element: <Navigate to="category-tag" replace /> },
         {
           path: 'theasaurus-tag',
-          element: <PlanetTheasaurusPage />,
+          element: <TwitterTheasaurusPage />,
           meta: {
-            label: 'sys.menu.knowledge-planet.theasaurus-tag',
-            key: '/pilot-special/knowledge-planet/theasaurus-tag',
+            label: 'sys.menu.tag-management.theasaurus-tag',
+            key: '/twitter-management/tag-management/theasaurus-tag',
           },
         },
         {
           path: 'category-tag',
-          element: <PlanetCategotyPage />,
+          element: <TwitterCategoryPage />,
           meta: {
-            label: 'sys.menu.knowledge-planet.category-tag',
-            key: '/pilot-special/knowledge-planet/category-tag',
-          },
-        },
-        {
-          path: 'knowledge-zone',
-          element: <KnowledgeZonePage />,
-          meta: {
-            label: 'sys.menu.knowledge-planet.knowledge-zone',
-            key: '/pilot-special/knowledge-planet/knowledge-zone',
-          },
-        },
-        {
-          path: 'knowledge-content',
-          element: <KnowledgeContentPage />,
-          meta: {
-            label: 'sys.menu.knowledge-planet.knowledge-content',
-            key: '/pilot-special/knowledge-planet/knowledge-content',
+            label: 'sys.menu.tag-management.category-tag',
+            key: '/twitter-management/tag-management/category-tag',
           },
         },
       ],
     },
     {
-      path: 'TG-community',
-      meta: { label: 'sys.menu.TG-community.index', key: '/pilot-special/TG-community' },
+      path: 'count-management',
+      meta: {
+        label: 'sys.menu.count-management.index',
+        key: '/twitter-management/count-management',
+      },
+      children: [
+        { index: true, element: <Navigate to="count" replace /> },
+        {
+          path: 'count',
+          element: <CountPage />,
+          meta: {
+            label: 'sys.menu.count-management.count',
+            key: '/twitter-management/count-management/count',
+          },
+        },
+      ],
+    },
+    {
+      path: 'articel-management',
+      meta: {
+        label: 'sys.menu.articel-management.index',
+        key: '/twitter-management/articel-management',
+      },
       children: [
         { index: true, element: <Navigate to="category-tag" replace /> },
         {
-          path: 'theasaurus-tag',
-          element: <TGTheasaurusPage />,
+          path: 'articel',
+          element: <ArticelPage />,
           meta: {
-            label: 'sys.menu.TG-community.theasaurus-tag',
-            key: '/pilot-special/TG-community/theasaurus-tag',
+            label: 'sys.menu.articel-management.articel',
+            key: '/twitter-management/articel-management/articel',
           },
         },
         {
-          path: 'category-tag',
-          element: <TGCategoryPage />,
+          path: 'session-tag',
+          element: <SessionPage />,
           meta: {
-            label: 'sys.menu.TG-community.category-tag',
-            key: '/pilot-special/TG-community/category-tag',
-          },
-        },
-        {
-          path: 'tg-grounp',
-          element: <TGGrounpPage />,
-          meta: {
-            label: 'sys.menu.TG-community.tg-grounp',
-            key: '/pilot-special/TG-community/tg-grounp',
-          },
-        },
-        {
-          path: 'tg-grounp-content',
-          element: <TGGrounpContentPage />,
-          meta: {
-            label: 'sys.menu.TG-community.tg-grounp-content',
-            key: '/pilot-special/TG-community/tg-grounp-content',
+            label: 'sys.menu.articel-management.session',
+            key: '/twitter-management/articel-management/session',
           },
         },
       ],
