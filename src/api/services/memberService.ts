@@ -44,13 +44,13 @@ export interface ChangeVipLevelStatusReq {
   opt_status: boolean;
 }
 export enum MemberType {
-  MemberList = '/api/nav/vip/level/list',
-  CouponCreate = '/api/nav/vip/coupon/generate',
-  VipLevelOption = '/api/nav/vip/level/options',
-  AddVipLevel = '/api/nav/vip/level/add',
-  GetUserList = '/api/nav/user/list',
-  suspendedUser = '/api/nav/user/suspended',
-  ChangeVipLevelStatus = '/api/nav/vip/level/opt_status',
+  MemberList = '/api/vip/level/list',
+  CouponCreate = '/api/vip/coupon/generate',
+  VipLevelOption = '/api/vip/level/options',
+  AddVipLevel = '/api/vip/level/add',
+  GetUserList = '/api/user/list',
+  suspendedUser = '/api/user/suspended',
+  ChangeVipLevelStatus = '/api/vip/level/opt_status',
   // EditVipLevel = '/api/nav/vip/level/edit',
 }
 const MemberList = (data: GetMemberListReq) =>

@@ -69,28 +69,27 @@ export interface GetGroupListReq {
   limit: number;
 }
 export enum TGType {
-  AddArea = '/api/nav/navigator/tg/area/add',
-  GetAreaList = '/api/nav/navigator/tg/area/list',
-  ChangeAreaStatus = '/api/nav/navigator/tg/area/opt_status',
-  UpdateArea = '/api/nav/navigator/tg/area/update',
-  AddCateGory = '/api/nav/navigator/tg/category/add',
-  GetCategoryList = '/api/nav/navigator/tg/category/list',
-  UpdateCategory = '/api/nav/navigator/tg/category/update',
-  ChangeCategoryStatus = '/api/nav/navigator/tg/category/opt_status',
-  SearchTG = '/api/nav/navigator/tg/message/message_search',
-  SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
-  GetChildCateGory = '/api/nav/navigator/tg/category/level',
-  GetGroupList = '/api/nav/navigator/tg/topic/list',
+  AddArea = '/api/navigator/tg/area/add',
+  GetAreaList = '/api/navigator/tg/area/list',
+  ChangeAreaStatus = '/api/navigator/tg/area/opt_status',
+  UpdateArea = '/api/navigator/tg/area/update',
+  AddCateGory = '/api/navigator/tg/category/add',
+  GetCategoryList = '/api/navigator/tg/category/list',
+  UpdateCategory = '/api/navigator/tg/category/update',
+  ChangeCategoryStatus = '/api/navigator/tg/category/opt_status',
+  SearchTG = '/api/navigator/tg/message/message_search',
+  SetCategroyTags = '/api/navigator/tg/topic/category_setting',
+  GetChildCateGory = '/api/navigator/tg/category/level',
+  GetGroupList = '/api/navigator/tg/topic/list',
 }
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: TGType.AddArea, data });
 const GetAreaList = () => apiClient.get({ url: TGType.GetAreaList });
 const ChangeAreaStatus = (data: ChangeAreaStatusReq) =>
   apiClient.post({ url: TGType.ChangeAreaStatus, data });
 const UpdateArea = (data: AddAreaReq) => apiClient.post({ url: TGType.UpdateArea, data });
-const GetArea = (id: string) => apiClient.get({ url: `/api/nav/navigator/tg/area/${id}` });
+const GetArea = (id: string) => apiClient.get({ url: `/api/navigator/tg/area/${id}` });
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: TGType.AddCateGory, data });
-const DelCateGory = (id: string) =>
-  apiClient.get({ url: `/api/nav/navigator/tg/category/del/${id}` });
+const DelCateGory = (id: string) => apiClient.get({ url: `/api/navigator/tg/category/del/${id}` });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: TGType.GetCategoryList, data });
 const UpdateCategory = (data: UpdateCategoryReq) =>

@@ -69,25 +69,25 @@ export interface ChangeCategoryStatusReq {
   opt_status: boolean;
 }
 export enum NewsType {
-  AddMedia = '/api/nav/media/add',
-  MediaList = '/api/nav/media/list',
-  ChangeMediaStatus = '/api/nav/media/opt_status',
-  // CreateMedia = '/api/nav/media_content/area/update',
-  AddTheasaurus = '/api/nav/media_content/area/add',
-  ChangeTheasaurusStatus = '/api/nav/media_content/area/opt_status',
+  AddMedia = '/api/media/add',
+  MediaList = '/api/media/list',
+  ChangeMediaStatus = '/api/media/opt_status',
+  // CreateMedia = '/api/media_content/area/update',
+  AddTheasaurus = '/api/media_content/area/add',
+  ChangeTheasaurusStatus = '/api/media_content/area/opt_status',
   UpdateNews = '/api/news/update',
   DeleteNews = '/api/news/delete',
-  GetTheasaurusList = '/api/nav/media_content/area/list',
-  GetCategoryList = '/api/nav/media_content/category/list',
-  AddCategory = '/api/nav/media_content/category/add',
-  UpdateCategory = '/api/nav/media_content/category/update',
-  SearchNewsList = '/api/nav/media/flashnews/search',
-  GetChildCateGory = '/api/nav/media_content/level/category/list',
-  NewsList = '/api/nav/media/flashnews/list',
-  ArticelList = '/api/nav/media/news/search',
-  ChangeCategoryStatus = '/api/nav/media_content/category/opt_status',
-  GetArticleKeyword = '/api/nav/media/news/keyword_rc5',
-  GetNewsKeyword = '/api/nav/media/flashnews/keyword_rc5',
+  GetTheasaurusList = '/api/media_content/area/list',
+  GetCategoryList = '/api/media_content/category/list',
+  AddCategory = '/api/media_content/category/add',
+  UpdateCategory = '/api/media_content/category/update',
+  SearchNewsList = '/api/media/flashnews/search',
+  GetChildCateGory = '/api/media_content/level/category/list',
+  NewsList = '/api/media/flashnews/list',
+  ArticelList = '/api/media/news/search',
+  ChangeCategoryStatus = '/api/media_content/category/opt_status',
+  GetArticleKeyword = '/api/media/news/keyword_rc5',
+  GetNewsKeyword = '/api/media/flashnews/keyword_rc5',
   // DelCateGory = ''
 }
 
@@ -106,7 +106,7 @@ const AddTheasaurus = (data: AddTheasaurusReq) =>
 const ChangeTheasaurusStatus = (data: AddTheasaurusReq) =>
   apiClient.post<any>({ url: NewsType.ChangeTheasaurusStatus, data });
 const DelCateGory = (category_id: any) =>
-  apiClient.get<any>({ url: `/api/nav/media_content/category/del/${category_id}` });
+  apiClient.get<any>({ url: `/api/media_content/category/del/${category_id}` });
 const UpdateCategory = (data: UpdateNewsReq) =>
   apiClient.post<any>({ url: NewsType.UpdateCategory, data });
 const SearchNewsList = (data: SearchNewsListReq) =>
@@ -117,9 +117,9 @@ const GetNewsList = (data: GetNewsListReq) => apiClient.post<any>({ url: NewsTyp
 const GetArticelList = (data: GetNewsListReq) =>
   apiClient.post<any>({ url: NewsType.ArticelList, data });
 const GetNewDetail = (flash_key: string) =>
-  apiClient.get<any>({ url: `/api/nav/media/flashnews/${flash_key}` });
+  apiClient.get<any>({ url: `/api/media/flashnews/${flash_key}` });
 const GetArticelDetail = (news_key: string) =>
-  apiClient.get<any>({ url: `/api/nav/media/news/${news_key}` });
+  apiClient.get<any>({ url: `/api/media/news/${news_key}` });
 const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
   apiClient.post<any>({ url: NewsType.ChangeCategoryStatus, data });
 const GetArticleKeyword = () => apiClient.get<any>({ url: NewsType.GetArticleKeyword });

@@ -15,8 +15,8 @@ export interface ChangeCouponStatusReq {
   distributed: boolean;
 }
 export enum CouponType {
-  GetCouponList = '/api/nav/vip/coupon/list',
-  ChangeCouponStatus = '/api/nav/vip/coupon/distribute',
+  GetCouponList = '/api/vip/coupon/list',
+  ChangeCouponStatus = '/api/vip/coupon/distribute',
 }
 const GetCouponList = (data: GetCouponListReq) =>
   apiClient.post<any>({ url: CouponType.GetCouponList, data });

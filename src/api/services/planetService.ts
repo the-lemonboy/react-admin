@@ -73,18 +73,18 @@ export interface GetGroupListReq {
   page: number;
 }
 export enum PlanetType {
-  AddArea = '/api/nav/navigator/area/add',
-  GetAreaList = '/api/nav/navigator/area/list',
-  ChangeAreaStatus = '/api/nav/navigator/area/opt_status',
-  UpdateArea = '/api/nav/navigator/area/update',
-  AddCateGory = '/api/nav/navigator/category/add',
-  ChangeCategoryStatus = '/api/nav/navigator/category/opt_status',
-  GetCategoryList = '/api/nav/navigator/category/list',
-  UpdateCategory = '/api/nav/navigator/category/update',
-  SearchKnowledge = '/api/nav/navigator/zsxq/topic/topic_search',
-  SetCategroyTags = '/api/nav/navigator/tg/topic/category_setting',
-  GetChildCateGory = '/api/nav/navigator/category/level',
-  GetGroupList = '/api/nav/navigator/zxsq/group_list',
+  AddArea = '/api/navigator/area/add',
+  GetAreaList = '/api/navigator/area/list',
+  ChangeAreaStatus = '/api/navigator/area/opt_status',
+  UpdateArea = '/api/navigator/area/update',
+  AddCateGory = '/api/navigator/category/add',
+  ChangeCategoryStatus = '/api/navigator/category/opt_status',
+  GetCategoryList = '/api/navigator/category/list',
+  UpdateCategory = '/api/navigator/category/update',
+  SearchKnowledge = '/api/navigator/zsxq/topic/topic_search',
+  SetCategroyTags = '/api/navigator/tg/topic/category_setting',
+  GetChildCateGory = '/api/navigator/category/level',
+  GetGroupList = '/api/navigator/zxsq/group_list',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -92,11 +92,11 @@ const GetAreaList = () => apiClient.get({ url: PlanetType.GetAreaList });
 const ChangeAreaStatus = (data: ChangeAreaStatusReq) =>
   apiClient.post({ url: PlanetType.ChangeAreaStatus, data });
 const UpdateArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.UpdateArea, data });
-const GetArea = (id: string) => apiClient.get({ url: `/api/nav/navigator/area/${id}` });
+const GetArea = (id: string) => apiClient.get({ url: `/api/navigator/area/${id}` });
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: PlanetType.AddCateGory, data });
 const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
   apiClient.post({ url: PlanetType.ChangeCategoryStatus, data });
-const DelCateGory = (id: string) => apiClient.get({ url: `/api/nav/navigator/category/del/${id}` });
+const DelCateGory = (id: string) => apiClient.get({ url: `/api/navigator/category/del/${id}` });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: PlanetType.GetCategoryList, data });
 const UpdateCategory = (data: UpdateCategoryReq) =>
@@ -106,9 +106,9 @@ const SetCategroyTags = (data: SetCategroyTagsReq) =>
 const SearchKnowledge = (data: SearchKnowledgeReq) =>
   apiClient.post({ url: PlanetType.SearchKnowledge, data });
 const GetCateGoryTagList = (group_id: string) =>
-  apiClient.get({ url: `/api/nav/navigator/zxsq/group/${group_id}/categories` });
+  apiClient.get({ url: `/api/navigator/zxsq/group/${group_id}/categories` });
 const DelCateGoryTag = (group_id: string, category_id: string) =>
-  apiClient.get({ url: `/api/nav/navigator/zxsq/group/${group_id}/del_category/${category_id}` });
+  apiClient.get({ url: `/api/navigator/zxsq/group/${group_id}/del_category/${category_id}` });
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: PlanetType.GetChildCateGory, data });
 const GetGroupList = (data: GetGroupListReq) =>
