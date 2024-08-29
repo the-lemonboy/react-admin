@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Tag, Tooltip, Button, Popconfirm } from 'antd';
+import { Card, Space, message, Tooltip, Button, Popconfirm, Switch } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import twitterService, { GetArticleReq } from '@/api/services/twitterService';
+import twitterService, { GetArticleReq, SetArticlesStatusReq } from '@/api/services/twitterService';
 
 // import DelTagModel, { DelTagModelProps } from './delTag';
 // import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
@@ -64,11 +64,11 @@ export default function KnowledgeGrounp() {
   //     theasaurusList,
   //   }));
   // };
-  const queryClient = useQueryClient();
   // 使用 useMutation 钩子处理删除操作
   const delArticlemutation = useMutation({
     mutationFn: twitterService.DelArticles,
     onSuccess: () => {
+      messageApi.success('删除成功');
       // 成功删除后，重新获取数据或更新缓存
       queryClient.invalidateQueries(['twitterArticleList', articelQuery]);
     },
@@ -78,8 +78,7 @@ export default function KnowledgeGrounp() {
     },
   });
   const onDelTag = (record: Tweet) => {
-    console.log(record);
-    const delData = { tweet_ids: [record.id] };
+    const delData = { tweet_ids: [record.tweet_id] };
     delArticlemutation.mutate(delData);
   };
   const columns: ColumnsType<Tweet> = [
@@ -99,19 +98,6 @@ export default function KnowledgeGrounp() {
       render: (text: string) => (
         <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
       ),
-    },
-    {
-      title: '状态',
-      dataIndex: 'hidden',
-      key: 'hidden',
-      width: 100,
-      align: 'center',
-      render: (type: boolean) => {
-        if (type) {
-          return <Tag color="red">屏蔽</Tag>;
-        }
-        return <Tag color="green">显示</Tag>;
-      },
     },
     {
       title: '描述',
@@ -178,6 +164,22 @@ export default function KnowledgeGrounp() {
       align: 'center',
     },
     {
+      title: '状态',
+      dataIndex: 'hidden',
+      key: 'hidden',
+      width: 100,
+      align: 'center',
+      render: (_: any, record: any) => (
+        <Switch
+          checkedChildren="显示"
+          unCheckedChildren="隐藏"
+          defaultChecked={record.hidden}
+          checked={!record.hidden}
+          onClick={(checked, e) => onChanheHideStatus(checked, record, e)}
+        />
+      ),
+    },
+    {
       title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
@@ -185,17 +187,14 @@ export default function KnowledgeGrounp() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button type="default" onClick={() => onEditTag(record)}>
-            修改状态
-          </Button>
           <Popconfirm
-            title="Delete the Website"
+            title="是否删除该条数据"
             okText="Yes"
             cancelText="No"
             placement="left"
             onConfirm={() => onDelTag(record)}
           >
-            <Button className="mr-2" type="primary" onClick={() => onDelTag(record)}>
+            <Button className="mr-2" type="primary">
               删除
             </Button>
           </Popconfirm>
@@ -203,6 +202,29 @@ export default function KnowledgeGrounp() {
       ),
     },
   ];
+  const changeDistributedMutation = useMutation({
+    mutationFn: async (params: SetArticlesStatusReq) => {
+      const res = await twitterService.SetArticlesStatus(params);
+      return res.data;
+    },
+    onSuccess: () => {
+      messageApi.success('状态修改成功');
+      // 成功删除后，重新获取数据或更新缓存
+      queryClient.invalidateQueries(['twitterArticleList', articelQuery]);
+    },
+    onError: (error) => {
+      messageApi.error('状态修改失败');
+      // 处理错误
+      console.error('Error deleting website:', error);
+    },
+  });
+  const onChanheHideStatus = (checked: boolean, record: Tweet, e: any) => {
+    // 修改分发状态逻辑
+    changeDistributedMutation.mutate({
+      tweet_ids: [record.tweet_id],
+      hidden: !checked,
+    });
+  };
   const changeMediaStatus = useMutation({
     mutationFn: (params: Media) => {
       const res = newsService.ChangeMediaStatus(params);
@@ -229,7 +251,6 @@ export default function KnowledgeGrounp() {
       opt_status: checked,
     });
   };
-
   // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
   //   title: '标签管理',
   //   show: false,
@@ -249,7 +270,7 @@ export default function KnowledgeGrounp() {
   //     }));
   //   },
   // });
-  const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
   // const [CategoryIds, setCategoryIds] = useState({
   //   categoryIdOne: '',
   //   categoryIdTwo: '',
@@ -258,15 +279,15 @@ export default function KnowledgeGrounp() {
   // const [levelOneList, setLevelOneList] = useState([]);
   // const [levelTwoList, setLevelTwoList] = useState([]);
   // const [levelThreeList, setLevelThreeList] = useState([]);
-  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-    area_id: '',
-    level: -1,
-    p_c_id: '',
-  });
-  const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
-    queryFn: () => twitterService.GetAreaList(),
-  });
+  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+  //   area_id: '',
+  //   level: -1,
+  //   p_c_id: '',
+  // });
+  // const { data: theasaurusList } = useQuery({
+  //   queryKey: ['theasaurusList'],
+  //   queryFn: () => twitterService.GetAreaList(),
+  // });
   // 查询标签
   // useEffect(() => {
   //   const fetchCategoryData = async () => {
@@ -305,63 +326,75 @@ export default function KnowledgeGrounp() {
   //     content: data as string,
   //   }));
   // };
+  const [selectItems, setSelectItems] = useState<string[]>([]);
+
+  const onChangeTableList = (selectedRowKeys: any, selectedRows: Tweet[]) => {
+    const tweetIds = selectedRows.map((item) => item.tweet_id);
+    setSelectItems(tweetIds);
+  };
+  const onChangeSelectHiddenStatus = () => {
+    if (selectItems.length === 0) {
+      messageApi.open({
+        type: 'warning',
+        content: '请选择要操作的数据',
+      });
+    } else {
+      changeDistributedMutation.mutate({ tweet_ids: selectItems, hidden: true });
+    }
+  };
+  const onChangeSelectShowStatus = () => {
+    if (selectItems.length === 0) {
+      messageApi.open({
+        type: 'warning',
+        content: '请选择要操作的数据',
+      });
+    } else {
+      changeDistributedMutation.mutate({ tweet_ids: selectItems, hidden: false });
+    }
+  };
+  const onDelSelectItems = () => {
+    if (selectItems.length === 0) {
+      messageApi.open({
+        type: 'warning',
+        content: '请选择要操作的数据',
+      });
+    } else {
+      delArticlemutation.mutate({ tweet_ids: selectItems });
+    }
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
-          <div className="mb-4 flex flex-wrap items-center">
-            <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
-            <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
-              {theasaurusList?.data.map((item: NewsCategory, index: number) => (
-                <Radio key={index} value={item.id}>
-                  {item.title}
-                </Radio>
-              ))}
-            </Radio.Group>
-          </div>
-          {levelOneList.length > 0 && levelOneList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
-              <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
-                {levelOneList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
+        <Card
+          title="推文内容"
+          extra={
+            <div>
+              <Button
+                className="mr-5"
+                style={{ background: '#1DA57A', color: '#fff' }}
+                onClick={onChangeSelectShowStatus}
+              >
+                显示
+              </Button>
+              <Button
+                className="bg-red mr-5"
+                style={{ background: '#de3f00', color: '#fff' }}
+                onClick={onChangeSelectHiddenStatus}
+              >
+                隐藏
+              </Button>
+              <Button type="primary" onClick={onDelSelectItems}>
+                删除记录
+              </Button>
             </div>
-          )}
-          {levelTwoList.length > 0 && levelTwoList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
-              <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
-                {levelTwoList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          )}
-          {levelThreeList.length > 0 && levelThreeList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
-              <Checkbox.Group
-                options={levelThreeList.map((item: NewsCategory) => ({
-                  label: item.title,
-                  value: item.title,
-                }))}
-                onChange={onChangeCategoryThreeTag}
-              />
-            </div>
-          )}
-        </Card> */}
-        <Card title="推文内容">
+          }
+        >
           <Table
             rowKey="id"
             size="small"
             columns={columns}
+            rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
             dataSource={tableList?.data}
             loading={isLoadingList}
             pagination={tableParams.pagination}

@@ -298,6 +298,6 @@ export interface Tweet {
   retweet_count: number;
   quote_count: number;
   hidden: boolean;
-  created_at: string;  // This is likely a date string
+  created_at: string; // This is likely a date string
   created_time: string; // This is also likely a date string
 }

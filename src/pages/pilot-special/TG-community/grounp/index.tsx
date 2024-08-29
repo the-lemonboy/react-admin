@@ -93,7 +93,7 @@ export default function KnowledgeGrounp() {
       setDelTagModelProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const onDelTag = (record: PlanetKnowledge) => {
+  const onShowDetail = (record: PlanetKnowledge) => {
     setDelTagModelProps((prev) => ({
       ...prev,
       show: true,
@@ -130,8 +130,8 @@ export default function KnowledgeGrounp() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button className="mr-2" type="primary" onClick={() => onDelTag(record)}>
-            删除标签
+          <Button className="mr-2" type="primary" onClick={() => onShowDetail(record)}>
+            详细
           </Button>
           <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
