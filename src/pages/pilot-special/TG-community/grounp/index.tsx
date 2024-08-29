@@ -140,32 +140,32 @@ export default function KnowledgeGrounp() {
       ),
     },
   ];
-  const changeMediaStatus = useMutation({
-    mutationFn: (params: Media) => {
-      const res = newsService.ChangeMediaStatus(params);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['mediaList']);
-      messageApi.open({
-        type: 'success',
-        content: '状态修改成功',
-      });
-    },
-    onError: () => {
-      messageApi.open({
-        type: 'error',
-        content: '状态修改失败',
-      });
-    },
-  });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
+  // const changeMediaStatus = useMutation({
+  //   mutationFn: (params: Media) => {
+  //     const res = newsService.ChangeMediaStatus(params);
+  //     return res;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['mediaList']);
+  //     messageApi.open({
+  //       type: 'success',
+  //       content: '状态修改成功',
+  //     });
+  //   },
+  //   onError: () => {
+  //     messageApi.open({
+  //       type: 'error',
+  //       content: '状态修改失败',
+  //     });
+  //   },
+  // });
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',

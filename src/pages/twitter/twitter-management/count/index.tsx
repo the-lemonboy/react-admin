@@ -1,30 +1,46 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Tag } from 'antd';
+import {
+  Card,
+  Space,
+  message,
+  Button,
+  Radio,
+  Checkbox,
+  Tooltip,
+  Form,
+  Row,
+  Col,
+  Select,
+  Input,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import planetService, { GetGroupListReq } from '@/api/services/planetService';
+import twitterService, { GetAcountListReq } from '@/api/services/twitterService';
 
-import DelTagModel, { DelTagModelProps } from './delTag';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { PlanetKnowledge } from '#/entity';
+import { TG } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
-export default function KnowledgeGrounp() {
+export default function TwitterAcountList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [articelQuery, setArticelQuery] = useState<GetGroupListReq>({
+  const [AcountQuery, setArticelQuery] = useState<GetAcountListReq>({
+    area_id: '',
     limit: 10,
+    name: '',
+    p_c_path: '',
     page: 1,
+    username: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['GrounpList', articelQuery],
-    queryFn: () => planetService.GetGroupList(articelQuery),
+    queryKey: ['TwitterAcountList', AcountQuery],
+    queryFn: () => twitterService.GetAcountList(AcountQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -56,7 +72,7 @@ export default function KnowledgeGrounp() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: PlanetKnowledge) => {
+  const onEditTag = (record: TG) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
@@ -64,59 +80,71 @@ export default function KnowledgeGrounp() {
       theasaurusList,
     }));
   };
-  const [delTagModelProps, setDelTagModelProps] = useState<DelTagModelProps>({
-    title: '删除标签',
-    show: false,
-    formValue: {},
-    onOk: () => {
-      setDelTagModelProps((prev) => ({ ...prev, show: false }));
-    },
-    onCancel: () => {
-      setDelTagModelProps((prev) => ({ ...prev, show: false }));
-    },
-  });
-  const onDelTag = (record: PlanetKnowledge) => {
-    setDelTagModelProps((prev) => ({
-      ...prev,
-      show: true,
-      formValue: record,
-    }));
-  };
-  const columns: ColumnsType<PlanetKnowledge> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
+  const columns: ColumnsType<NewsSearchList> = [
+    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
     {
-      title: '群组名称',
-      dataIndex: 'name',
-      key: 'name',
+      title: '发布者',
+      dataIndex: 'm_author',
+      key: 'm_author',
       width: 100,
       align: 'center',
+      render: (name: string) => (name === 'unknown' ? '未知' : name),
     },
     {
-      title: '标题',
-      dataIndex: 'type',
-      key: 'type',
+      title: '话题',
+      dataIndex: 'topic.topic_name',
+      key: '[topic, topic_name]',
+      align: 'center',
+      width: 100,
+      render: (_, record) => (
+        <div
+          className="ellipsis"
+          style={{
+            float: 'left',
+            maxWidth: '100px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {record.topic.topic_name}
+        </div>
+      ),
+    },
+    {
+      title: '消息内容',
+      dataIndex: 'message.text',
+      key: 'message.text',
       width: 200,
       align: 'center',
-      render: (type: string) => {
-        if (type === 'pay') {
-          return <Tag color="orange">付费</Tag>;
-        }
-        return <Tag color="green">免费</Tag>;
-      },
+      render: (_, record) => (
+        <Tooltip title={record.message.text}>
+          <div
+            className="ellipsis"
+            style={{
+              float: 'left',
+              maxWidth: '200px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {record.message.text}
+          </div>
+        </Tooltip>
+      ),
     },
+    { title: '社群名称', dataIndex: ['group', 'group_name'], key: 'group.group_name' },
+    { title: '发布时间', dataIndex: 'created_at', key: 'created_at', align: 'center' },
     {
       title: '操作',
       dataIndex: 'opt_status',
       key: 'opt_status',
-      width: 120,
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button className="mr-2" type="primary" onClick={() => onDelTag(record)}>
-            删除标签
-          </Button>
-          <Button type="default" onClick={() => onEditTag(record)}>
-            新增标签
+          <Button type="primary" onClick={() => onEditTag(record)}>
+            编辑
           </Button>
         </div>
       ),
@@ -141,13 +169,13 @@ export default function KnowledgeGrounp() {
       });
     },
   });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
@@ -169,27 +197,27 @@ export default function KnowledgeGrounp() {
     },
   });
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  // const [CategoryIds, setCategoryIds] = useState({
-  //   categoryIdOne: '',
-  //   categoryIdTwo: '',
-  //   categoryIdThree: '',
-  // });
-  // const [levelOneList, setLevelOneList] = useState([]);
-  // const [levelTwoList, setLevelTwoList] = useState([]);
-  // const [levelThreeList, setLevelThreeList] = useState([]);
+  const [CategoryIds, setCategoryIds] = useState({
+    categoryIdOne: '',
+    categoryIdTwo: '',
+    categoryIdThree: '',
+  });
+  const [levelOneList, setLevelOneList] = useState([]);
+  const [levelTwoList, setLevelTwoList] = useState([]);
+  const [levelThreeList, setLevelThreeList] = useState([]);
   const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
     area_id: '',
     level: -1,
     p_c_id: '',
   });
   const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
-    queryFn: () => planetService.GetAreaList(),
+    queryKey: ['TGTheasaurusList'],
+    queryFn: () => twitterService.GetAreaList(),
   });
   // 查询标签
   useEffect(() => {
     const fetchCategoryData = async () => {
-      const data = await planetService.GetChildCateGory(categoryQuery);
+      const data = await twitterService.GetChildCateGory(categoryQuery);
       if (categoryQuery.level === 0) {
         setLevelOneList(data);
       } else if (categoryQuery.level === 1) {
@@ -198,37 +226,81 @@ export default function KnowledgeGrounp() {
         setLevelThreeList(data);
       }
     };
-
     fetchCategoryData();
   }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setArticelQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
+  const onChangeTheasaurusTag = (e: any) => {
+    setTheasaurusTagId(e.target.value);
+    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  };
+  const onChangeCategoryOneTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  };
+  const onChangeCategoryTwoTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  };
+  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+    const data = checkedValues.reduce((pre, cur) => {
+      return `${pre} ${cur}`;
+    }, '');
+    setArticelQuery((prev) => ({
+      ...prev,
+      limit: 10,
+      page: 1,
+      content: data as string,
+    }));
+  };
+  // 搜索
+  const [searchForm] = Form.useForm();
+  const onSearchFormReset = () => {
+    searchForm.resetFields();
+  };
+  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const onSearchSubmit = async () => {
+    const values = await searchForm.validateFields();
+    setArticelQuery({ ...values, page: 1, limit: 10 });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
+        <Card>
+          <Form form={searchForm} initialValues={searchFormValues}>
+            <Row gutter={[16, 16]}>
+              <Col span={24} lg={6}>
+                <Form.Item label="板块" name="area_id" className="!mb-0">
+                  <Select>
+                    {theasaurusList?.data.map((item: Theasaurus, index) => (
+                      <Select.Option key={index} value={item.id}>
+                        {item.title}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="发布者" name="author" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="社群Id" name="group_id" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <div className="flex justify-end">
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+        <Card>
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
@@ -275,8 +347,8 @@ export default function KnowledgeGrounp() {
               />
             </div>
           )}
-        </Card> */}
-        <Card title="领航专栏">
+        </Card>
+        <Card title="群组内容">
           <Table
             rowKey="id"
             size="small"
@@ -288,7 +360,6 @@ export default function KnowledgeGrounp() {
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
-        <DelTagModel {...delTagModelProps} />
       </Space>
     </>
   );

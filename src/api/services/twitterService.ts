@@ -83,6 +83,14 @@ export interface SetArticlesStatusReq {
 export interface DelArticlesReq {
   tweet_ids: string[];
 }
+export interface GetAcountListReq {
+  area_id?: string;
+  limit: number;
+  name?: string;
+  p_c_path?: string;
+  page: number;
+  username?: string;
+}
 export enum PlanetType {
   AddArea = '/api/twitter/area/add',
   GetAreaList = '/api/twitter/area/list',
@@ -101,6 +109,8 @@ export enum PlanetType {
   GetArticleList = '/api/twitter/tweet/list',
   SetArticlesStatus = '/api/twitter/tweet/hidden',
   DelArticles = '/api/twitter/tweet/delete',
+  // ----账号管理
+  GetAcountList = '/api/twitter/author/list',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -132,6 +142,11 @@ const GetArticleList = (data: GetArticleReq) =>
 const SetArticlesStatus = (data: SetArticlesStatusReq) =>
   apiClient.post({ url: PlanetType.SetArticlesStatus, data });
 const DelArticles = (data: DelArticlesReq) => apiClient.post({ url: PlanetType.DelArticles, data });
+const GetAcountList = (data: GetAcountListReq) =>
+  apiClient.post({ url: PlanetType.GetAcountList, data });
+const GetAcountDetail = (id: string) => apiClient.get({ url: `/api/twitter/author/${id}` });
+const GetAcountDetailHashTag = (id: string) =>
+  apiClient.get({ url: `/api/twitter/author/hashtags/${id}` });
 // const GetGroupList = (data: GetGroupListReq) =>
 //   apiClient.post({ url: PlanetType.GetGroupList, data });
 export default {
@@ -154,4 +169,7 @@ export default {
   // GetGroupList,
   SetArticlesStatus,
   DelArticles,
+  GetAcountList,
+  GetAcountDetail,
+  GetAcountDetailHashTag,
 };
