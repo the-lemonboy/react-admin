@@ -11,6 +11,8 @@ const TwitterTheasaurusPage = lazy(() => import('@/pages/twitter/tag-management/
 const CountPage = lazy(() => import('@/pages/twitter/twitter-management/count'));
 const ArticelPage = lazy(() => import('@/pages/twitter/articel-management/content'));
 const SessionPage = lazy(() => import('@/pages/twitter/articel-management/session'));
+const UserPage = lazy(() => import('@/pages/twitter/subscribe-management/member-management'));
+const SubscribePage = lazy(() => import('@/pages/twitter/subscribe-management/subscribe'));
 const pilotSpecial: AppRouteObject = {
   order: 4,
   path: 'twitter-management',
@@ -95,6 +97,32 @@ const pilotSpecial: AppRouteObject = {
           meta: {
             label: 'sys.menu.articel-management.session',
             key: '/twitter-management/articel-management/session',
+          },
+        },
+      ],
+    },
+    {
+      path: 'subscribe-management',
+      meta: {
+        label: 'sys.menu.subscribe-management.index',
+        key: '/twitter-management/subscribe-management',
+      },
+      children: [
+        { index: true, element: <Navigate to="category-tag" replace /> },
+        {
+          path: 'user',
+          element: <UserPage />,
+          meta: {
+            label: 'sys.menu.subscribe-management.user',
+            key: '/twitter-management/subscribe-management/user',
+          },
+        },
+        {
+          path: 'subscribe',
+          element: <SubscribePage />,
+          meta: {
+            label: 'sys.menu.subscribe-management.subscribe',
+            key: '/twitter-management/subscribe-management/subscribe',
           },
         },
       ],

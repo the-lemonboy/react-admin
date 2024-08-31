@@ -1,16 +1,17 @@
+import { CloseCircleOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Form, Input, Modal, Popconfirm, Tag, message } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import planetService from '@/api/services/planetService';
+import twitterService from '@/api/services/twitterService';
 
 const { TextArea } = Input;
 export interface DetailModelProps {
-  title;
-  show;
-  formValue;
-  onOk;
-  onCancel;
+  title: string;
+  show: boolean;
+  formValue: any;
+  onOk: VoidFunction;
+  onCancel: VoidFunction;
   // categoryList,
 }
 // 新增目录标签
@@ -20,9 +21,9 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
   const { data: tagList } = useQuery({
-    queryKey: ['PlanetTagList', formValue?.group?.group_id],
-    queryFn: () => planetService.GetCateGoryTagList(formValue?.group?.group_id),
-    enabled: !!formValue?.group?.group_id,
+    queryKey: ['PlanetTagList', formValue?.author_id],
+    queryFn: () => twitterService.GetCateGoryTagList(formValue?.author_id),
+    enabled: !!formValue?.author_id,
   });
   console.log(formValue);
   const handleOk = async () => {
@@ -34,7 +35,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
     }
   };
   const fetchDelCategoryTag = useMutation({
-    mutationFn: planetService.DelCateGoryTag,
+    mutationFn: twitterService.DelCateGoryTag,
     onSuccess: () => {
       // queryClient.invalidateQueries(['websiteTagList']);
       message.success('标签删除成功');
@@ -44,9 +45,9 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
       console.error('Error deleting category:', error);
     },
   });
-
+  const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
   const delCategoryTag = (tagValue: TagInfo) => {
-    fetchDelCategoryTag.mutate({ cid: tagValue.c_id, wid: tagValue.w_id });
+    fetchDelCategoryTag.mutate({ cid: tagValue.c_id });
     setVisiblePopconfirm(null); // Hide the Popconfirm
   };
   return (

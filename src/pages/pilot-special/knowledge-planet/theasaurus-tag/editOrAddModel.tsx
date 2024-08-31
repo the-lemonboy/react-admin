@@ -37,6 +37,7 @@ function EditorOrAddModel({
       queryClient.invalidateQueries(['planetAreaList']);
       onOk();
     },
+
     onError: (error) => {
       console.error('Error adding media:', error);
     },

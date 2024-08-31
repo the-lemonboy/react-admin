@@ -1,18 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Card,
-  Space,
-  message,
-  Button,
-  Radio,
-  Checkbox,
-  Tooltip,
-  Form,
-  Row,
-  Col,
-  Select,
-  Input,
-} from 'antd';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Select, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -20,7 +7,7 @@ import twitterService, { GetAcountListReq } from '@/api/services/twitterService'
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { TG } from '#/entity';
+import { TwitterUser } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
@@ -62,7 +49,6 @@ export default function TwitterAcountList() {
     }
   }, [tableList]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
-    console.log(pagination);
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 10;
     setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
@@ -72,7 +58,7 @@ export default function TwitterAcountList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: TG) => {
+  const onEditTag = (record: TwitterUser) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
@@ -80,62 +66,60 @@ export default function TwitterAcountList() {
       theasaurusList,
     }));
   };
-  const columns: ColumnsType<NewsSearchList> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
+  const columns: ColumnsType<TwitterUser> = [
+    { title: '用户名', dataIndex: 'name', key: 'name', width: 200, align: 'center' },
     {
-      title: '发布者',
-      dataIndex: 'm_author',
-      key: 'm_author',
-      width: 100,
+      title: '头像',
+      dataIndex: 'profile_image_url',
+      key: 'profile_image_url',
       align: 'center',
-      render: (name: string) => (name === 'unknown' ? '未知' : name),
-    },
-    {
-      title: '话题',
-      dataIndex: 'topic.topic_name',
-      key: '[topic, topic_name]',
-      align: 'center',
-      width: 100,
-      render: (_, record) => (
-        <div
-          className="ellipsis"
-          style={{
-            float: 'left',
-            maxWidth: '100px',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {record.topic.topic_name}
-        </div>
+      width: 80,
+      render: (text: string) => (
+        <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
       ),
     },
     {
-      title: '消息内容',
-      dataIndex: 'message.text',
-      key: 'message.text',
-      width: 200,
+      title: '粉丝量',
+      dataIndex: 'followers_count',
+      key: 'followers_count',
+      width: 150,
       align: 'center',
-      render: (_, record) => (
-        <Tooltip title={record.message.text}>
-          <div
-            className="ellipsis"
-            style={{
-              float: 'left',
-              maxWidth: '200px',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {record.message.text}
-          </div>
-        </Tooltip>
-      ),
     },
-    { title: '社群名称', dataIndex: ['group', 'group_name'], key: 'group.group_name' },
-    { title: '发布时间', dataIndex: 'created_at', key: 'created_at', align: 'center' },
+    {
+      title: '关注量',
+      dataIndex: 'following_count',
+      key: 'following_count',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '推特量',
+      dataIndex: 'tweet_count',
+      key: 'tweet_count',
+      width: 100,
+      align: 'center',
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      width: 300,
+      align: 'center',
+    },
+    {
+      title: '加入时间',
+      dataIndex: 'created_time',
+      key: 'created_time',
+      width: 250,
+      align: 'center',
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updated_time',
+      key: 'updated_time',
+      width: 250,
+      align: 'center',
+    },
     {
       title: '操作',
       dataIndex: 'opt_status',
@@ -150,25 +134,25 @@ export default function TwitterAcountList() {
       ),
     },
   ];
-  const changeMediaStatus = useMutation({
-    mutationFn: (params: Media) => {
-      const res = newsService.ChangeMediaStatus(params);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['mediaList']);
-      messageApi.open({
-        type: 'success',
-        content: '状态修改成功',
-      });
-    },
-    onError: () => {
-      messageApi.open({
-        type: 'error',
-        content: '状态修改失败',
-      });
-    },
-  });
+  // const changeMediaStatus = useMutation({
+  //   mutationFn: (params: Media) => {
+  //     const res = newsService.ChangeMediaStatus(params);
+  //     return res;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['mediaList']);
+  //     messageApi.open({
+  //       type: 'success',
+  //       content: '状态修改成功',
+  //     });
+  //   },
+  //   onError: () => {
+  //     messageApi.open({
+  //       type: 'error',
+  //       content: '状态修改失败',
+  //     });
+  //   },
+  // });
   // const onChangeMediaStatus = (checked: boolean, record: Media) => {
   //   // 修改分发状态逻辑
   //   changeMediaStatus.mutate({
@@ -256,7 +240,7 @@ export default function TwitterAcountList() {
   const onSearchFormReset = () => {
     searchForm.resetFields();
   };
-  const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
+  const [searchFormValues, setSearchFormValues] = useState<GetAcountListReq>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
     setArticelQuery({ ...values, page: 1, limit: 10 });
@@ -280,12 +264,12 @@ export default function TwitterAcountList() {
                 </Form.Item>
               </Col>
               <Col span={24} lg={6}>
-                <Form.Item label="发布者" name="author" className="!mb-0">
+                <Form.Item label="账号" name="username" className="!mb-0">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={24} lg={6}>
-                <Form.Item label="社群Id" name="group_id" className="!mb-0">
+                <Form.Item label="用户名" name="name" className="!mb-0">
                   <Input />
                 </Form.Item>
               </Col>

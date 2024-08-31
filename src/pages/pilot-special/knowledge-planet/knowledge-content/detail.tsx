@@ -6,11 +6,11 @@ import planetService from '@/api/services/planetService';
 
 const { TextArea } = Input;
 export interface DetailModelProps {
-  title;
-  show;
-  formValue;
-  onOk;
-  onCancel;
+  title: string;
+  show: boolean;
+  formValue: any;
+  onOk: VoidFunction;
+  onCancel: VoidFunction;
   // categoryList,
 }
 // 新增目录标签

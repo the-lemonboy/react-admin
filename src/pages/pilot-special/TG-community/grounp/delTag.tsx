@@ -26,9 +26,9 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
   }, [formValue, form]);
 
   const { data: tagList } = useQuery({
-    queryKey: ['PlanetTagList', formValue?.id],
-    queryFn: () => TGService.GetCateGoryTagList(formValue?.id),
-    enabled: !!formValue?.id,
+    queryKey: ['TGTagList', formValue?.group_id],
+    queryFn: () => TGService.GetCateGoryTagList(formValue?.group_id),
+    enabled: !!formValue?.group_id,
   });
 
   const handleOk = async () => {
@@ -42,7 +42,7 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
 
   const fetchDelCategoryTag = useMutation({
     mutationFn: ({ group_id, category_id }: { group_id: string; category_id: string }) =>
-      TGService.DelCateGoryTag(group_id, category_id),
+      TGService.DelCateGoryTag(category_id),
     onSuccess: () => {
       queryClient.invalidateQueries(['PlanetTagList']);
       message.success('标签删除成功');
@@ -55,6 +55,12 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
 
   const [visiblePopconfirm, setVisiblePopconfirm] = useState<string | null>(null);
 
+<<<<<<<<<<<<<<  ✨ Codeium Command ⭐  >>>>>>>>>>>>>>>>
+  /**
+   * 删除标签
+   * @param tagValue 删除的标签信息
+   */
+<<<<<<<  df2b3b41-4166-438b-a943-1f7a12308b23  >>>>>>>
   const delCategoryTag = (tagValue: CategroyTag) => {
     console.log(formValue, tagValue);
     fetchDelCategoryTag.mutate({ group_id: formValue.id, category_id: tagValue.area_id });

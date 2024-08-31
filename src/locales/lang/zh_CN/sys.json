@@ -146,6 +146,12 @@
         "articel": "推文内容",
         "session": "会话管理"
       },
+      "subscribe-management": {
+        "index": "订阅管理",
+        "user": "成员管理",
+        "subscribe": "订阅管理"
+      },
+
       "blog": "博客",
       "components": "组件",
       "icon": "图标",

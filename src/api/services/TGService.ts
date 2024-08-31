@@ -102,6 +102,10 @@ const SetCategroyTags = (data: CategoryPath) =>
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: TGType.GetChildCateGory, data });
 const GetGroupList = (data: GetGroupListReq) => apiClient.post({ url: TGType.GetGroupList, data });
+const GetCateGoryTagList = (group_id: string) =>
+  apiClient.get({ url: `/api/navigator/tg/${group_id}/topic/categories` });
+const DelCateGoryTag = (category_id: string) =>
+  apiClient.get({ url: `/api/navigator/tg/category/del/${category_id}` });
 export default {
   AddArea,
   GetAreaList,
@@ -117,4 +121,6 @@ export default {
   SetCategroyTags,
   GetChildCateGory,
   GetGroupList,
+  GetCateGoryTagList,
+  DelCateGoryTag,
 };

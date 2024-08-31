@@ -3,7 +3,7 @@ import { Card, Space, message, Button, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import TGService, { GetGroupListReq } from '@/api/services/TGService';
+import planetService, { GetGroupListReq } from '@/api/services/planetService';
 
 import DelTagModel, { DelTagModelProps } from './delTag';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
@@ -23,8 +23,8 @@ export default function KnowledgeGrounp() {
     page: 1,
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['TGGrounpList', articelQuery],
-    queryFn: () => TGService.GetGroupList(articelQuery),
+    queryKey: ['GrounpList', articelQuery],
+    queryFn: () => planetService.GetGroupList(articelQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -64,24 +64,6 @@ export default function KnowledgeGrounp() {
       theasaurusList,
     }));
   };
-  // const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
-  //   title: '详细',
-  //   show: false,
-  //   formValue: {},
-  //   onOk: () => {
-  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  //   onCancel: () => {
-  //     setDetailModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  // });
-  // const onDetail = (record: PlanetKnowledge) => {
-  //   setDetailModelProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     formValue: record,
-  //   }));
-  // };
   const [delTagModelProps, setDelTagModelProps] = useState<DelTagModelProps>({
     title: '删除标签',
     show: false,
@@ -93,20 +75,19 @@ export default function KnowledgeGrounp() {
       setDelTagModelProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const onShowDetail = (record: any) => {
-    console.log(record)
+  const onDelTag = (record: PlanetKnowledge) => {
     setDelTagModelProps((prev) => ({
       ...prev,
       show: true,
       formValue: record,
     }));
   };
-  const columns: ColumnsType<any> = [
-    { title: 'ID', dataIndex: 'group_id', key: 'group_id', width: 100, align: 'center' },
+  const columns: ColumnsType<PlanetKnowledge> = [
+    { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
-      title: '频道名称',
-      dataIndex: 'group_name',
-      key: 'group_name',
+      title: '群组名称',
+      dataIndex: 'name',
+      key: 'name',
       width: 100,
       align: 'center',
     },
@@ -131,8 +112,8 @@ export default function KnowledgeGrounp() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button className="mr-2" type="primary" onClick={() => onShowDetail(record)}>
-            详细
+          <Button className="mr-2" type="primary" onClick={() => onDelTag(record)}>
+            删除标签
           </Button>
           <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
@@ -141,32 +122,32 @@ export default function KnowledgeGrounp() {
       ),
     },
   ];
-  // const changeMediaStatus = useMutation({
-  //   mutationFn: (params: Media) => {
-  //     const res = newsService.ChangeMediaStatus(params);
-  //     return res;
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['mediaList']);
-  //     messageApi.open({
-  //       type: 'success',
-  //       content: '状态修改成功',
-  //     });
-  //   },
-  //   onError: () => {
-  //     messageApi.open({
-  //       type: 'error',
-  //       content: '状态修改失败',
-  //     });
-  //   },
-  // });
-  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
-  //   // 修改分发状态逻辑
-  //   changeMediaStatus.mutate({
-  //     media_title: record.media_title,
-  //     opt_status: checked,
-  //   });
-  // };
+  const changeMediaStatus = useMutation({
+    mutationFn: (params: Media) => {
+      const res = newsService.ChangeMediaStatus(params);
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['mediaList']);
+      messageApi.open({
+        type: 'success',
+        content: '状态修改成功',
+      });
+    },
+    onError: () => {
+      messageApi.open({
+        type: 'error',
+        content: '状态修改失败',
+      });
+    },
+  });
+  const onChangeMediaStatus = (checked: boolean, record: Media) => {
+    // 修改分发状态逻辑
+    changeMediaStatus.mutate({
+      media_title: record.media_title,
+      opt_status: checked,
+    });
+  };
 
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
@@ -203,23 +184,23 @@ export default function KnowledgeGrounp() {
   });
   const { data: theasaurusList } = useQuery({
     queryKey: ['theasaurusList'],
-    queryFn: () => TGService.GetAreaList(),
+    queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
-  // useEffect(() => {
-  //   const fetchCategoryData = async () => {
-  //     const data = await planetService.GetChildCateGory(categoryQuery);
-  //     if (categoryQuery.level === 0) {
-  //       setLevelOneList(data);
-  //     } else if (categoryQuery.level === 1) {
-  //       setLevelTwoList(data);
-  //     } else if (categoryQuery.level === 2) {
-  //       setLevelThreeList(data);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      const data = await planetService.GetChildCateGory(categoryQuery);
+      if (categoryQuery.level === 0) {
+        setLevelOneList(data);
+      } else if (categoryQuery.level === 1) {
+        setLevelTwoList(data);
+      } else if (categoryQuery.level === 2) {
+        setLevelThreeList(data);
+      }
+    };
 
-  //   fetchCategoryData();
-  // }, [categoryQuery]);
+    fetchCategoryData();
+  }, [categoryQuery]);
   // const onChangeTheasaurusTag = (e: any) => {
   //   setTheasaurusTagId(e.target.value);
   //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
@@ -308,7 +289,6 @@ export default function KnowledgeGrounp() {
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
         <DelTagModel {...delTagModelProps} />
-        {/* <DetailModel {...detailModelProps} /> */}
       </Space>
     </>
   );

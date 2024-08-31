@@ -301,3 +301,26 @@ export interface Tweet {
   created_at: string; // This is likely a date string
   created_time: string; // This is also likely a date string
 }
+
+export interface TwitterUser {
+  id: number; // 用户ID
+  author_id: string; // 作者ID
+  name: string; // 用户名称
+  username: string; // 用户名
+  username_key: string; // 用户名的密钥
+  created_at: string; // 创建时间
+  location: string; // 位置
+  profile_image_url: string; // 头像URL
+  profile_image_url0: string; // 备用头像URL
+  description: string; // 用户描述
+  url: string; // 个人主页链接
+  followers_count: number; // 粉丝数
+  following_count: number; // 关注数
+  tweet_count: number; // 推文数
+  listed_count: number; // 列表数
+  created_time: string; // 数据创建时间
+  updated_time: string; // 数据更新时间
+  verified: boolean; // 是否已验证
+  hidden: boolean; // 是否隐藏
+  categories: string[] | null; // 用户分类，可以为空
+}

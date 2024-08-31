@@ -97,7 +97,7 @@ function EditorOrAddModel({
   };
   const setCategoryTags = useMutation({
     mutationFn: async (params: SetCategroyTagsReq) => {
-      const res = await planetService.SetCategroyTags(params);
+      const res = await TGService.SetCategroyTags(params);
       return res.data;
     },
     onSuccess: () => {

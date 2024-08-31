@@ -91,6 +91,18 @@ export interface GetAcountListReq {
   page: number;
   username?: string;
 }
+export interface GetUserListReq {
+  limit: number;
+  mobile_number?: string;
+  name?: string;
+  page: number;
+  suspended?: string;
+  web_site_id?: string;
+}
+export interface BandUserReq {
+  id: number;
+  suspended: boolean;
+}
 export enum PlanetType {
   AddArea = '/api/twitter/area/add',
   GetAreaList = '/api/twitter/area/list',
@@ -111,6 +123,10 @@ export enum PlanetType {
   DelArticles = '/api/twitter/tweet/delete',
   // ----账号管理
   GetAcountList = '/api/twitter/author/list',
+
+  // 用户管理
+  GetUserList = '/api/user/list',
+  BandUser = '/api/user/suspended',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -131,10 +147,9 @@ const SetCategroyTags = (data: SetCategroyTagsReq) =>
   apiClient.post({ url: PlanetType.SetCategroyTags, data });
 const SearchKnowledge = (data: SearchKnowledgeReq) =>
   apiClient.post({ url: PlanetType.SearchKnowledge, data });
-const GetCateGoryTagList = (group_id: string) =>
-  apiClient.get({ url: `/api/navigator/zxsq/group/${group_id}/categories` });
-const DelCateGoryTag = (group_id: string, category_id: string) =>
-  apiClient.get({ url: `/api/navigator/zxsq/group/${group_id}/del_category/${category_id}` });
+const GetCateGoryTagList = (author_id: string) =>
+  apiClient.get({ url: `/api/twitter/author/${author_id}/categories` });
+const DelCateGoryTag = (c_id: string) => apiClient.get({ url: `/api/twitter/categor/del/${c_id}` });
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: PlanetType.GetChildCateGory, data });
 const GetArticleList = (data: GetArticleReq) =>
@@ -147,8 +162,9 @@ const GetAcountList = (data: GetAcountListReq) =>
 const GetAcountDetail = (id: string) => apiClient.get({ url: `/api/twitter/author/${id}` });
 const GetAcountDetailHashTag = (id: string) =>
   apiClient.get({ url: `/api/twitter/author/hashtags/${id}` });
-// const GetGroupList = (data: GetGroupListReq) =>
-//   apiClient.post({ url: PlanetType.GetGroupList, data });
+const GetUserList = (data: GetUserListReq) => apiClient.post({ url: PlanetType.GetUserList, data });
+const GetUserDetail = (uid: string) => apiClient.get({ url: `/api/user/detail/${uid}` });
+const BandUser = (data: BandUserReq) => apiClient.post({ url: PlanetType.BandUser, data });
 export default {
   AddArea,
   GetAreaList,
@@ -172,4 +188,7 @@ export default {
   GetAcountList,
   GetAcountDetail,
   GetAcountDetailHashTag,
+  GetUserList,
+  BandUser,
+  GetUserDetail,
 };

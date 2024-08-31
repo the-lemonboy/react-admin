@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Card,
   Space,
@@ -28,6 +28,7 @@ interface TableParams {
 }
 
 export default function NewsCategoryTag() {
+  const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
   const [query, setQuery] = useState<GetUserListReq>({ page: 1, limit: 10 });
 
@@ -110,17 +111,22 @@ export default function NewsCategoryTag() {
           checkedChildren="开放"
           unCheckedChildren="禁用"
           checked={!record.suspended}
+          loading={isStatusLoading === record.id}
           onChange={(checked) => onChangeMediaStatus(checked, record)}
         />
       ),
     },
   ];
+  // 使用loading状态
+  const [isStatusLoading, setStatusLoading] = useState<number | null>(null);
 
   const changeUserStatus = useMutation({
     mutationFn: (param: SuspendedUserReq) => {
       return memberService.SuspendedUser(param);
     },
     onSuccess: () => {
+      setStatusLoading(null);
+      queryClient.invalidateQueries(['userList']);
       messageApi.success('操作成功');
     },
     onError: () => {
@@ -129,6 +135,7 @@ export default function NewsCategoryTag() {
   });
 
   const onChangeMediaStatus = (checked: boolean, record: UserTable) => {
+    setStatusLoading(record.id);
     changeUserStatus.mutate({ id: record.id, suspended: !checked });
   };
 

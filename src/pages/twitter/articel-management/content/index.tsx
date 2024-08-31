@@ -91,8 +91,9 @@ export default function KnowledgeGrounp() {
       align: 'center',
     },
     {
-      title: 'profile_image_url0',
+      title: '头像',
       dataIndex: 'profile_image_url0',
+      key: 'profile_image_url0',
       align: 'center',
       width: 80,
       render: (text: string) => (
