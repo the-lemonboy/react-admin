@@ -77,19 +77,12 @@ function EditorOrAddModel({
     return path;
   };
   const [selectedPath, setSelectedPath] = useState<string[]>([]);
-  const handleOptStatusChange = (e: any) => {
-    form.setFieldsValue({ opt_status: e.target.value });
-  };
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+  const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any) => {
     setSelectedRowKeys(newSelectedRowKeys);
-    const newSelectedPaths: string[] = newSelectedRowKeys.map((item) => {
-      const pathNodes = findPath(treeCategory, item.toString());
-      const path = pathNodes.map((node) => node.c_id).join('/');
-      return path;
-    });
-    setSelectedPath(newSelectedPaths);
-    console.log('selectedRowKeys changed: ', newSelectedPaths);
+    const paths = selectedRows.map((item: any) => item.p_c_path);
+    setSelectedPath(paths);
   };
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const rowSelection: TableRowSelection<PlanetCategory> = {
     selectedRowKeys,
@@ -110,10 +103,10 @@ function EditorOrAddModel({
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      const paramsValue = selectedPath.map((item) => {
+      const paramsValue = selectedPath.map((item, index) => {
         return {
           area_id: values.area_id,
-          c_id: tableValue.id,
+          c_id: selectedRowKeys[index],
           p_c_path: item,
         };
       });

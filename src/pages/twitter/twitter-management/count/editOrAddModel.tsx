@@ -2,10 +2,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Modal, Table, Form, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
-import TGService, { SetCategroyTagsReq } from '@/api/services/TGService';
+import twitterService, { SetCategroyTagsReq } from '@/api/services/twitterService';
 import { ArrayToTree } from '@/utils/tree';
 
-import { PlanetCategory, TG, Theasaurus } from '#/entity';
+import { PlanetCategory, TwitterUser, Theasaurus } from '#/entity';
 import type { TableColumnsType, TableProps } from 'antd';
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
@@ -17,7 +17,7 @@ export type EditorOrAddModelProps = {
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  tableValue: TG;
+  tableValue: TwitterUser;
   theasaurusList: Theasaurus;
 };
 
@@ -37,7 +37,7 @@ function EditorOrAddModel({
   const [queryNewsCategory, setQueryNewsCategory] = useState<{ area_id: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingCategoryList } = useQuery({
     queryKey: ['newsCategroyList', queryNewsCategory],
-    queryFn: () => TGService.GetCategoryList(queryNewsCategory),
+    queryFn: () => twitterService.GetCategoryList(queryNewsCategory),
   });
   const [treeCategory, setTreeCategory] = useState<TG[]>([]);
   useEffect(() => {
@@ -53,7 +53,7 @@ function EditorOrAddModel({
   ];
   // const { data: categoryList } = useQuery({
   //   queryKey: ['categoryList'],
-  //   queryFn: () => TGService.GetCategoryList({ area_id: form }),
+  //   queryFn: () => twitterService.GetCategoryList({ area_id: form }),
   // });
 
   // 查找路径
@@ -77,16 +77,15 @@ function EditorOrAddModel({
     return path;
   };
   const [selectedPath, setSelectedPath] = useState<string[]>([]);
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+  const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any) => {
     setSelectedRowKeys(newSelectedRowKeys);
-    const newSelectedPaths: string[] = newSelectedRowKeys.map((item) => {
-      const pathNodes = findPath(treeCategory, item.toString());
-      const path = pathNodes.map((node) => node.c_id).join('/');
-      return path;
-    });
-    setSelectedPath(newSelectedPaths);
-    console.log('selectedRowKeys changed: ', newSelectedPaths);
+
+    const paths = selectedRows.map((item: any) => item.p_c_path);
+    setSelectedPath(paths);
+
+    console.log('selectedRowKeys changed: ', paths); // 打印新的路径
   };
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const rowSelection: TableRowSelection<PlanetCategory> = {
     selectedRowKeys,
@@ -94,30 +93,30 @@ function EditorOrAddModel({
   };
   const setCategoryTags = useMutation({
     mutationFn: async (params: SetCategroyTagsReq) => {
-      const res = await TGService.SetCategroyTags(params);
+      const res = await twitterService.SetCategroyTags(params);
       return res.data;
     },
     onSuccess: () => {
       onOk();
     },
     onError: (error) => {
-      console.error('Error adding media:', error);
+      console.error('Error adding:', error);
     },
   });
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      const paramsValue = selectedPath.map((item) => {
+      const paramsValue = selectedPath.map((item, index) => {
+        console.log(item, selectedRowKeys[index]);
         return {
           area_id: values.area_id,
-          c_id: tableValue.id,
+          c_id: selectedRowKeys[index],
           p_c_path: item,
         };
       });
       const params = {
         category_paths: paramsValue,
-        group_id: tableValue.group.group_id,
-        topic_id: tableValue.topic_id,
+        author_id: tableValue.author_id,
       };
       setCategoryTags.mutate(params);
     } catch (error) {

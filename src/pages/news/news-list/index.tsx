@@ -109,36 +109,36 @@ export default function NewsList() {
     });
   };
 
-  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-    title: '新增媒体',
-    show: false,
-    formValue: {},
-    onOk: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-      // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['mediaList']);
-    },
-    onCancel: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-    },
-    addFlag: true,
-  });
+  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+  //   title: '新增媒体',
+  //   show: false,
+  //   formValue: {},
+  //   onOk: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //     // 重新获取数据或更新缓存
+  //     queryClient.invalidateQueries(['mediaList']);
+  //   },
+  //   onCancel: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //   },
+  //   addFlag: true,
+  // });
 
-  const onCreateMedia = (addFlag: boolean) => {
-    setEditorOrAddModelProps((prev) => ({
-      ...prev,
-      title: '新增媒体',
-      show: true,
-      formValue: {},
-      addFlag,
-    }));
-  };
+  // const onCreateMedia = (addFlag: boolean) => {
+  //   setEditorOrAddModelProps((prev) => ({
+  //     ...prev,
+  //     title: '新增媒体',
+  //     show: true,
+  //     formValue: {},
+  //     addFlag,
+  //   }));
+  // };
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
   const [CategoryIds, setCategoryIds] = useState({
     categoryIdOne: '',
@@ -303,12 +303,12 @@ export default function NewsList() {
           )}
         </Card>
         <Card
-          title="媒体管理"
-          extra={
-            <Button type="primary" onClick={() => onCreateMedia(true)}>
-              新增
-            </Button>
-          }
+          title="快讯列表"
+          // extra={
+          //   <Button type="primary" onClick={() => onCreateMedia(true)}>
+          //     新增
+          //   </Button>
+          // }
         >
           <Table
             rowKey="id"
@@ -320,7 +320,7 @@ export default function NewsList() {
             onChange={handleTableChange}
           />
         </Card>
-        <EditorOrAddModel {...editorOrAddModelProps} />
+        {/* <EditorOrAddModel {...editorOrAddModelProps} /> */}
       </Space>
     </>
   );

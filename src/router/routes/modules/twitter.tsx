@@ -92,7 +92,7 @@ const pilotSpecial: AppRouteObject = {
           },
         },
         {
-          path: 'session-tag',
+          path: 'session',
           element: <SessionPage />,
           meta: {
             label: 'sys.menu.articel-management.session',

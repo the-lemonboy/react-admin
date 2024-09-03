@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Card,
   Space,
@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import planetService, { SearchKnowledgeReq } from '@/api/services/planetService';
 
 import DetailModel, { DetailModelProps } from './detail';
+import EditorOrAddModel from './editOrAddModel';
 
 import { PlanetKnowledge } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
@@ -28,7 +29,7 @@ interface TableParams {
   pagination?: TablePaginationConfig;
 }
 export default function NewsList() {
-  // const queryClient = useQueryClient(); // 全局声明
+  const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [articelQuery, setArticelQuery] = useState<SearchKnowledgeReq>({
     limit: 10,
@@ -50,7 +51,7 @@ export default function NewsList() {
     topic_id: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['articelList', articelQuery],
+    queryKey: ['planetArticelList', articelQuery],
     queryFn: () => planetService.SearchKnowledge(articelQuery),
   });
   // 分页
@@ -83,14 +84,14 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  // const onEditTag = (record: PlanetKnowledge) => {
-  //   setEditorOrAddModelProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     tableValue: record,
-  //     theasaurusList,
-  //   }));
-  // };
+  const onEditTag = (record: PlanetKnowledge) => {
+    setEditorOrAddModelProps((prev) => ({
+      ...prev,
+      show: true,
+      tableValue: record,
+      theasaurusList,
+    }));
+  };
   const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
     title: '详细',
     show: false,
@@ -175,9 +176,9 @@ export default function NewsList() {
           <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
             详细
           </Button>
-          {/* <Button type="default" onClick={() => onEditTag(record)}>
+          <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
-          </Button> */}
+          </Button>
         </div>
       ),
     },
@@ -209,25 +210,25 @@ export default function NewsList() {
   //   });
   // };
 
-  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-  //   title: '标签管理',
-  //   show: false,
-  //   newId: '',
-  //   onOk: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //     // 重新获取数据或更新缓存
-  //     queryClient.invalidateQueries(['mediaList']);
-  //   },
-  //   onCancel: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //   },
-  // });
+  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+    title: '标签管理',
+    show: false,
+    newId: '',
+    onOk: () => {
+      setEditorOrAddModelProps((prev) => ({
+        ...prev,
+        show: false,
+      }));
+      // 重新获取数据或更新缓存
+      queryClient.invalidateQueries(['planetArticelList']);
+    },
+    onCancel: () => {
+      setEditorOrAddModelProps((prev) => ({
+        ...prev,
+        show: false,
+      }));
+    },
+  });
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
   const [CategoryIds, setCategoryIds] = useState({
     categoryIdOne: '',
@@ -337,7 +338,7 @@ export default function NewsList() {
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
-              {theasaurusList?.data.map((item: NewsCategory, index: number) => (
+              {theasaurusList?.data.map((item: any, index: number) => (
                 <Radio key={index} value={item.id}>
                   {item.title}
                 </Radio>
@@ -348,7 +349,7 @@ export default function NewsList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
-                {levelOneList?.map((item: NewsCategory, index: number) => (
+                {levelOneList?.map((item: any, index: number) => (
                   <Radio key={index} value={item.c_id}>
                     {item.title}
                   </Radio>
@@ -360,7 +361,7 @@ export default function NewsList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
-                {levelTwoList?.map((item: NewsCategory, index: number) => (
+                {levelTwoList?.map((item: any, index: number) => (
                   <Radio key={index} value={item.c_id}>
                     {item.title}
                   </Radio>
@@ -372,7 +373,7 @@ export default function NewsList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group
-                options={levelThreeList.map((item: NewsCategory) => ({
+                options={levelThreeList.map((item: any) => ({
                   label: item.title,
                   value: item.title,
                 }))}
@@ -392,7 +393,7 @@ export default function NewsList() {
             onChange={handleTableChange}
           />
         </Card>
-        {/* <EditorOrAddModel {...editorOrAddModelProps} /> */}
+        <EditorOrAddModel {...editorOrAddModelProps} />
         <DetailModel {...detailModelProps} />
       </Space>
     </>

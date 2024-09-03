@@ -3,8 +3,12 @@ import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Select, 
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
-import twitterService, { GetAcountListReq } from '@/api/services/twitterService';
+import twitterService, {
+  GetAcountListReq,
+  GetChildCateGoryReq,
+} from '@/api/services/twitterService';
 
+import DetailModel from './detail';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { TwitterUser } from '#/entity';
@@ -57,6 +61,24 @@ export default function TwitterAcountList() {
       setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
       setTableParams({ pagination });
     }
+  };
+  const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
+    title: '详细',
+    show: false,
+    formValue: {},
+    onOk: () => {
+      setDetailModelProps((prev) => ({ ...prev, show: false }));
+    },
+    onCancel: () => {
+      setDetailModelProps((prev) => ({ ...prev, show: false }));
+    },
+  });
+  const onDetail = (record: PlanetKnowledge) => {
+    setDetailModelProps((prev) => ({
+      ...prev,
+      show: true,
+      formValue: record,
+    }));
   };
   const onEditTag = (record: TwitterUser) => {
     setEditorOrAddModelProps((prev) => ({
@@ -127,8 +149,11 @@ export default function TwitterAcountList() {
       align: 'center',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <Button type="primary" onClick={() => onEditTag(record)}>
-            编辑
+          <Button type="primary" className="mr-2" onClick={() => onDetail(record)}>
+            详细
+          </Button>
+          <Button type="default" onClick={() => onEditTag(record)}>
+            添加标签
           </Button>
         </div>
       ),
@@ -189,15 +214,16 @@ export default function TwitterAcountList() {
   const [levelOneList, setLevelOneList] = useState([]);
   const [levelTwoList, setLevelTwoList] = useState([]);
   const [levelThreeList, setLevelThreeList] = useState([]);
-  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+  const [categoryQuery, setCategoryQuery] = useState<GetChildCateGoryReq>({
     area_id: '',
-    level: -1,
-    p_c_id: '',
+    p_c_id: '-1',
+    level: 0,
   });
   const { data: theasaurusList } = useQuery({
-    queryKey: ['TGTheasaurusList'],
+    queryKey: ['TwitterTheasaurusList'],
     queryFn: () => twitterService.GetAreaList(),
   });
+
   // 查询标签
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -212,22 +238,24 @@ export default function TwitterAcountList() {
     };
     fetchCategoryData();
   }, [categoryQuery]);
+
   const onChangeTheasaurusTag = (e: any) => {
     setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+    setCategoryQuery({ area_id: e.target.value, p_c_id: '-1', level: 0 });
   };
+
   const onChangeCategoryOneTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
   };
+
   const onChangeCategoryTwoTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
   };
+
   const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
+    const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
     setArticelQuery((prev) => ({
       ...prev,
       limit: 10,
@@ -288,7 +316,7 @@ export default function TwitterAcountList() {
           <div className="mb-4 flex flex-wrap items-center">
             <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
             <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
-              {theasaurusList?.data.map((item: NewsCategory, index: number) => (
+              {theasaurusList?.data.map((item: any, index: number) => (
                 <Radio key={index} value={item.id}>
                   {item.title}
                 </Radio>
@@ -299,7 +327,7 @@ export default function TwitterAcountList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
-                {levelOneList?.map((item: NewsCategory, index: number) => (
+                {levelOneList?.map((item: any, index: number) => (
                   <Radio key={index} value={item.c_id}>
                     {item.title}
                   </Radio>
@@ -311,7 +339,7 @@ export default function TwitterAcountList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
-                {levelTwoList?.map((item: NewsCategory, index: number) => (
+                {levelTwoList?.map((item: any, index: number) => (
                   <Radio key={index} value={item.c_id}>
                     {item.title}
                   </Radio>
@@ -323,7 +351,7 @@ export default function TwitterAcountList() {
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group
-                options={levelThreeList.map((item: NewsCategory) => ({
+                options={levelThreeList.map((item: any) => ({
                   label: item.title,
                   value: item.title,
                 }))}
@@ -344,6 +372,7 @@ export default function TwitterAcountList() {
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />
+        <DetailModel {...detailModelProps} />
       </Space>
     </>
   );

@@ -82,7 +82,7 @@ export enum PlanetType {
   GetCategoryList = '/api/navigator/category/list',
   UpdateCategory = '/api/navigator/category/update',
   SearchKnowledge = '/api/navigator/zsxq/topic/topic_search',
-  SetCategroyTags = '/api/navigator/tg/topic/category_setting',
+  SetCategroyTags = '/api/navigator/group/category_setting',
   GetChildCateGory = '/api/navigator/category/level',
   GetGroupList = '/api/navigator/zxsq/group_list',
 }

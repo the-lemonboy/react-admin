@@ -86,7 +86,7 @@ export default function TGGrounpContentList() {
       theasaurusList,
     }));
   };
-  const columns: ColumnsType<NewsSearchList> = [
+  const columns: ColumnsType<TG> = [
     { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
     {
       title: '发布者',
@@ -150,7 +150,7 @@ export default function TGGrounpContentList() {
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary" onClick={() => onEditTag(record)}>
-            编辑
+            添加标签
           </Button>
         </div>
       ),
@@ -193,7 +193,7 @@ export default function TGGrounpContentList() {
         show: false,
       }));
       // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['mediaList']);
+      queryClient.invalidateQueries(['TGArticelList']);
     },
     onCancel: () => {
       setEditorOrAddModelProps((prev) => ({

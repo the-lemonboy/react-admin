@@ -6,38 +6,47 @@ import { useEffect, useState } from 'react';
 import twitterService from '@/api/services/twitterService';
 
 const { TextArea } = Input;
+
+export interface TagInfo {
+  id: number;
+  c_id: number;
+  title: string;
+}
+
 export interface DetailModelProps {
   title: string;
   show: boolean;
   formValue: any;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  // categoryList,
 }
-// 新增目录标签
+
 function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProps) {
   const [form] = Form.useForm();
+  const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
+
   useEffect(() => {
     form.setFieldsValue({ ...formValue });
   }, [formValue, form]);
+
   const { data: tagList } = useQuery({
     queryKey: ['PlanetTagList', formValue?.author_id],
     queryFn: () => twitterService.GetCateGoryTagList(formValue?.author_id),
     enabled: !!formValue?.author_id,
   });
-  console.log(formValue);
+
   const handleOk = async () => {
     try {
       const values = await form.validateFields(); // 获取表单所有字段的值
-      // addCateGoryMutation.mutate(values); // 提交表单数据进行新增
+      // 在此处理提交逻辑
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
+
   const fetchDelCategoryTag = useMutation({
     mutationFn: twitterService.DelCateGoryTag,
     onSuccess: () => {
-      // queryClient.invalidateQueries(['websiteTagList']);
       message.success('标签删除成功');
     },
     onError: (error) => {
@@ -45,11 +54,12 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
       console.error('Error deleting category:', error);
     },
   });
-  const [visiblePopconfirm, setVisiblePopconfirm] = useState<number | null>(null);
+
   const delCategoryTag = (tagValue: TagInfo) => {
     fetchDelCategoryTag.mutate({ cid: tagValue.c_id });
-    setVisiblePopconfirm(null); // Hide the Popconfirm
+    setVisiblePopconfirm(null); // 隐藏 Popconfirm
   };
+
   return (
     <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
       <Form
@@ -61,7 +71,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
       >
         <Form.Item label="已有标签" name="url">
           {tagList && (
-            <div className="mb-4 flex flex-wrap items-center">
+            <div className="flex flex-wrap items-center">
               {tagList.map((item: TagInfo) => (
                 <Popconfirm
                   key={item.id}
@@ -80,7 +90,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
                       e.preventDefault();
                       setVisiblePopconfirm(item.id);
                     }}
-                    style={{ marginBottom: '8px', marginRight: '8px' }}
+                    style={{ marginRight: '8px' }}
                   >
                     {item.title}
                   </Tag>
@@ -95,11 +105,9 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
         <Form.Item label="内容" name="content_text">
           <TextArea rows={4} />
         </Form.Item>
-        <Form.Item label="发布者" name="owner.name">
-          <Input />
-        </Form.Item>
       </Form>
     </Modal>
   );
 }
+
 export default DetailModel;

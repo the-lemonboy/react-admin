@@ -55,12 +55,6 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
 
   const [visiblePopconfirm, setVisiblePopconfirm] = useState<string | null>(null);
 
-<<<<<<<<<<<<<<  ✨ Codeium Command ⭐  >>>>>>>>>>>>>>>>
-  /**
-   * 删除标签
-   * @param tagValue 删除的标签信息
-   */
-<<<<<<<  df2b3b41-4166-438b-a943-1f7a12308b23  >>>>>>>
   const delCategoryTag = (tagValue: CategroyTag) => {
     console.log(formValue, tagValue);
     fetchDelCategoryTag.mutate({ group_id: formValue.id, category_id: tagValue.area_id });
@@ -76,7 +70,7 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item label="已有标签" name="url">
+        {/* <Form.Item label="已有标签" name="url">
           {tagList && (
             <div className="flex flex-wrap items-center">
               {tagList.map((item: CategroyTag) => (
@@ -105,7 +99,7 @@ function DelTagModel({ title, show, formValue, onOk, onCancel }: DelTagModelProp
               ))}
             </div>
           )}
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="发布者" name="owner.name">
           <Input />
         </Form.Item>

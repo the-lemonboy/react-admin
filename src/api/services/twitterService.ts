@@ -61,12 +61,16 @@ interface CategoryPath {
 
 export interface SetCategroyTagsReq {
   category_paths: CategoryPath[];
-  group_id: string;
+  author_id: string;
 }
+// interface Item {
+//   area_id: string;
+//   p_c_id: string;
+// }
 export interface GetChildCateGoryReq {
   area_id: string;
-  level: number;
   p_c_id: string;
+  level: number;
 }
 export interface GetGroupListReq {
   limit: number;
@@ -103,6 +107,26 @@ export interface BandUserReq {
   id: number;
   suspended: boolean;
 }
+export interface GetSessionListReq {
+  area_id?: string;
+  author?: string;
+  content?: string;
+  created_at_range?: string;
+  like_count?: number;
+  limit: number;
+  p_c_paths?: string[];
+  page: number;
+  reply_count?: number;
+  retweet_count?: number;
+  username?: string;
+}
+export interface DelSessionReq {
+  tweet_ids: string[];
+}
+export interface SetSessionStatusReq {
+  hidden: boolean;
+  tweet_ids: string[];
+}
 export enum PlanetType {
   AddArea = '/api/twitter/area/add',
   GetAreaList = '/api/twitter/area/list',
@@ -113,8 +137,8 @@ export enum PlanetType {
   GetCategoryList = '/api/twitter/category/list',
   UpdateCategory = '/api/twitter/category/update',
   SearchKnowledge = '/api/twitter/zsxq/topic/topic_search',
-  SetCategroyTags = '/api/twitter/tg/topic/category_setting',
-  GetChildCateGory = '/api/twitter/category/level',
+  SetCategroyTags = '/api/twitter/author/category_setting',
+  GetChildCateGory = '/api/twitter/author/level/cat/list',
   // GetGroupList = '/api/twitter/zxsq/group_list',
 
   // ----推文内容
@@ -127,6 +151,11 @@ export enum PlanetType {
   // 用户管理
   GetUserList = '/api/user/list',
   BandUser = '/api/user/suspended',
+
+  // ----会话管理
+  GetSessionList = '/api/twitter/conv/tweet/list',
+  DelSession = '/api/twitter/tweet/delete',
+  SetSessionStatus = '/api/twitter/tweet/hidden',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -165,6 +194,12 @@ const GetAcountDetailHashTag = (id: string) =>
 const GetUserList = (data: GetUserListReq) => apiClient.post({ url: PlanetType.GetUserList, data });
 const GetUserDetail = (uid: string) => apiClient.get({ url: `/api/user/detail/${uid}` });
 const BandUser = (data: BandUserReq) => apiClient.post({ url: PlanetType.BandUser, data });
+
+const GetSessionList = (data: GetSessionListReq) =>
+  apiClient.post({ url: PlanetType.GetSessionList, data });
+const DelSession = (data: DelSessionReq) => apiClient.post({ url: PlanetType.DelSession, data });
+const SetSessionStatus = (data: SetSessionStatusReq) =>
+  apiClient.post({ url: PlanetType.SetSessionStatus, data });
 export default {
   AddArea,
   GetAreaList,
@@ -191,4 +226,7 @@ export default {
   GetUserList,
   BandUser,
   GetUserDetail,
+  GetSessionList,
+  DelSession,
+  SetSessionStatus,
 };
