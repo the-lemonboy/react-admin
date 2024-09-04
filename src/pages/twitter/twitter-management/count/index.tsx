@@ -11,7 +11,7 @@ import twitterService, {
 import DetailModel from './detail';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { TwitterUser } from '#/entity';
+import { TweetCount } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
@@ -67,20 +67,20 @@ export default function TwitterAcountList() {
     show: false,
     formValue: {},
     onOk: () => {
-      setDetailModelProps((prev) => ({ ...prev, show: false }));
+      setDetailModelProps((prev: TweetCount) => ({ ...prev, show: false }));
     },
     onCancel: () => {
-      setDetailModelProps((prev) => ({ ...prev, show: false }));
+      setDetailModelProps((prev: TweetCount) => ({ ...prev, show: false }));
     },
   });
-  const onDetail = (record: PlanetKnowledge) => {
-    setDetailModelProps((prev) => ({
+  const onDetail = (record: TweetCount) => {
+    setDetailModelProps((prev: TweetCount) => ({
       ...prev,
       show: true,
       formValue: record,
     }));
   };
-  const onEditTag = (record: TwitterUser) => {
+  const onEditTag = (record: TweetCount) => {
     setEditorOrAddModelProps((prev) => ({
       ...prev,
       show: true,
@@ -88,7 +88,7 @@ export default function TwitterAcountList() {
       theasaurusList,
     }));
   };
-  const columns: ColumnsType<TwitterUser> = [
+  const columns: ColumnsType<TweetCount> = [
     { title: '用户名', dataIndex: 'name', key: 'name', width: 200, align: 'center' },
     {
       title: '头像',
@@ -283,7 +283,7 @@ export default function TwitterAcountList() {
               <Col span={24} lg={6}>
                 <Form.Item label="板块" name="area_id" className="!mb-0">
                   <Select>
-                    {theasaurusList?.data.map((item: Theasaurus, index) => (
+                    {theasaurusList?.data.map((item: any, index: any) => (
                       <Select.Option key={index} value={item.id}>
                         {item.title}
                       </Select.Option>

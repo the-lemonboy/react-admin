@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import twitterService, { SetCategroyTagsReq } from '@/api/services/twitterService';
 import { ArrayToTree } from '@/utils/tree';
 
-import { PlanetCategory, TwitterUser, Theasaurus } from '#/entity';
+import { PlanetCategory, TweetCount, Theasaurus } from '#/entity';
 import type { TableColumnsType, TableProps } from 'antd';
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
@@ -17,7 +17,7 @@ export type EditorOrAddModelProps = {
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
-  tableValue: TwitterUser;
+  tableValue: TweetCount;
   theasaurusList: Theasaurus;
 };
 
@@ -57,25 +57,25 @@ function EditorOrAddModel({
   // });
 
   // 查找路径
-  const findPath = (tree: TreeNode[], id: string): TreeNode[] => {
-    const path: TreeNode[] = [];
-    const findNodePath = (nodes: TreeNode[], targetId: string): boolean => {
-      for (const node of nodes) {
-        if (node.c_id === targetId) {
-          path.unshift(node);
-          return true;
-        }
-        if (node.children && findNodePath(node.children, targetId)) {
-          path.unshift(node);
-          return true;
-        }
-      }
-      return false;
-    };
+  // const findPath = (tree: TreeNode[], id: string): TreeNode[] => {
+  //   const path: TreeNode[] = [];
+  //   const findNodePath = (nodes: TreeNode[], targetId: string): boolean => {
+  //     for (const node of nodes) {
+  //       if (node.c_id === targetId) {
+  //         path.unshift(node);
+  //         return true;
+  //       }
+  //       if (node.children && findNodePath(node.children, targetId)) {
+  //         path.unshift(node);
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+  //   };
 
-    findNodePath(tree, id);
-    return path;
-  };
+  //   findNodePath(tree, id);
+  //   return path;
+  // };
   const [selectedPath, setSelectedPath] = useState<string[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any) => {
     setSelectedRowKeys(newSelectedRowKeys);

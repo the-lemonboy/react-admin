@@ -1,11 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Select, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import newsService, { GetChildCategoryListReq, GetNewsListReq } from '@/api/services/newsService';
-
-import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
 import { Media, NewsCategory } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
@@ -62,52 +60,60 @@ export default function NewsList() {
     }
   };
   const columns: ColumnsType<Media> = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '名称', dataIndex: 'title', key: 'title' },
+    { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
+    { title: '标题', dataIndex: 'title', key: 'title', width: 300, align: 'center' },
     {
       title: '新闻平台',
       dataIndex: 'exchange_media_title',
-    },
-    { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200 },
-    { title: '接受时间', dataIndex: 'created_time', key: 'created_time', width: 200 },
-    {
-      title: '状态',
-      dataIndex: 'opt_status',
-      key: 'opt_status',
+      width: 100,
       align: 'center',
-      render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
-          <Button type="primary">详细</Button>
-        </div>
-      ),
     },
+    { title: '发布时间', dataIndex: 'pub_time', key: 'pub_time', width: 200, align: 'center' },
+    {
+      title: '接受时间',
+      dataIndex: 'created_time',
+      key: 'created_time',
+      width: 200,
+      align: 'center',
+    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'opt_status',
+    //   key: 'opt_status',
+    //   align: 'center',
+    //   render: (_, record) => (
+    //     <div className="flex w-full justify-center text-gray">
+    //       <Button type="primary">详细</Button>
+    //     </div>
+    //   ),
+    // },
   ];
-  const changeMediaStatus = useMutation({
-    mutationFn: (params: Media) => {
-      const res = newsService.ChangeMediaStatus(params);
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['mediaList']);
-      messageApi.open({
-        type: 'success',
-        content: '状态修改成功',
-      });
-    },
-    onError: () => {
-      messageApi.open({
-        type: 'error',
-        content: '状态修改失败',
-      });
-    },
-  });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
+  // const changeMediaStatus = useMutation({
+  //   mutationFn: (params: Media) => {
+  //     const res = newsService.ChangeMediaStatus(params);
+  //     return res;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['mediaList']);
+  //     messageApi.open({
+  //       type: 'success',
+  //       content: '状态修改成功',
+  //     });
+  //   },
+  //   onError: () => {
+  //     messageApi.open({
+  //       type: 'error',
+  //       content: '状态修改失败',
+  //     });
+  //   },
+  // });
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
 
   // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
   //   title: '新增媒体',

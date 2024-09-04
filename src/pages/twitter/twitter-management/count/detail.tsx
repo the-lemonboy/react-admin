@@ -30,19 +30,10 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   }, [formValue, form]);
 
   const { data: tagList } = useQuery({
-    queryKey: ['PlanetTagList', formValue?.author_id],
+    queryKey: ['TwitterUserTagList', formValue?.author_id],
     queryFn: () => twitterService.GetCateGoryTagList(formValue?.author_id),
     enabled: !!formValue?.author_id,
   });
-
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields(); // 获取表单所有字段的值
-      // 在此处理提交逻辑
-    } catch (error) {
-      console.error('Validation failed:', error);
-    }
-  };
 
   const fetchDelCategoryTag = useMutation({
     mutationFn: twitterService.DelCateGoryTag,
@@ -61,7 +52,12 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   };
 
   return (
-    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+    <Modal
+      title={title}
+      open={show}
+      onCancel={onCancel}
+      footer={null} // 去掉确定按钮
+    >
       <Form
         initialValues={formValue}
         form={form}
@@ -99,11 +95,41 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
             </div>
           )}
         </Form.Item>
-        <Form.Item label="发布者" name="owner.name">
+      </Form>
+      <Form
+        initialValues={formValue}
+        form={form}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 18 }}
+        layout="horizontal"
+        disabled
+      >
+        <Form.Item label="账号" name="username">
           <Input />
         </Form.Item>
-        <Form.Item label="内容" name="content_text">
+        <Form.Item label="用户名" name="name">
+          <Input />
+        </Form.Item>
+        <Form.Item label="粉丝量" name="followers_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="关注量" name="following_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="推特量" name="tweet_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="位置" name="location">
+          <Input />
+        </Form.Item>
+        <Form.Item label="描述" name="description">
           <TextArea rows={4} />
+        </Form.Item>
+        <Form.Item label="加入时间" name="created_time">
+          <Input />
+        </Form.Item>
+        <Form.Item label="更新时间" name="updated_time">
+          <Input />
         </Form.Item>
       </Form>
     </Modal>

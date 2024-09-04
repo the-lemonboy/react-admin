@@ -324,3 +324,25 @@ export interface TwitterUser {
   hidden: boolean; // 是否隐藏
   categories: string[] | null; // 用户分类，可以为空
 }
+
+export interface TweetCount {
+  id: number;
+  author_id: string;
+  name: string;
+  username: string;
+  username_key: string;
+  created_at: string;
+  location: string;
+  profile_image_url: string;
+  profile_image_url0: string;
+  description: string;
+  url: string;
+  followers_count: number;
+  following_count: number;
+  tweet_count: number;
+  listed_count: number;
+  created_time: string;
+  updated_time: string;
+  verified: boolean;
+  categories: string[] | null;
+}

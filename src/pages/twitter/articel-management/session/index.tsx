@@ -1,5 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Tooltip, Button, Popconfirm, Switch } from 'antd';
+import {
+  Card,
+  Space,
+  message,
+  Tooltip,
+  Button,
+  Popconfirm,
+  Switch,
+  Radio,
+  Checkbox,
+  Form,
+  Row,
+  Col,
+  Select,
+  Input,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -73,7 +88,7 @@ export default function Session() {
     onSuccess: () => {
       messageApi.success('删除成功');
       // 成功删除后，重新获取数据或更新缓存
-      queryClient.invalidateQueries(['twitterArticleList', sessionQuery]);
+      queryClient.invalidateQueries(['twitterSessionList', sessionQuery]);
     },
     onError: (error) => {
       // 处理错误
@@ -214,7 +229,7 @@ export default function Session() {
     onSuccess: () => {
       messageApi.success('状态修改成功');
       // 成功删除后，重新获取数据或更新缓存
-      queryClient.invalidateQueries(['twitterArticleList', sessionQuery]);
+      queryClient.invalidateQueries(['twitterSessionList', sessionQuery]);
     },
     onError: (error) => {
       messageApi.error('状态修改失败');
@@ -229,107 +244,107 @@ export default function Session() {
       hidden: !checked,
     });
   };
-  const changeMediaStatus = useMutation({
-    mutationFn: (params: Media) => {
-      const res = newsService.ChangeMediaStatus(params);
-      return res;
-    },
-    onSuccess: () => {
+  // const changeMediaStatus = useMutation({
+  //   mutationFn: (params: any) => {
+  //     const res = newsService.ChangeMediaStatus(params);
+  //     return res;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['mediaList']);
+  //     messageApi.open({
+  //       type: 'success',
+  //       content: '状态修改成功',
+  //     });
+  //   },
+  //   onError: () => {
+  //     messageApi.open({
+  //       type: 'error',
+  //       content: '状态修改失败',
+  //     });
+  //   },
+  // });
+  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
+  //   // 修改分发状态逻辑
+  //   changeMediaStatus.mutate({
+  //     media_title: record.media_title,
+  //     opt_status: checked,
+  //   });
+  // };
+  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+    title: '标签管理',
+    show: false,
+    newId: '',
+    onOk: () => {
+      setEditorOrAddModelProps((prev) => ({
+        ...prev,
+        show: false,
+      }));
+      // 重新获取数据或更新缓存
       queryClient.invalidateQueries(['mediaList']);
-      messageApi.open({
-        type: 'success',
-        content: '状态修改成功',
-      });
     },
-    onError: () => {
-      messageApi.open({
-        type: 'error',
-        content: '状态修改失败',
-      });
+    onCancel: () => {
+      setEditorOrAddModelProps((prev) => ({
+        ...prev,
+        show: false,
+      }));
     },
   });
-  const onChangeMediaStatus = (checked: boolean, record: Media) => {
-    // 修改分发状态逻辑
-    changeMediaStatus.mutate({
-      media_title: record.media_title,
-      opt_status: checked,
-    });
-  };
-  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-  //   title: '标签管理',
-  //   show: false,
-  //   newId: '',
-  //   onOk: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //     // 重新获取数据或更新缓存
-  //     queryClient.invalidateQueries(['mediaList']);
-  //   },
-  //   onCancel: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //   },
-  // });
-  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  // const [CategoryIds, setCategoryIds] = useState({
-  //   categoryIdOne: '',
-  //   categoryIdTwo: '',
-  //   categoryIdThree: '',
-  // });
-  // const [levelOneList, setLevelOneList] = useState([]);
-  // const [levelTwoList, setLevelTwoList] = useState([]);
-  // const [levelThreeList, setLevelThreeList] = useState([]);
-  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-  //   area_id: '',
-  //   level: -1,
-  //   p_c_id: '',
-  // });
-  // const { data: theasaurusList } = useQuery({
-  //   queryKey: ['theasaurusList'],
-  //   queryFn: () => twitterService.GetAreaList(),
-  // });
+  const [theasaurusTagId, setTheasaurusTagId] = useState('');
+  const [CategoryIds, setCategoryIds] = useState({
+    categoryIdOne: '',
+    categoryIdTwo: '',
+    categoryIdThree: '',
+  });
+  const [levelOneList, setLevelOneList] = useState([]);
+  const [levelTwoList, setLevelTwoList] = useState([]);
+  const [levelThreeList, setLevelThreeList] = useState([]);
+  const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
+    area_id: '',
+    level: -1,
+    p_c_id: '',
+  });
+  const { data: theasaurusList } = useQuery({
+    queryKey: ['theasaurusList'],
+    queryFn: () => twitterService.GetAreaList(),
+  });
   // 查询标签
-  // useEffect(() => {
-  //   const fetchCategoryData = async () => {
-  //     const data = await twitterService.GetChildCateGory(categoryQuery);
-  //     if (categoryQuery.level === 0) {
-  //       setLevelOneList(data);
-  //     } else if (categoryQuery.level === 1) {
-  //       setLevelTwoList(data);
-  //     } else if (categoryQuery.level === 2) {
-  //       setLevelThreeList(data);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      const data = await twitterService.GetChildCateGory(categoryQuery);
+      if (categoryQuery.level === 0) {
+        setLevelOneList(data);
+      } else if (categoryQuery.level === 1) {
+        setLevelTwoList(data);
+      } else if (categoryQuery.level === 2) {
+        setLevelThreeList(data);
+      }
+    };
 
-  //   fetchCategoryData();
-  // }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setSessionQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
+    fetchCategoryData();
+  }, [categoryQuery]);
+  const onChangeTheasaurusTag = (e: any) => {
+    setTheasaurusTagId(e.target.value);
+    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+  };
+  const onChangeCategoryOneTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+  };
+  const onChangeCategoryTwoTag = (e: any) => {
+    setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  };
+  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+    const data = checkedValues.reduce((pre, cur) => {
+      return `${pre} ${cur}`;
+    }, '');
+    setSessionQuery((prev) => ({
+      ...prev,
+      limit: 10,
+      page: 1,
+      content: data as string,
+    }));
+  };
   const [selectItems, setSelectItems] = useState<string[]>([]);
 
   const onChangeTableList = (selectedRowKeys: any, selectedRows: Tweet[]) => {
@@ -366,10 +381,103 @@ export default function Session() {
       delArticlemutation.mutate({ tweet_ids: selectItems });
     }
   };
+  // 搜索
+  const [searchForm] = Form.useForm();
+  const onSearchFormReset = () => {
+    searchForm.resetFields();
+  };
+  const [searchFormValues, setSearchFormValues] = useState<any>({});
+  const onSearchSubmit = async () => {
+    const values = await searchForm.validateFields();
+    setSessionQuery({ ...values, page: 1, limit: 10 });
+  };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
+        <Card>
+          <Form form={searchForm} initialValues={searchFormValues}>
+            <Row gutter={[16, 16]}>
+              <Col span={24} lg={6}>
+                <Form.Item label="板块" name="area_id" className="!mb-0">
+                  <Select>
+                    {theasaurusList?.data.map((item: any, index: any) => (
+                      <Select.Option key={index} value={item.id}>
+                        {item.title}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="作者" name="author" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <Form.Item label="用户名" name="name" className="!mb-0">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={6}>
+                <div className="flex justify-end">
+                  <Button onClick={onSearchFormReset}>重置</Button>
+                  <Button onClick={onSearchSubmit} type="primary" className="ml-4">
+                    搜索
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+        <Card>
+          <div className="mb-4 flex flex-wrap items-center">
+            <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
+            <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
+              {theasaurusList?.data.map((item: any, index: number) => (
+                <Radio key={index} value={item.id}>
+                  {item.title}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </div>
+          {levelOneList.length > 0 && levelOneList && (
+            <div className="mb-4 flex flex-wrap items-center">
+              <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
+              <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
+                {levelOneList?.map((item: any, index: number) => (
+                  <Radio key={index} value={item.c_id}>
+                    {item.title}
+                  </Radio>
+                ))}
+              </Radio.Group>
+            </div>
+          )}
+          {levelTwoList.length > 0 && levelTwoList && (
+            <div className="mb-4 flex flex-wrap items-center">
+              <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
+              <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
+                {levelTwoList?.map((item: any, index: number) => (
+                  <Radio key={index} value={item.c_id}>
+                    {item.title}
+                  </Radio>
+                ))}
+              </Radio.Group>
+            </div>
+          )}
+          {levelThreeList.length > 0 && levelThreeList && (
+            <div className="mb-4 flex flex-wrap items-center">
+              <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
+              <Checkbox.Group
+                options={levelThreeList.map((item: any) => ({
+                  label: item.title,
+                  value: item.title,
+                }))}
+                onChange={onChangeCategoryThreeTag}
+              />
+            </div>
+          )}
+        </Card>
         <Card
           title="推文内容"
           extra={
