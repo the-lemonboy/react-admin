@@ -176,13 +176,6 @@ export default function Session() {
       align: 'center',
     },
     {
-      title: '采集时间',
-      dataIndex: 'created_time',
-      key: 'created_time',
-      width: 150,
-      align: 'center',
-    },
-    {
       title: '状态',
       dataIndex: 'hidden',
       key: 'hidden',
@@ -198,28 +191,28 @@ export default function Session() {
         />
       ),
     },
-    {
-      title: '操作',
-      dataIndex: 'opt_status',
-      key: 'opt_status',
-      width: 120,
-      align: 'center',
-      render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
-          <Popconfirm
-            title="是否删除该条数据"
-            okText="Yes"
-            cancelText="No"
-            placement="left"
-            onConfirm={() => onDelTag(record)}
-          >
-            <Button className="mr-2" type="primary">
-              删除
-            </Button>
-          </Popconfirm>
-        </div>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   dataIndex: 'opt_status',
+    //   key: 'opt_status',
+    //   width: 120,
+    //   align: 'center',
+    //   render: (_, record) => (
+    //     <div className="flex w-full justify-center text-gray">
+    //       <Popconfirm
+    //         title="是否删除该条数据"
+    //         okText="Yes"
+    //         cancelText="No"
+    //         placement="left"
+    //         onConfirm={() => onDelTag(record)}
+    //       >
+    //         <Button className="mr-2" type="primary">
+    //           删除
+    //         </Button>
+    //       </Popconfirm>
+    //     </div>
+    //   ),
+    // },
   ];
   const changeDistributedMutation = useMutation({
     mutationFn: async (params: SetArticlesStatusReq) => {
@@ -244,32 +237,6 @@ export default function Session() {
       hidden: !checked,
     });
   };
-  // const changeMediaStatus = useMutation({
-  //   mutationFn: (params: any) => {
-  //     const res = newsService.ChangeMediaStatus(params);
-  //     return res;
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['mediaList']);
-  //     messageApi.open({
-  //       type: 'success',
-  //       content: '状态修改成功',
-  //     });
-  //   },
-  //   onError: () => {
-  //     messageApi.open({
-  //       type: 'error',
-  //       content: '状态修改失败',
-  //     });
-  //   },
-  // });
-  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
-  //   // 修改分发状态逻辑
-  //   changeMediaStatus.mutate({
-  //     media_title: record.media_title,
-  //     opt_status: checked,
-  //   });
-  // };
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
     show: false,
@@ -496,9 +463,9 @@ export default function Session() {
               >
                 隐藏
               </Button>
-              <Button type="primary" onClick={onDelSelectItems}>
+              {/* <Button type="primary" onClick={onDelSelectItems}>
                 删除记录
-              </Button>
+              </Button> */}
             </div>
           }
         >

@@ -1,9 +1,5 @@
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Form, Input, Modal, Popconfirm, Tag, message } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
-
-import planetService from '@/api/services/planetService';
 
 const { TextArea } = Input;
 
@@ -24,28 +20,28 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
     console.log(formValue?.group?.group_id);
   }, [formValue, form]);
 
-  const { data: tagList } = useQuery({
-    queryKey: ['PlanetTagList', formValue?.group?.group_id],
-    queryFn: () => planetService.GetCateGoryTagList(formValue?.group?.group_id),
-    enabled: !!formValue?.group?.group_id,
-  });
+  // const { data: tagList } = useQuery({
+  //   queryKey: ['PlanetTagList', formValue?.group?.group_id],
+  //   queryFn: () => planetService.GetCateGoryTagList(formValue?.group?.group_id),
+  //   enabled: !!formValue?.group?.group_id,
+  // });
 
-  const fetchDelCategoryTag = useMutation({
-    mutationFn: planetService.DelCateGoryTag,
-    onSuccess: () => {
-      message.success('标签删除成功');
-    },
-    onError: (error) => {
-      message.error('删除标签失败');
-      console.error('Error deleting category:', error);
-    },
-  });
+  // const fetchDelCategoryTag = useMutation({
+  //   mutationFn: planetService.DelCateGoryTag,
+  //   onSuccess: () => {
+  //     message.success('标签删除成功');
+  //   },
+  //   onError: (error) => {
+  //     message.error('删除标签失败');
+  //     console.error('Error deleting category:', error);
+  //   },
+  // });
 
-  const delCategoryTag = (tagValue: any) => {
-    // TagInfo type can be specified based on actual type
-    fetchDelCategoryTag.mutate({ cid: tagValue.c_id, wid: tagValue.w_id });
-    setVisiblePopconfirm(null);
-  };
+  // const delCategoryTag = (tagValue: any) => {
+  //   // TagInfo type can be specified based on actual type
+  //   fetchDelCategoryTag.mutate({ cid: tagValue.c_id, wid: tagValue.w_id });
+  //   setVisiblePopconfirm(null);
+  // };
 
   const handleOk = async () => {
     try {
@@ -58,49 +54,38 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   };
 
   return (
-    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel}>
+    <Modal title={title} open={show} onOk={handleOk} onCancel={onCancel} footer={null}>
       <Form
         initialValues={formValue}
         form={form}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 18 }}
         layout="horizontal"
+        disabled
       >
-        <Form.Item label="已有标签" name="tags">
-          {tagList && (
-            <div className="flex flex-wrap items-center">
-              {tagList.map((item: any) => (
-                <Popconfirm
-                  key={item.id}
-                  title="确定删除这个标签吗?"
-                  okText="确定"
-                  cancelText="取消"
-                  placement="left"
-                  open={visiblePopconfirm === item.id}
-                  onConfirm={() => delCategoryTag(item)}
-                  onCancel={() => setVisiblePopconfirm(null)}
-                >
-                  <Tag
-                    closable
-                    closeIcon={<CloseCircleOutlined />}
-                    onClose={(e) => {
-                      e.preventDefault();
-                      setVisiblePopconfirm(item.id);
-                    }}
-                    style={{ marginRight: '8px' }}
-                  >
-                    {item.title}
-                  </Tag>
-                </Popconfirm>
-              ))}
-            </div>
-          )}
-        </Form.Item>
-        <Form.Item label="发布者" name="owner.name">
+        <Form.Item label="id" name="id">
           <Input />
         </Form.Item>
-        <Form.Item label="内容" name="content_text">
+        <Form.Item label="发布者" name={['owner', 'name']}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="标题" name="content_search_text">
           <TextArea rows={4} />
+        </Form.Item>
+        <Form.Item label="阅读次数" name="readers_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="评论数" name="comments_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="点赞数" name="rewards_count">
+          <Input />
+        </Form.Item>
+        <Form.Item label="社群名称" name={['group', 'name']}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="发布时间" name="create_time">
+          <Input />
         </Form.Item>
       </Form>
     </Modal>

@@ -227,6 +227,40 @@ export default function NavWebsitePage() {
       },
     },
     {
+      title: '标签',
+      dataIndex: 'group',
+      key: 'group',
+      width: 300,
+      // align: 'center',
+      render: (_, record) => {
+        const categories = record?.category;
+        if (!categories) {
+          return <span>-</span>;
+        }
+        return (
+          <div>
+            {categories?.map((category, catIndex) => (
+              <div key={catIndex} style={{ marginBottom: '8px' }}>
+                {category.p_c_path_title
+                  .split('/')
+                  .filter(Boolean)
+                  .map((title, index, array) => (
+                    <span key={index}>
+                      <Tag color="blue" style={{ marginInlineEnd: '0' }}>
+                        {title}
+                      </Tag>
+                      {index < array.length - 1 && (
+                        <Iconify icon="ic:sharp-play-arrow" size={16} color="#1890ff" />
+                      )}
+                    </span>
+                  ))}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
       title: 'Action',
       key: 'operation',
       align: 'center',

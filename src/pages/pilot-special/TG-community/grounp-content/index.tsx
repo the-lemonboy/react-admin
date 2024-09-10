@@ -12,11 +12,13 @@ import {
   Col,
   Select,
   Input,
+  Tag,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import TGService, { SearchTGReq } from '@/api/services/TGService';
+import { Iconify } from '@/components/icon';
 
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
@@ -140,7 +142,57 @@ export default function TGGrounpContentList() {
         </Tooltip>
       ),
     },
-    { title: '社群名称', dataIndex: ['group', 'group_name'], key: 'group.group_name' },
+    {
+      title: 'topic_id',
+      align: 'center',
+      dataIndex: 'topic_id',
+      key: 'topic_id',
+      render: (_, record) => {
+        if (!record.topic_id) {
+          return <span>-</span>;
+        }
+        return <span>{record.topic_id}</span>;
+      },
+    },
+    {
+      title: '社群名称',
+      align: 'center',
+      dataIndex: ['group', 'group_name'],
+      key: 'group.group_name',
+    },
+    {
+      title: '标签',
+      dataIndex: 'group',
+      key: 'group',
+      align: 'center',
+      render: (_, record) => {
+        const categories = record.group?.category;
+        if (!categories) {
+          return <span>-</span>;
+        }
+        return (
+          <div>
+            {categories?.map((category, catIndex) => (
+              <div key={catIndex} style={{ marginBottom: '8px' }}>
+                {category.p_c_path_title
+                  .split('/')
+                  .filter(Boolean)
+                  .map((title, index, array) => (
+                    <span key={index}>
+                      <Tag color="blue" style={{ marginInlineEnd: '0' }}>
+                        {title}
+                      </Tag>
+                      {index < array.length - 1 && (
+                        <Iconify icon="ic:sharp-play-arrow" size={16} color="#1890ff" />
+                      )}
+                    </span>
+                  ))}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
     { title: '发布时间', dataIndex: 'created_at', key: 'created_at', align: 'center' },
     {
       title: '操作',

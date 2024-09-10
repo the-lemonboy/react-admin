@@ -31,6 +31,13 @@ export interface Website {
   icon: string;
   link: string;
   title: string;
+  category: [
+    {
+      c_path: string;
+      p_c_path: string;
+      p_c_path_title: string;
+    },
+  ];
 }
 export interface MemberTable {
   amount: number; // 价格
@@ -185,13 +192,6 @@ export interface PlanetKnowledge {
         p_c_path: string;
         p_c_path_title: string;
       },
-      {
-        area_id: string;
-        c_path: string;
-        current: number;
-        p_c_path: string;
-        p_c_path_title: string;
-      },
     ];
     group_id: number;
     name: string;
@@ -227,7 +227,15 @@ export interface TG {
   };
   created_at: string; // "2024-04-13 05:59:56"
   group: {
-    category: string | null;
+    category: [
+      {
+        area_id: string;
+        c_path: string;
+        current: number;
+        p_c_path: string;
+        p_c_path_title: string;
+      },
+    ];
     group_avatar: string;
     group_id: string;
     group_name: string;

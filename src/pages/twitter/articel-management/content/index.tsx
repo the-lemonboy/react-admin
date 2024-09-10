@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Tooltip, Button, Popconfirm, Switch } from 'antd';
+import { Card, Space, message, Tooltip, Button, Switch, Drawer } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -82,13 +82,34 @@ export default function KnowledgeGrounp() {
     delArticlemutation.mutate(delData);
   };
   const columns: ColumnsType<Tweet> = [
-    // { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
+    {
+      title: 'tweet_id',
+      dataIndex: 'tweet_id',
+      key: 'tweet_id',
+      width: 100,
+      align: 'center',
+      render: (_, record) => (
+        // 跳转https://x.com/elonmusk/status/1831364314466553995
+        <a
+          href={`https://x.com/${record.username}/status/${record.tweet_id}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {record.tweet_id}
+        </a>
+      ),
+    },
     {
       title: '作者',
       dataIndex: 'name',
       key: 'name',
       width: 100,
       align: 'center',
+      render: (_, record) => (
+        <div className="text-blue underline decoration-solid" onClick={() => showDrawer(record)}>
+          {record.name}
+        </div>
+      ),
     },
     {
       title: '头像',
@@ -180,29 +201,40 @@ export default function KnowledgeGrounp() {
         />
       ),
     },
-    {
-      title: '操作',
-      dataIndex: 'opt_status',
-      key: 'opt_status',
-      width: 120,
-      align: 'center',
-      render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
-          <Popconfirm
-            title="是否删除该条数据"
-            okText="Yes"
-            cancelText="No"
-            placement="left"
-            onConfirm={() => onDelTag(record)}
-          >
-            <Button className="mr-2" type="primary">
-              删除
-            </Button>
-          </Popconfirm>
-        </div>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   dataIndex: 'opt_status',
+    //   key: 'opt_status',
+    //   width: 120,
+    //   align: 'center',
+    //   render: (_, record) => (
+    //     <div className="flex w-full justify-center text-gray">
+    //       <Popconfirm
+    //         title="是否删除该条数据"
+    //         okText="Yes"
+    //         cancelText="No"
+    //         placement="left"
+    //         onConfirm={() => onDelTag(record)}
+    //       >
+    //         <Button className="mr-2" type="primary">
+    //           删除
+    //         </Button>
+    //       </Popconfirm>
+    //     </div>
+    //   ),
+    // },
   ];
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const [detailUserInfo, setDetailUserInfo] = useState<Tweet | undefined>(undefined);
+
+  const showDrawer = (record: Tweet) => {
+    setDetailUserInfo(record);
+    setDrawerVisible(true);
+  };
+  const onCloseDrawer = () => {
+    setDrawerVisible(false);
+  };
   const changeDistributedMutation = useMutation({
     mutationFn: async (params: SetArticlesStatusReq) => {
       const res = await twitterService.SetArticlesStatus(params);
@@ -252,81 +284,6 @@ export default function KnowledgeGrounp() {
       opt_status: checked,
     });
   };
-  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-  //   title: '标签管理',
-  //   show: false,
-  //   newId: '',
-  //   onOk: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //     // 重新获取数据或更新缓存
-  //     queryClient.invalidateQueries(['mediaList']);
-  //   },
-  //   onCancel: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //   },
-  // });
-  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  // const [CategoryIds, setCategoryIds] = useState({
-  //   categoryIdOne: '',
-  //   categoryIdTwo: '',
-  //   categoryIdThree: '',
-  // });
-  // const [levelOneList, setLevelOneList] = useState([]);
-  // const [levelTwoList, setLevelTwoList] = useState([]);
-  // const [levelThreeList, setLevelThreeList] = useState([]);
-  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-  //   area_id: '',
-  //   level: -1,
-  //   p_c_id: '',
-  // });
-  // const { data: theasaurusList } = useQuery({
-  //   queryKey: ['theasaurusList'],
-  //   queryFn: () => twitterService.GetAreaList(),
-  // });
-  // 查询标签
-  // useEffect(() => {
-  //   const fetchCategoryData = async () => {
-  //     const data = await twitterService.GetChildCateGory(categoryQuery);
-  //     if (categoryQuery.level === 0) {
-  //       setLevelOneList(data);
-  //     } else if (categoryQuery.level === 1) {
-  //       setLevelTwoList(data);
-  //     } else if (categoryQuery.level === 2) {
-  //       setLevelThreeList(data);
-  //     }
-  //   };
-
-  //   fetchCategoryData();
-  // }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setArticelQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
   const [selectItems, setSelectItems] = useState<string[]>([]);
 
   const onChangeTableList = (selectedRowKeys: any, selectedRows: Tweet[]) => {
@@ -385,9 +342,9 @@ export default function KnowledgeGrounp() {
               >
                 隐藏
               </Button>
-              <Button type="primary" onClick={onDelSelectItems}>
+              {/* <Button type="primary" onClick={onDelSelectItems}>
                 删除记录
-              </Button>
+              </Button> */}
             </div>
           }
         >
@@ -402,8 +359,27 @@ export default function KnowledgeGrounp() {
             onChange={handleTableChange}
           />
         </Card>
-        {/* <EditorOrAddModel {...editorOrAddModelProps} />
-        <DelTagModel {...delTagModelProps} /> */}
+        <Drawer title="用户详情" open={drawerVisible} onClose={onCloseDrawer}>
+          {detailUserInfo && (
+            <div className="w-full">
+              <div className="h-20 w-20 overflow-hidden rounded-full">
+                <img
+                  className="h-full w-full object-cover"
+                  src={detailUserInfo.avatar}
+                  alt="用户头像"
+                />
+              </div>
+              <div className="mt-4">
+                <p className="font-weight text-xl">{detailUserInfo.name}</p>
+                <p className="text-gray-600">
+                  {detailUserInfo.mobile_number ? detailUserInfo.mobile_number : '无手机号'}
+                </p>
+                <p>状态: {detailUserInfo.suspended ? '禁用' : '开放'}</p>
+                <p>账户创建时间: {detailUserInfo.created_time}</p>
+              </div>
+            </div>
+          )}
+        </Drawer>
       </Space>
     </>
   );

@@ -12,14 +12,16 @@ import {
   Col,
   Select,
   Input,
+  Tag,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 import planetService, { SearchKnowledgeReq } from '@/api/services/planetService';
+import { Iconify } from '@/components/icon';
 
 import DetailModel, { DetailModelProps } from './detail';
-import EditorOrAddModel from './editOrAddModel';
+// import EditorOrAddModel from './editOrAddModel';
 
 import { PlanetKnowledge } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
@@ -84,14 +86,14 @@ export default function NewsList() {
       setTableParams({ pagination });
     }
   };
-  const onEditTag = (record: PlanetKnowledge) => {
-    setEditorOrAddModelProps((prev) => ({
-      ...prev,
-      show: true,
-      tableValue: record,
-      theasaurusList,
-    }));
-  };
+  // const onEditTag = (record: PlanetKnowledge) => {
+  //   setEditorOrAddModelProps((prev) => ({
+  //     ...prev,
+  //     show: true,
+  //     tableValue: record,
+  //     theasaurusList,
+  //   }));
+  // };
   const [detailModelProps, setDetailModelProps] = useState<DetailModelProps>({
     title: '详细',
     show: false,
@@ -141,31 +143,48 @@ export default function NewsList() {
         </Tooltip>
       ),
     },
-    // {
-    //   title: '内容',
-    //   dataIndex: 'content_text',
-    //   key: 'content_text',
-    //   width: 200,
-    //   render: (_, record) => (
-    //     <div
-    //       className="ellipsis"
-    //       style={{
-    //         float: 'left',
-    //         maxWidth: '100px',
-    //         overflow: 'hidden',
-    //         whiteSpace: 'nowrap',
-    //         textOverflow: 'ellipsis',
-    //       }}
-    //     >
-    //       {record.content_text}
-    //     </div>
-    //   ),
-    // },
     { title: '阅读次数', dataIndex: 'readers_count', key: 'readers_count' },
     { title: '评论数', dataIndex: 'comments_count', key: 'comments_count' },
     { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
-    { title: '点赞数', dataIndex: 'rewards_count', key: 'rewards_count' },
-    { title: '社群名称', dataIndex: 'group.name', key: 'group.name' },
+    {
+      title: '社群名称',
+      dataIndex: 'group',
+      key: 'group_name',
+      align: 'center',
+      render: (group) => group?.name || '-',
+    },
+    {
+      title: '标签',
+      dataIndex: 'group',
+      key: 'group',
+      render: (_, record) => {
+        const categories = record.group?.category;
+        if (!categories) {
+          return <span>-</span>;
+        }
+        return (
+          <div>
+            {categories?.map((category, catIndex) => (
+              <div key={catIndex} style={{ marginBottom: '8px' }}>
+                {category.p_c_path_title
+                  .split('/')
+                  .filter(Boolean)
+                  .map((title, index, array) => (
+                    <span key={index}>
+                      <Tag color="blue" style={{ marginInlineEnd: '0' }}>
+                        {title}
+                      </Tag>
+                      {index < array.length - 1 && (
+                        <Iconify icon="ic:sharp-play-arrow" size={16} color="#1890ff" />
+                      )}
+                    </span>
+                  ))}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
     { title: '发布时间', dataIndex: 'create_time', key: 'create_time' },
     {
       title: '操作',
@@ -176,9 +195,9 @@ export default function NewsList() {
           <Button className="mr-2" type="primary" onClick={() => onDetail(record)}>
             详细
           </Button>
-          <Button type="default" onClick={() => onEditTag(record)}>
+          {/* <Button type="default" onClick={() => onEditTag(record)}>
             新增标签
-          </Button>
+          </Button> */}
         </div>
       ),
     },
@@ -210,25 +229,25 @@ export default function NewsList() {
   //   });
   // };
 
-  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-    title: '标签管理',
-    show: false,
-    newId: '',
-    onOk: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-      // 重新获取数据或更新缓存
-      queryClient.invalidateQueries(['planetArticelList']);
-    },
-    onCancel: () => {
-      setEditorOrAddModelProps((prev) => ({
-        ...prev,
-        show: false,
-      }));
-    },
-  });
+  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+  //   title: '标签管理',
+  //   show: false,
+  //   newId: '',
+  //   onOk: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //     // 重新获取数据或更新缓存
+  //     queryClient.invalidateQueries(['planetArticelList']);
+  //   },
+  //   onCancel: () => {
+  //     setEditorOrAddModelProps((prev) => ({
+  //       ...prev,
+  //       show: false,
+  //     }));
+  //   },
+  // });
   const [theasaurusTagId, setTheasaurusTagId] = useState('');
   const [CategoryIds, setCategoryIds] = useState({
     categoryIdOne: '',
@@ -244,7 +263,7 @@ export default function NewsList() {
     p_c_id: '',
   });
   const { data: theasaurusList } = useQuery({
-    queryKey: ['theasaurusList'],
+    queryKey: ['KCtheasaurusList'],
     queryFn: () => planetService.GetAreaList(),
   });
   // 查询标签
@@ -305,7 +324,7 @@ export default function NewsList() {
               <Col span={24} lg={6}>
                 <Form.Item label="板块" name="area_id" className="!mb-0">
                   <Select>
-                    {theasaurusList?.data.map((item: Theasaurus, index) => (
+                    {theasaurusList?.data.map((item: any, index: number) => (
                       <Select.Option key={index} value={item.id}>
                         {item.title}
                       </Select.Option>
@@ -393,7 +412,7 @@ export default function NewsList() {
             onChange={handleTableChange}
           />
         </Card>
-        <EditorOrAddModel {...editorOrAddModelProps} />
+        {/* <EditorOrAddModel {...editorOrAddModelProps} /> */}
         <DetailModel {...detailModelProps} />
       </Space>
     </>

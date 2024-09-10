@@ -1,5 +1,19 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Select, Input } from 'antd';
+import {
+  Card,
+  Space,
+  message,
+  Button,
+  Radio,
+  Checkbox,
+  Form,
+  Row,
+  Col,
+  Select,
+  Input,
+  Tag,
+  Tooltip,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -7,6 +21,7 @@ import twitterService, {
   GetAcountListReq,
   GetChildCateGoryReq,
 } from '@/api/services/twitterService';
+import { Iconify } from '@/components/icon';
 
 import DetailModel from './detail';
 import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
@@ -89,7 +104,19 @@ export default function TwitterAcountList() {
     }));
   };
   const columns: ColumnsType<TweetCount> = [
-    { title: '用户名', dataIndex: 'name', key: 'name', width: 200, align: 'center' },
+    {
+      title: '用户名',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200,
+      align: 'center',
+      render: (_, record) => (
+        // 跳转https://x.com/trondao
+        <a href={`https://x.com/${record.username}`} target="_blank" rel="noopener noreferrer">
+          {record.name}
+        </a>
+      ),
+    },
     {
       title: '头像',
       dataIndex: 'profile_image_url',
@@ -125,8 +152,23 @@ export default function TwitterAcountList() {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
-      width: 300,
-      align: 'center',
+      width: 200,
+      render: (_, record) => (
+        <Tooltip title={record.description}>
+          <div
+            className="ellipsis"
+            style={{
+              float: 'left',
+              maxWidth: '100px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {record.description}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '加入时间',
@@ -136,11 +178,37 @@ export default function TwitterAcountList() {
       align: 'center',
     },
     {
-      title: '更新时间',
-      dataIndex: 'updated_time',
-      key: 'updated_time',
-      width: 250,
+      title: '标签',
+      dataIndex: 'group',
+      key: 'group',
       align: 'center',
+      render: (_, record) => {
+        const categories = record?.categories;
+        if (!categories) {
+          return <span>-</span>;
+        }
+        return (
+          <div>
+            {categories?.map((category, catIndex) => (
+              <div key={catIndex} style={{ marginBottom: '8px' }}>
+                {category.p_c_title
+                  .split('/')
+                  .filter(Boolean)
+                  .map((title, index, array) => (
+                    <span key={index}>
+                      <Tag color="blue" style={{ marginInlineEnd: '0' }}>
+                        {title}
+                      </Tag>
+                      {index < array.length - 1 && (
+                        <Iconify icon="ic:sharp-play-arrow" size={16} color="#1890ff" />
+                      )}
+                    </span>
+                  ))}
+              </div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       title: '操作',
