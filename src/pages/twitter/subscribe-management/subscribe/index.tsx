@@ -201,81 +201,10 @@ export default function KnowledgeGrounp() {
 
     fetchCategoryData();
   }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setArticelQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
-          <div className="mb-4 flex flex-wrap items-center">
-            <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
-            <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
-              {theasaurusList?.data.map((item: NewsCategory, index: number) => (
-                <Radio key={index} value={item.id}>
-                  {item.title}
-                </Radio>
-              ))}
-            </Radio.Group>
-          </div>
-          {levelOneList.length > 0 && levelOneList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
-              <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
-                {levelOneList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          )}
-          {levelTwoList.length > 0 && levelTwoList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
-              <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
-                {levelTwoList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          )}
-          {levelThreeList.length > 0 && levelThreeList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
-              <Checkbox.Group
-                options={levelThreeList.map((item: NewsCategory) => ({
-                  label: item.title,
-                  value: item.title,
-                }))}
-                onChange={onChangeCategoryThreeTag}
-              />
-            </div>
-          )}
-        </Card> */}
         <Card title="领航专栏">
           <Table
             rowKey="id"

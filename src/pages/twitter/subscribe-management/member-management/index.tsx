@@ -61,24 +61,6 @@ export default function KnowledgeGrounp() {
       theasaurusList,
     }));
   };
-  // const [delTagModelProps, setDelTagModelProps] = useState<DelTagModelProps>({
-  //   title: '删除标签',
-  //   show: false,
-  //   formValue: {},
-  //   onOk: () => {
-  //     setDelTagModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  //   onCancel: () => {
-  //     setDelTagModelProps((prev) => ({ ...prev, show: false }));
-  //   },
-  // });
-  // const onDelTag = (record: PlanetKnowledge) => {
-  //   setDelTagModelProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     formValue: record,
-  //   }));
-  // };
   const columns: ColumnsType<TwitterUser> = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
@@ -163,134 +145,10 @@ export default function KnowledgeGrounp() {
       opt_status: checked,
     });
   };
-
-  // const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
-  //   title: '标签管理',
-  //   show: false,
-  //   newId: '',
-  //   onOk: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //     // 重新获取数据或更新缓存
-  //     queryClient.invalidateQueries(['mediaList']);
-  //   },
-  //   onCancel: () => {
-  //     setEditorOrAddModelProps((prev) => ({
-  //       ...prev,
-  //       show: false,
-  //     }));
-  //   },
-  // });
-  // const [theasaurusTagId, setTheasaurusTagId] = useState('');
-  // // const [CategoryIds, setCategoryIds] = useState({
-  // //   categoryIdOne: '',
-  // //   categoryIdTwo: '',
-  // //   categoryIdThree: '',
-  // // });
-  // // const [levelOneList, setLevelOneList] = useState([]);
-  // // const [levelTwoList, setLevelTwoList] = useState([]);
-  // // const [levelThreeList, setLevelThreeList] = useState([]);
-  // const [categoryQuery, setCategoryQuery] = useState<GetChildCategoryListReq>({
-  //   area_id: '',
-  //   level: -1,
-  //   p_c_id: '',
-  // });
-  // const { data: theasaurusList } = useQuery({
-  //   queryKey: ['theasaurusList'],
-  //   queryFn: () => twitterService.GetAreaList(),
-  // });
-  // 查询标签
-  // useEffect(() => {
-  //   const fetchCategoryData = async () => {
-  //     const data = await twitterService.GetChildCateGory(categoryQuery);
-  //     if (categoryQuery.level === 0) {
-  //       setLevelOneList(data);
-  //     } else if (categoryQuery.level === 1) {
-  //       setLevelTwoList(data);
-  //     } else if (categoryQuery.level === 2) {
-  //       setLevelThreeList(data);
-  //     }
-  //   };
-
-  //   fetchCategoryData();
-  // }, [categoryQuery]);
-  // const onChangeTheasaurusTag = (e: any) => {
-  //   setTheasaurusTagId(e.target.value);
-  //   setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
-  // };
-  // const onChangeCategoryOneTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-  // };
-  // const onChangeCategoryTwoTag = (e: any) => {
-  //   setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-  //   setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  // };
-  // const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-  //   const data = checkedValues.reduce((pre, cur) => {
-  //     return `${pre} ${cur}`;
-  //   }, '');
-  //   setMenberQuery((prev) => ({
-  //     ...prev,
-  //     limit: 10,
-  //     page: 1,
-  //     content: data as string,
-  //   }));
-  // };
   return (
     <>
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
-        {/* <Card>
-          <div className="mb-4 flex flex-wrap items-center">
-            <p className="mr-3 whitespace-nowrap text-base font-bold">词库板块</p>
-            <Radio.Group onChange={onChangeTheasaurusTag} value={theasaurusTagId}>
-              {theasaurusList?.data.map((item: NewsCategory, index: number) => (
-                <Radio key={index} value={item.id}>
-                  {item.title}
-                </Radio>
-              ))}
-            </Radio.Group>
-          </div>
-          {levelOneList.length > 0 && levelOneList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
-              <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
-                {levelOneList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          )}
-          {levelTwoList.length > 0 && levelTwoList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
-              <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
-                {levelTwoList?.map((item: NewsCategory, index: number) => (
-                  <Radio key={index} value={item.c_id}>
-                    {item.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          )}
-          {levelThreeList.length > 0 && levelThreeList && (
-            <div className="mb-4 flex flex-wrap items-center">
-              <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
-              <Checkbox.Group
-                options={levelThreeList.map((item: NewsCategory) => ({
-                  label: item.title,
-                  value: item.title,
-                }))}
-                onChange={onChangeCategoryThreeTag}
-              />
-            </div>
-          )}
-        </Card> */}
         <Card title="领航专栏">
           <Table
             rowKey="id"

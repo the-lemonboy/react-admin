@@ -46,7 +46,7 @@ export default function twitterCategoryTag() {
   const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
   useEffect(() => {
     if (tableList) {
-      setTreeCategory(ArrayToTree(tableList.data) as TreeCategory[]);
+      setTreeCategory(ArrayToTree(tableList.data) as PlanetCategory[]);
     }
   }, [tableList]);
   const { data: theasaurusList } = useQuery({

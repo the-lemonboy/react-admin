@@ -201,28 +201,6 @@ export default function KnowledgeGrounp() {
         />
       ),
     },
-    // {
-    //   title: '操作',
-    //   dataIndex: 'opt_status',
-    //   key: 'opt_status',
-    //   width: 120,
-    //   align: 'center',
-    //   render: (_, record) => (
-    //     <div className="flex w-full justify-center text-gray">
-    //       <Popconfirm
-    //         title="是否删除该条数据"
-    //         okText="Yes"
-    //         cancelText="No"
-    //         placement="left"
-    //         onConfirm={() => onDelTag(record)}
-    //       >
-    //         <Button className="mr-2" type="primary">
-    //           删除
-    //         </Button>
-    //       </Popconfirm>
-    //     </div>
-    //   ),
-    // },
   ];
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -342,9 +320,6 @@ export default function KnowledgeGrounp() {
               >
                 隐藏
               </Button>
-              {/* <Button type="primary" onClick={onDelSelectItems}>
-                删除记录
-              </Button> */}
             </div>
           }
         >
