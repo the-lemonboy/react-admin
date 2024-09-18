@@ -127,6 +127,12 @@ export interface SetSessionStatusReq {
   hidden: boolean;
   tweet_ids: string[];
 }
+export interface GetSubscribeListReq {
+  author_username?: string;
+  limit: number;
+  mobile_number?: string;
+  page: number;
+}
 export enum PlanetType {
   AddArea = '/api/twitter/area/add',
   GetAreaList = '/api/twitter/area/list',
@@ -156,6 +162,9 @@ export enum PlanetType {
   GetSessionList = '/api/twitter/conv/tweet/list',
   DelSession = '/api/twitter/tweet/delete',
   SetSessionStatus = '/api/twitter/tweet/hidden',
+
+  // ---- 订阅管理
+  GetSubscribeList = '/api/twitter/user/sub/author/list',
 }
 
 const AddArea = (data: AddAreaReq) => apiClient.post({ url: PlanetType.AddArea, data });
@@ -178,7 +187,7 @@ const SearchKnowledge = (data: SearchKnowledgeReq) =>
   apiClient.post({ url: PlanetType.SearchKnowledge, data });
 const GetCateGoryTagList = (author_id: string) =>
   apiClient.get({ url: `/api/twitter/author/${author_id}/categories` });
-const DelCateGoryTag = (c_id: string) => apiClient.get({ url: `/api/twitter/categor/del/${c_id}` });
+const DelCateGoryTag = (c_id: number) => apiClient.get({ url: `/api/twitter/categor/del/${c_id}` });
 const GetChildCateGory = (data: GetChildCateGoryReq) =>
   apiClient.post({ url: PlanetType.GetChildCateGory, data });
 const GetArticleList = (data: GetArticleReq) =>
@@ -197,9 +206,14 @@ const BandUser = (data: BandUserReq) => apiClient.post({ url: PlanetType.BandUse
 
 const GetSessionList = (data: GetSessionListReq) =>
   apiClient.post({ url: PlanetType.GetSessionList, data });
+const GetSessionDetail = (id: string) => apiClient.get({ url: `/api/twitter/conv/tweet/${id}` });
 const DelSession = (data: DelSessionReq) => apiClient.post({ url: PlanetType.DelSession, data });
 const SetSessionStatus = (data: SetSessionStatusReq) =>
   apiClient.post({ url: PlanetType.SetSessionStatus, data });
+const GetSubscribeList = (data: GetSubscribeListReq) =>
+  apiClient.post({ url: PlanetType.GetSubscribeList, data });
+const DelSubscribe = (id: string) =>
+  apiClient.get({ url: `/api/twitter/user/sub/author/del/${id}` });
 export default {
   AddArea,
   GetAreaList,
@@ -227,6 +241,9 @@ export default {
   BandUser,
   GetUserDetail,
   GetSessionList,
+  GetSessionDetail,
   DelSession,
   SetSessionStatus,
+  GetSubscribeList,
+  DelSubscribe,
 };

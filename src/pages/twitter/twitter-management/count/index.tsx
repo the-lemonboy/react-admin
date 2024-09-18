@@ -189,12 +189,12 @@ export default function TwitterAcountList() {
         }
         return (
           <div>
-            {categories?.map((category, catIndex) => (
+            {categories?.map((category: any, catIndex) => (
               <div key={catIndex} style={{ marginBottom: '8px' }}>
                 {category.p_c_title
                   .split('/')
                   .filter(Boolean)
-                  .map((title, index, array) => (
+                  .map((title: string, index: number, array: string[]) => (
                     <span key={index}>
                       <Tag color="blue" style={{ marginInlineEnd: '0' }}>
                         {title}
@@ -315,20 +315,38 @@ export default function TwitterAcountList() {
   const onChangeCategoryOneTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+    setArticelQuery((prev) => ({
+      ...prev,
+      limit: 10,
+      page: 1,
+      p_c_path: `/${e.target.value}`,
+      area_id: theasaurusTagId,
+    }));
   };
 
   const onChangeCategoryTwoTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
-  };
-
-  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
     setArticelQuery((prev) => ({
       ...prev,
       limit: 10,
       page: 1,
-      content: data as string,
+      area_id: theasaurusTagId,
+      p_c_path: `/${CategoryIds.categoryIdOne}/${e.target.value}`,
+    }));
+  };
+
+  const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+    // const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
+    const data = checkedValues.map(
+      (item) => `/${CategoryIds.categoryIdOne}/${CategoryIds.categoryIdTwo}/${item}`,
+    );
+    setArticelQuery((prev: any) => ({
+      ...prev,
+      limit: 10,
+      page: 1,
+      area_id: theasaurusTagId,
+      p_c_path: data,
     }));
   };
   // 搜索

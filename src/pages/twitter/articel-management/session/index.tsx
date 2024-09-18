@@ -5,7 +5,6 @@ import {
   message,
   Tooltip,
   Button,
-  Popconfirm,
   Switch,
   Radio,
   Checkbox,
@@ -14,6 +13,7 @@ import {
   Col,
   Select,
   Input,
+  Drawer,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ import twitterService, {
 // import DelTagModel, { DelTagModelProps } from './delTag';
 // import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
 
-import { Tweet } from '#/entity';
+import { TweetSessionConv } from '#/entity';
 import type { GetProp, TableProps } from 'antd';
 
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
@@ -74,7 +74,7 @@ export default function Session() {
       setTableParams({ pagination });
     }
   };
-  // const onEditTag = (record: Tweet) => {
+  // const onEditTag = (record: TweetSessionConv) => {
   //   setEditorOrAddModelProps((prev) => ({
   //     ...prev,
   //     show: true,
@@ -95,11 +95,11 @@ export default function Session() {
       console.error('Error deleting website:', error);
     },
   });
-  const onDelTag = (record: Tweet) => {
+  const onDelTag = (record: TweetSessionConv) => {
     const delData = { tweet_ids: [record.tweet_id] };
     delArticlemutation.mutate(delData);
   };
-  const columns: ColumnsType<Tweet> = [
+  const columns: ColumnsType<TweetSessionConv> = [
     // { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
       title: '作者',
@@ -107,6 +107,11 @@ export default function Session() {
       key: 'name',
       width: 100,
       align: 'center',
+      render: (_, record) => (
+        <div className="text-blue underline decoration-solid" onClick={() => showDrawer(record)}>
+          {record.name}
+        </div>
+      ),
     },
     {
       title: '头像',
@@ -208,7 +213,7 @@ export default function Session() {
       console.error('Error deleting website:', error);
     },
   });
-  const onChanheHideStatus = (checked: boolean, record: Tweet, e: any) => {
+  const onChanheHideStatus = (checked: boolean, record: TweetSessionConv, e: any) => {
     // 修改分发状态逻辑
     changeDistributedMutation.mutate({
       tweet_ids: [record.tweet_id],
@@ -273,11 +278,11 @@ export default function Session() {
   };
   const onChangeCategoryOneTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+    setCategoryQuery((prev: any) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
   };
   const onChangeCategoryTwoTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+    setCategoryQuery((prev: any) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
   };
   const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
     const data = checkedValues.reduce((pre, cur) => {
@@ -292,7 +297,7 @@ export default function Session() {
   };
   const [selectItems, setSelectItems] = useState<string[]>([]);
 
-  const onChangeTableList = (selectedRowKeys: any, selectedRows: Tweet[]) => {
+  const onChangeTableList = (selectedRowKeys: any, selectedRows: TweetSessionConv[]) => {
     const tweetIds = selectedRows.map((item) => item.tweet_id);
     setSelectItems(tweetIds);
   };
@@ -335,6 +340,24 @@ export default function Session() {
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
     setSessionQuery({ ...values, page: 1, limit: 10 });
+  };
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const [detailUserInfo, setDetailUserInfo] = useState<TweetSessionConv | undefined>(undefined);
+  const [twitterSeesionId, setTwitterSeesionId] = useState('');
+  const { data: twitterSessionDetail, isLoading: isTwitterSessionDetailLoading } = useQuery({
+    queryKey: ['twitterSessionDetail', twitterSeesionId],
+    queryFn: () => twitterService.GetSessionDetail(twitterSeesionId),
+    enabled: !!twitterSeesionId,
+  });
+  const showDrawer = (record: TweetSessionConv) => {
+    console.log(record);
+    setTwitterSeesionId(record.conv_id);
+    setDetailUserInfo(record);
+    setDrawerVisible(true);
+  };
+  const onCloseDrawer = () => {
+    setDrawerVisible(false);
   };
   return (
     <>
@@ -460,6 +483,32 @@ export default function Session() {
         </Card>
         {/* <EditorOrAddModel {...editorOrAddModelProps} />
         <DelTagModel {...delTagModelProps} /> */}
+        <Drawer
+          title="用户详情"
+          open={drawerVisible}
+          onClose={onCloseDrawer}
+          loading={isTwitterSessionDetailLoading}
+        >
+          {twitterSessionDetail && (
+            <div className="w-full">
+              <div className="h-20 w-20 overflow-hidden rounded-full">
+                <img
+                  className="h-full w-full object-cover"
+                  src={twitterSessionDetail.profile_image_url0}
+                  alt="用户头像"
+                />
+              </div>
+              <div className="mt-4">
+                <p className="font-weight text-xl">{twitterSessionDetail.name}</p>
+                <p className="font-weight text-xl">账号：{twitterSessionDetail.username}</p>
+                <p>账户创建时间: {twitterSessionDetail.created_at}</p>
+                <p className="font-weight text-sm text-gray-600">
+                  内容：{twitterSessionDetail.text}
+                </p>
+              </div>
+            </div>
+          )}
+        </Drawer>
       </Space>
     </>
   );

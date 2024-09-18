@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Modal, Table, Form, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -29,6 +29,7 @@ function EditorOrAddModel({
   tableValue,
   theasaurusList,
 }: EditorOrAddModelProps) {
+  const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const [formValue, setFormValue] = useState<TG>();
   useEffect(() => {
@@ -97,6 +98,7 @@ function EditorOrAddModel({
       return res.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries(['TwitterAcountList']);
       onOk();
     },
     onError: (error) => {
@@ -107,7 +109,6 @@ function EditorOrAddModel({
     try {
       const values = await form.validateFields();
       const paramsValue = selectedPath.map((item, index) => {
-        console.log(item, selectedRowKeys[index]);
         return {
           area_id: values.area_id,
           c_id: selectedRowKeys[index],
@@ -134,7 +135,7 @@ function EditorOrAddModel({
       >
         <Form.Item<PlanetCategory> label="所属板块" name="area_id">
           <Select>
-            {theasaurusList?.data.map((item: Theasaurus, index) => (
+            {theasaurusList?.data.map((item: Theasaurus, index: number) => (
               <Select.Option key={index} value={item.id}>
                 {item.title}
               </Select.Option>

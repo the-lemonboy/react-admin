@@ -309,6 +309,32 @@ export interface Tweet {
   created_at: string; // This is likely a date string
   created_time: string; // This is also likely a date string
 }
+interface TweetSessionCategory {
+  p_c_path_title: string;
+  p_c_path: string;
+  area_title: string;
+  area_id: string;
+}
+export interface TweetSessionConv {
+  record_id: number;
+  conv_id: string;
+  tweet_id: string;
+  author_id: string;
+  name: string;
+  username: string;
+  profile_image_url0: string;
+  followers_count: number;
+  following_count: number;
+  tweet_count: number;
+  text: string;
+  lang: string;
+  like_count: number;
+  reply_count: number;
+  retweet_count: number;
+  quote_count: number;
+  created_at: string;
+  category: TweetSessionCategory[];
+}
 
 export interface TwitterUser {
   id: number; // 用户ID

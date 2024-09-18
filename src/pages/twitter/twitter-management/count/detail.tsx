@@ -36,7 +36,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   });
 
   const fetchDelCategoryTag = useMutation({
-    mutationFn: twitterService.DelCateGoryTag,
+    mutationFn: (c_id: number) => twitterService.DelCateGoryTag(c_id), // 确保传入的参数是 c_id
     onSuccess: () => {
       message.success('标签删除成功');
     },
@@ -47,7 +47,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
   });
 
   const delCategoryTag = (tagValue: TagInfo) => {
-    fetchDelCategoryTag.mutate({ cid: tagValue.c_id });
+    fetchDelCategoryTag.mutate(tagValue.c_id); // 直接传递 c_id
     setVisiblePopconfirm(null); // 隐藏 Popconfirm
   };
 
