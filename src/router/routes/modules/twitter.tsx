@@ -14,7 +14,7 @@ const SessionPage = lazy(() => import('@/pages/twitter/articel-management/sessio
 // const UserPage = lazy(() => import('@/pages/twitter/subscribe-management/member-management'));
 const SubscribePage = lazy(() => import('@/pages/twitter/subscribe-management/subscribe'));
 const pilotSpecial: AppRouteObject = {
-  order: 4,
+  order: 3,
   path: 'twitter-management',
   element: (
     <Suspense fallback={<CircleLoading />}>

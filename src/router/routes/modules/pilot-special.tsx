@@ -23,7 +23,7 @@ const TGTheasaurusPage = lazy(() => import('@/pages/pilot-special/TG-community/t
 const TGGrounpPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp'));
 const TGGrounpContentPage = lazy(() => import('@/pages/pilot-special/TG-community/grounp-content'));
 const pilotSpecial: AppRouteObject = {
-  order: 4,
+  order: 5,
   path: 'pilot-special',
   element: (
     <Suspense fallback={<CircleLoading />}>

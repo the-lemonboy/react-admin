@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Button, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
@@ -94,7 +94,7 @@ export default function KnowledgeGrounp() {
     },
   });
   const onShowDetail = (record: any) => {
-    console.log(record)
+    console.log(record);
     setDelTagModelProps((prev) => ({
       ...prev,
       show: true,
@@ -258,7 +258,7 @@ export default function KnowledgeGrounp() {
               ))}
             </Radio.Group>
           </div>
-          {levelOneList.length > 0 && levelOneList && (
+          {levelOneList?.length > 0 && levelOneList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
@@ -270,7 +270,7 @@ export default function KnowledgeGrounp() {
               </Radio.Group>
             </div>
           )}
-          {levelTwoList.length > 0 && levelTwoList && (
+          {levelTwoList?.length > 0 && levelTwoList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
@@ -282,7 +282,7 @@ export default function KnowledgeGrounp() {
               </Radio.Group>
             </div>
           )}
-          {levelThreeList.length > 0 && levelThreeList && (
+          {levelThreeList?.length > 0 && levelThreeList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group

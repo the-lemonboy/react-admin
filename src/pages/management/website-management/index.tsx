@@ -69,7 +69,7 @@ export default function NavWebsitePage() {
     const res = await navService.SearchWebsite(params);
     return res;
   };
-  const [query, setQuery] = useState<SearchWebsiteReq>({ limit: 10, page: 1 });
+  const [query, setQuery] = useState<SearchWebsiteReq>({ limit: 20, page: 1 });
 
   // 使用 useQuery 获取数据
   const { data, isLoading } = useQuery({
@@ -80,7 +80,7 @@ export default function NavWebsitePage() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: data?.count,
     },
   });
@@ -98,7 +98,7 @@ export default function NavWebsitePage() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setQuery({ page: current, limit: pageSize });
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
@@ -426,7 +426,7 @@ export default function NavWebsitePage() {
   const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
-    setQuery({ ...values, page: 1, limit: 10 });
+    setQuery({ ...values, page: 1, limit: 20 });
   };
   return (
     <>

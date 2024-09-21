@@ -31,7 +31,11 @@ const member: AppRouteObject = {
     },
     {
       path: 'rssdao',
-      meta: { label: 'sys.menu.rssdao.index', key: '/member/rssdao' },
+      meta: {
+        label: 'sys.menu.rssdao.index',
+        icon: <SvgIcon icon="ic-logo" className="ant-menu-item-icon" size="24" />,
+        key: '/member/rssdao',
+      },
       children: [
         {
           index: true,
@@ -40,17 +44,30 @@ const member: AppRouteObject = {
         {
           path: 'member-level',
           element: <MemberLevelPage />,
-          meta: { label: 'sys.menu.rssdao.member-level', key: '/member/rssdao/member-level' },
+          meta: {
+            label: 'sys.menu.rssdao.member-level',
+            icon: <SvgIcon icon="ic_member-grade" className="ant-menu-item-icon" size="18" />,
+
+            key: '/member/rssdao/member-level',
+          },
         },
         {
           path: 'consumer-card',
           element: <ConsumerCardPage />,
-          meta: { label: 'sys.menu.rssdao.consumer-card', key: '/member/rssdao/consumer-card' },
+          meta: {
+            label: 'sys.menu.rssdao.consumer-card',
+            icon: <SvgIcon icon="ic_resume-card" className="ant-menu-item-icon" size="18" />,
+            key: '/member/rssdao/consumer-card',
+          },
         },
         {
           path: 'user',
           element: <UserPage />,
-          meta: { label: 'sys.menu.rssdao.user', key: '/member/rssdao/user' },
+          meta: {
+            label: 'sys.menu.rssdao.user',
+            icon: <SvgIcon icon="ic_user-management" className="ant-menu-item-icon" size="18" />,
+            key: '/member/rssdao/user',
+          },
         },
       ],
     },

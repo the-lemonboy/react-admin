@@ -256,7 +256,7 @@ export default function NewsList() {
               ))}
             </Radio.Group>
           </div>
-          {levelOneList.length > 0 && levelOneList && (
+          {levelOneList?.length > 0 && levelOneList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
@@ -268,7 +268,7 @@ export default function NewsList() {
               </Radio.Group>
             </div>
           )}
-          {levelTwoList.length > 0 && levelTwoList && (
+          {levelTwoList?.length > 0 && levelTwoList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
@@ -280,7 +280,7 @@ export default function NewsList() {
               </Radio.Group>
             </div>
           )}
-          {levelThreeList.length > 0 && levelThreeList && (
+          {levelThreeList?.length > 0 && levelThreeList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group
@@ -293,7 +293,7 @@ export default function NewsList() {
             </div>
           )}
         </Card>
-        <Card title="媒体管理">
+        <Card title="文章列表">
           <Table
             rowKey="id"
             size="small"

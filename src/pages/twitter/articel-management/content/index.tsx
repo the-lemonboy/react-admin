@@ -151,7 +151,7 @@ export default function KnowledgeGrounp() {
       align: 'center',
     },
     {
-      title: '作者',
+      title: '点赞数',
       dataIndex: 'like_count',
       key: 'like_count',
       width: 50,

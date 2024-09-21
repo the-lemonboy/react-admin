@@ -35,6 +35,7 @@ const management: AppRouteObject = {
       element: <WebsiteManagementPage />,
       meta: {
         label: 'sys.menu.system.website-management',
+        icon: <SvgIcon icon="ic_website-nav" className="ant-menu-item-icon" size="18" />,
         key: '/management/website-management',
       },
     },
@@ -43,6 +44,7 @@ const management: AppRouteObject = {
       element: <WebsiteCategoryTagPage />,
       meta: {
         label: 'sys.menu.system.website-category',
+        icon: <SvgIcon icon="ic_website-tag" className="ant-menu-item-icon" size="18" />,
         key: '/management/website-category',
       },
     },

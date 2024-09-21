@@ -234,7 +234,7 @@ export default function NewsList() {
                 </Form.Item>
               </Col>
               <Col span={24} lg={6}>
-                <Form.Item label="新闻平台" name="exchange_media" className="!mb-0">
+                <Form.Item label="快讯列表" name="exchange_media" className="!mb-0">
                   <Input />
                 </Form.Item>
               </Col>
@@ -271,7 +271,7 @@ export default function NewsList() {
               ))}
             </Radio.Group>
           </div>
-          {levelOneList.length > 0 && levelOneList && (
+          {levelOneList?.length > 0 && levelOneList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
@@ -283,7 +283,7 @@ export default function NewsList() {
               </Radio.Group>
             </div>
           )}
-          {levelTwoList.length > 0 && levelTwoList && (
+          {levelTwoList?.length > 0 && levelTwoList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
@@ -295,7 +295,7 @@ export default function NewsList() {
               </Radio.Group>
             </div>
           )}
-          {levelThreeList.length > 0 && levelThreeList && (
+          {levelThreeList?.length > 0 && levelThreeList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group
