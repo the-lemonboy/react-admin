@@ -19,7 +19,7 @@ export default function KnowledgeGrounp() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [articelQuery, setArticelQuery] = useState<GetGroupListReq>({
-    limit: 10,
+    limit: 20,
     page: 1,
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
@@ -30,7 +30,7 @@ export default function KnowledgeGrounp() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count,
     },
   });
@@ -48,11 +48,11 @@ export default function KnowledgeGrounp() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
+      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -238,7 +238,7 @@ export default function KnowledgeGrounp() {
   //   }, '');
   //   setArticelQuery((prev) => ({
   //     ...prev,
-  //     limit: 10,
+  //     limit: 20,
   //     page: 1,
   //     content: data as string,
   //   }));

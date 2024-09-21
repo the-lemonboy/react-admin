@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
 
     const { success, status, data, message } = res.data;
     // 业务请求成功
-    const hasSuccess = data && Reflect.has(res.data, 'success') && success === true;
+    const hasSuccess = Reflect.has(res.data, 'success') && success === true;
     if (hasSuccess) {
       return data;
     }

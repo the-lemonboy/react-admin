@@ -60,7 +60,7 @@ export default function MemberLevelPage() {
   const [messageApi, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
   // -------------分页 table start
-  const [query, setQuery] = useState<GetMemberListReq>({ limit: 10, page: 1 });
+  const [query, setQuery] = useState<GetMemberListReq>({ limit: 20, page: 1 });
   const fetchWebsiteList = async (params: GetMemberListReq) => {
     const res = await memberService.MemberList(params);
     return res;
@@ -74,7 +74,7 @@ export default function MemberLevelPage() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: data?.count,
     },
   });
@@ -91,7 +91,7 @@ export default function MemberLevelPage() {
   }, [data]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setQuery({ page: current, limit: pageSize });
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {

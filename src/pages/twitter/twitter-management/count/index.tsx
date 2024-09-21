@@ -38,7 +38,7 @@ export default function TwitterAcountList() {
   const [messageApi, contextHolder] = message.useMessage();
   const [AcountQuery, setArticelQuery] = useState<GetAcountListReq>({
     area_id: '',
-    limit: 10,
+    limit: 20,
     name: '',
     p_c_path: '',
     page: 1,
@@ -52,7 +52,7 @@ export default function TwitterAcountList() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count,
     },
   });
@@ -69,11 +69,11 @@ export default function TwitterAcountList() {
   }, [tableList]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
+      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -227,33 +227,6 @@ export default function TwitterAcountList() {
       ),
     },
   ];
-  // const changeMediaStatus = useMutation({
-  //   mutationFn: (params: Media) => {
-  //     const res = newsService.ChangeMediaStatus(params);
-  //     return res;
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['mediaList']);
-  //     messageApi.open({
-  //       type: 'success',
-  //       content: '状态修改成功',
-  //     });
-  //   },
-  //   onError: () => {
-  //     messageApi.open({
-  //       type: 'error',
-  //       content: '状态修改失败',
-  //     });
-  //   },
-  // });
-  // const onChangeMediaStatus = (checked: boolean, record: Media) => {
-  //   // 修改分发状态逻辑
-  //   changeMediaStatus.mutate({
-  //     media_title: record.media_title,
-  //     opt_status: checked,
-  //   });
-  // };
-
   const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
     title: '标签管理',
     show: false,
@@ -315,27 +288,27 @@ export default function TwitterAcountList() {
   const onChangeCategoryOneTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 10,
-      page: 1,
-      p_c_path: `/${e.target.value}`,
-      area_id: theasaurusTagId,
-    }));
   };
 
   const onChangeCategoryTwoTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+  };
+  useEffect(() => {
     setArticelQuery((prev) => ({
       ...prev,
-      limit: 10,
+      limit: 20,
       page: 1,
       area_id: theasaurusTagId,
-      p_c_path: `/${CategoryIds.categoryIdOne}/${e.target.value}`,
+      // 这里不用eslint
+      // eslint-disable-next-line no-nested-ternary
+      p_c_path: CategoryIds.categoryIdOne
+        ? `/${CategoryIds.categoryIdOne}`
+        : `${CategoryIds.categoryIdTwo}`
+        ? `/${CategoryIds.categoryIdTwo}`
+        : '',
     }));
-  };
-
+  }, [theasaurusTagId, CategoryIds.categoryIdOne, CategoryIds.categoryIdTwo]);
   const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
     // const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
     const data = checkedValues.map(
@@ -343,7 +316,7 @@ export default function TwitterAcountList() {
     );
     setArticelQuery((prev: any) => ({
       ...prev,
-      limit: 10,
+      limit: 20,
       page: 1,
       area_id: theasaurusTagId,
       p_c_path: data,
@@ -409,7 +382,7 @@ export default function TwitterAcountList() {
               ))}
             </Radio.Group>
           </div>
-          {levelOneList.length > 0 && levelOneList && (
+          {levelOneList?.length > 0 && levelOneList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">一级标签</p>
               <Radio.Group onChange={onChangeCategoryOneTag} value={CategoryIds.categoryIdOne}>
@@ -421,7 +394,7 @@ export default function TwitterAcountList() {
               </Radio.Group>
             </div>
           )}
-          {levelTwoList.length > 0 && levelTwoList && (
+          {levelTwoList?.length > 0 && levelTwoList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">二级标签</p>
               <Radio.Group onChange={onChangeCategoryTwoTag} value={CategoryIds.categoryIdTwo}>
@@ -433,13 +406,13 @@ export default function TwitterAcountList() {
               </Radio.Group>
             </div>
           )}
-          {levelThreeList.length > 0 && levelThreeList && (
+          {levelThreeList?.length > 0 && levelThreeList && (
             <div className="mb-4 flex flex-wrap items-center">
               <p className="mr-3 whitespace-nowrap text-base font-bold">三级标签</p>
               <Checkbox.Group
                 options={levelThreeList.map((item: any) => ({
                   label: item.title,
-                  value: item.title,
+                  value: item.c_id,
                 }))}
                 onChange={onChangeCategoryThreeTag}
               />

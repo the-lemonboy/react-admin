@@ -39,7 +39,7 @@ export default function TGGrounpContentList() {
     created_at_range: '',
     group_id: '',
     keyword: [],
-    limit: 10,
+    limit: 20,
     message_id: '',
     msg_type: '',
     p_c_path: '',
@@ -54,7 +54,7 @@ export default function TGGrounpContentList() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count,
     },
   });
@@ -72,11 +72,11 @@ export default function TGGrounpContentList() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
+      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -304,7 +304,7 @@ export default function TGGrounpContentList() {
     }, '');
     setArticelQuery((prev) => ({
       ...prev,
-      limit: 10,
+      limit: 20,
       page: 1,
       content: data as string,
     }));
@@ -317,7 +317,7 @@ export default function TGGrounpContentList() {
   const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
-    setArticelQuery({ ...values, page: 1, limit: 10 });
+    setArticelQuery({ ...values, page: 1, limit: 20 });
   };
   return (
     <>

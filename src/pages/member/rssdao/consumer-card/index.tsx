@@ -21,7 +21,7 @@ interface TableParams {
 export default function MemberLevelPage() {
   const [messageApi, contextHolder] = message.useMessage();
   // -------------分页 table start
-  const [query, setQuery] = useState<GetCouponListReq>({ limit: 10, page: 1 });
+  const [query, setQuery] = useState<GetCouponListReq>({ limit: 20, page: 1 });
   const fetchCouponList = async (params: GetCouponListReq) => {
     const res = await couponService.GetCouponList(params);
     return res;
@@ -34,7 +34,7 @@ export default function MemberLevelPage() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: data?.count,
     },
   });
@@ -55,7 +55,7 @@ export default function MemberLevelPage() {
   }, [data]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setQuery({ page: current, limit: pageSize });
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {

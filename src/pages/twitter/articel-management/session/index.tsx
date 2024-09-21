@@ -37,7 +37,7 @@ export default function Session() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [sessionQuery, setSessionQuery] = useState<GetSessionListReq>({
-    limit: 10,
+    limit: 20,
     page: 1,
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
@@ -48,7 +48,7 @@ export default function Session() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count,
     },
   });
@@ -66,11 +66,11 @@ export default function Session() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setSessionQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setSessionQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
+      setSessionQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -290,7 +290,7 @@ export default function Session() {
     }, '');
     setSessionQuery((prev) => ({
       ...prev,
-      limit: 10,
+      limit: 20,
       page: 1,
       content: data as string,
     }));
@@ -339,7 +339,7 @@ export default function Session() {
   const [searchFormValues, setSearchFormValues] = useState<any>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
-    setSessionQuery({ ...values, page: 1, limit: 10 });
+    setSessionQuery({ ...values, page: 1, limit: 20 });
   };
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -505,6 +505,20 @@ export default function Session() {
                 <p className="font-weight text-sm text-gray-600">
                   内容：{twitterSessionDetail.text}
                 </p>
+                <div className="my-5 h-0 w-full border-b-[1px] border-gray-300" />
+                {twitterSessionDetail.conv_list?.map((item: any, index: number) => (
+                  <div className="mb-10 h-20 w-20 overflow-hidden rounded-full">
+                    <img
+                      className="h-full w-full object-cover"
+                      src={item.profile_image_url0}
+                      alt="用户头像"
+                    />
+                    <p className="font-weight text-xl">{item.name}</p>
+                    <p className="font-weight text-xl">账号：{item.username}</p>
+                    <p>账户创建时间: {item.created_at}</p>
+                    <p className="font-weight text-sm text-gray-600">内容：{item.text}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

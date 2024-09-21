@@ -30,7 +30,7 @@ interface TableParams {
 export default function NewsCategoryTag() {
   const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
-  const [query, setQuery] = useState<GetUserListReq>({ page: 1, limit: 10 });
+  const [query, setQuery] = useState<GetUserListReq>({ page: 1, limit: 20 });
 
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['userList', query],
@@ -41,7 +41,7 @@ export default function NewsCategoryTag() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count || 0,
     },
   });
@@ -60,7 +60,7 @@ export default function NewsCategoryTag() {
 
   const handleTableChange: TableProps<UserTable>['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setQuery({ ...query, page: current, limit: pageSize });
     setTableParams({ pagination });
   };
@@ -143,13 +143,13 @@ export default function NewsCategoryTag() {
 
   const onSearchFormReset = () => {
     searchForm.resetFields();
-    setQuery({ page: 1, limit: 10 });
+    setQuery({ page: 1, limit: 20 });
   };
 
   const onSearchSubmit = async () => {
     try {
       const values = await searchForm.validateFields();
-      setQuery({ ...values, page: 1, limit: 10 });
+      setQuery({ ...values, page: 1, limit: 20 });
     } catch (error) {
       console.error('Validation failed:', error);
     }

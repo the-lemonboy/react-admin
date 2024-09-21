@@ -16,7 +16,7 @@ export default function NewsList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
   const [newsQuery, setNewsQuery] = useState<GetNewsListReq>({
-    limit: 10,
+    limit: 20,
     page: 1,
     area_id: '',
     content: '',
@@ -33,7 +33,7 @@ export default function NewsList() {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: tableList?.count,
     },
   });
@@ -51,11 +51,11 @@ export default function NewsList() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     console.log(pagination);
     const current = pagination.current ?? 1;
-    const pageSize = pagination.pageSize ?? 10;
+    const pageSize = pagination.pageSize ?? 20;
     setNewsQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setNewsQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 10 }));
+      setNewsQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -200,7 +200,7 @@ export default function NewsList() {
     }, '');
     setNewsQuery((prev) => ({
       ...prev,
-      limit: 10,
+      limit: 20,
       page: 1,
       content: data as string,
     }));
@@ -213,7 +213,7 @@ export default function NewsList() {
   const [searchFormValues, setSearchFormValues] = useState<SearchTGReq>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
-    setNewsQuery({ ...values, page: 1, limit: 10 });
+    setNewsQuery({ ...values, page: 1, limit: 20 });
   };
   return (
     <>
