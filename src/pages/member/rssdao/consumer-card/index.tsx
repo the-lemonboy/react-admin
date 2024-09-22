@@ -111,30 +111,34 @@ export default function MemberLevelPage() {
   };
   // 这里可以加入更新状态的逻辑，例如调用 API 更新状态
   const columns: ColumnsType<CouponTableType> = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: '卡号', dataIndex: 'c_no', key: 'c_no' },
+    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
+    { title: '卡号', dataIndex: 'c_no', key: 'c_no', align: 'center' },
     {
       title: '价值',
       dataIndex: 'price',
       key: 'price',
+      align: 'center',
       render: (_, record) => `${record.price}${record.currency}`,
     },
     {
       title: '种类',
       dataIndex: 'vip_level_name',
       key: 'vip_level_name',
+      align: 'center',
     },
     {
       title: '绑定状态',
       dataIndex: 'binding_status',
       key: 'binding_status',
+      align: 'center',
       render: (value) => (value ? <Tag color="orange">已绑定</Tag> : <Tag color="red">未绑定</Tag>),
     },
-    { title: '手机号', dataIndex: 'mobile_number', key: 'mobile_number' },
+    { title: '手机号', dataIndex: 'mobile_number', key: 'mobile_number', align: 'center' },
     {
       title: '分发状态',
       dataIndex: 'distributed',
       key: 'distributed',
+      align: 'center',
       render: (_: any, record: CouponTableType) => (
         <Switch
           checkedChildren="已分发"
@@ -146,10 +150,10 @@ export default function MemberLevelPage() {
       ),
     },
 
-    { title: '使用渠道', dataIndex: 'pay_channel', key: 'pay_channel' },
-    { title: '备注', dataIndex: 'remark', key: 'remark', width: 100 },
-    { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
-    { title: '过期时间', dataIndex: 'expired_at', key: 'expired_at' },
+    { title: '使用渠道', dataIndex: 'pay_channel', key: 'pay_channel', align: 'center' },
+    { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, align: 'center' },
+    // { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
+    // { title: '过期时间', dataIndex: 'expired_at', key: 'expired_at' },
   ];
   // -------------分页 table end
   return (

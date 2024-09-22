@@ -274,9 +274,9 @@ export default function NavWebsitePage() {
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm
-            title="Delete the Website"
-            okText="Yes"
-            cancelText="No"
+            title="确认删除"
+            okText="是"
+            cancelText="否"
             placement="left"
             onConfirm={() => onDelWebsite(record)}
           >
@@ -474,8 +474,8 @@ export default function NavWebsitePage() {
                     <Popconfirm
                       key={item.id} // Use a unique identifier if available
                       title="删除标签"
-                      okText="Yes"
-                      cancelText="No"
+                      okText="是"
+                      cancelText="否"
                       placement="left"
                       open={visiblePopconfirm === item.id}
                       onConfirm={() => delCategoryTag(item)}
@@ -506,8 +506,8 @@ export default function NavWebsitePage() {
                     <Popconfirm
                       key={item.id} // Use a unique identifier if available
                       title="删除标签"
-                      okText="Yes"
-                      cancelText="No"
+                      okText="是"
+                      cancelText="否"
                       placement="left"
                       open={visiblePopconfirm === item.id}
                       onConfirm={() => delCategoryTag(item)}
@@ -537,8 +537,8 @@ export default function NavWebsitePage() {
                     <Popconfirm
                       key={item.id} // Use a unique identifier if available
                       title="删除标签"
-                      okText="Yes"
-                      cancelText="No"
+                      okText="是"
+                      cancelText="否"
                       placement="left"
                       open={visiblePopconfirm === item.id}
                       onConfirm={() => delCategoryTag(item)}

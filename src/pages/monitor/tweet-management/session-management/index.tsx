@@ -69,7 +69,7 @@ export default function OrganizationPage() {
           <IconButton onClick={() => onEdit(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
-          <Popconfirm title="Delete the Organization" okText="Yes" cancelText="No" placement="left">
+          <Popconfirm title="Delete the Organization" okText="是" cancelText="否" placement="left">
             <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>

@@ -11,7 +11,6 @@ import {
   Form,
   Row,
   Col,
-  Select,
   Input,
   Drawer,
 } from 'antd';
@@ -269,30 +268,56 @@ export default function Session() {
         setLevelThreeList(data);
       }
     };
-
     fetchCategoryData();
   }, [categoryQuery]);
+
   const onChangeTheasaurusTag = (e: any) => {
     setTheasaurusTagId(e.target.value);
-    setCategoryQuery({ p_c_id: '-1', area_id: e.target.value, level: 0 });
+    setCategoryQuery({ area_id: e.target.value, p_c_id: '-1', level: 0 });
   };
+
   const onChangeCategoryOneTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdOne: e.target.value }));
-    setCategoryQuery((prev: any) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 1 }));
   };
+
   const onChangeCategoryTwoTag = (e: any) => {
     setCategoryIds((prev) => ({ ...prev, categoryIdTwo: e.target.value }));
-    setCategoryQuery((prev: any) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
+    setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
   };
+  useEffect(() => {
+    setSessionQuery((prev) => {
+      // 这里不要eslint
+      // eslint-disable-next-line no-nested-ternary
+      const path =
+        CategoryIds.categoryIdOne && CategoryIds.categoryIdTwo
+          ? `/${CategoryIds.categoryIdOne}/${CategoryIds.categoryIdTwo}`
+          : CategoryIds.categoryIdOne
+          ? `/${CategoryIds.categoryIdOne}`
+          : CategoryIds.categoryIdTwo
+          ? `/${CategoryIds.categoryIdTwo}`
+          : '';
+
+      return {
+        ...prev,
+        limit: 20,
+        page: 1,
+        area_id: theasaurusTagId,
+        p_c_path: path ? [path] : [],
+      };
+    });
+  }, [theasaurusTagId, CategoryIds.categoryIdOne, CategoryIds.categoryIdTwo]);
   const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-    const data = checkedValues.reduce((pre, cur) => {
-      return `${pre} ${cur}`;
-    }, '');
-    setSessionQuery((prev) => ({
+    // const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
+    const data = checkedValues.map(
+      (item) => `/${CategoryIds.categoryIdOne}/${CategoryIds.categoryIdTwo}/${item}`,
+    );
+    setSessionQuery((prev: any) => ({
       ...prev,
       limit: 20,
       page: 1,
-      content: data as string,
+      area_id: theasaurusTagId,
+      p_c_path: data,
     }));
   };
   const [selectItems, setSelectItems] = useState<string[]>([]);
@@ -321,16 +346,16 @@ export default function Session() {
       changeDistributedMutation.mutate({ tweet_ids: selectItems, hidden: false });
     }
   };
-  const onDelSelectItems = () => {
-    if (selectItems.length === 0) {
-      messageApi.open({
-        type: 'warning',
-        content: '请选择要操作的数据',
-      });
-    } else {
-      delArticlemutation.mutate({ tweet_ids: selectItems });
-    }
-  };
+  // const onDelSelectItems = () => {
+  //   if (selectItems.length === 0) {
+  //     messageApi.open({
+  //       type: 'warning',
+  //       content: '请选择要操作的数据',
+  //     });
+  //   } else {
+  //     delArticlemutation.mutate({ tweet_ids: selectItems });
+  //   }
+  // };
   // 搜索
   const [searchForm] = Form.useForm();
   const onSearchFormReset = () => {
@@ -366,7 +391,7 @@ export default function Session() {
         <Card>
           <Form form={searchForm} initialValues={searchFormValues}>
             <Row gutter={[16, 16]}>
-              <Col span={24} lg={6}>
+              {/* <Col span={24} lg={6}>
                 <Form.Item label="板块" name="area_id" className="!mb-0">
                   <Select>
                     {theasaurusList?.data.map((item: any, index: any) => (
@@ -376,7 +401,7 @@ export default function Session() {
                     ))}
                   </Select>
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col span={24} lg={6}>
                 <Form.Item label="作者" name="author" className="!mb-0">
                   <Input />
@@ -471,7 +496,7 @@ export default function Session() {
           }
         >
           <Table
-            rowKey="id"
+            rowKey="conv_id"
             size="small"
             columns={columns}
             rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}

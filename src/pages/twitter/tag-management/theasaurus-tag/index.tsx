@@ -24,8 +24,9 @@ export default function ThesaurusTag() {
     queryFn: () => twitterService.GetAreaList(),
   });
   const columns: ColumnsType<MediaTableType> = [
-    { title: 'ID', dataIndex: 'area_key', key: 'area_key' },
-    { title: '名称', dataIndex: 'title', key: 'title' },
+    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
+    { title: 'area_key', dataIndex: 'area_key', align: 'center', key: 'area_key' },
+    { title: '名称', dataIndex: 'title', key: 'title', align: 'center' },
     {
       title: '分发状态',
       dataIndex: 'opt_status',

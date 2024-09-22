@@ -91,7 +91,7 @@ export interface GetAcountListReq {
   area_id?: string;
   limit: number;
   name?: string;
-  p_c_path?: string;
+  p_c_path?: string[];
   page: number;
   username?: string;
 }
@@ -176,7 +176,7 @@ const GetArea = (id: string) => apiClient.get({ url: `/api/navigator/area/${id}`
 const AddCateGory = (data: AddCategoryReq) => apiClient.post({ url: PlanetType.AddCateGory, data });
 const ChangeCategoryStatus = (data: ChangeCategoryStatusReq) =>
   apiClient.post({ url: PlanetType.ChangeCategoryStatus, data });
-const DelCateGory = (id: string) => apiClient.get({ url: `/api/navigator/category/del/${id}` });
+const DelCateGory = (id: string) => apiClient.get({ url: `/api/twitter/category/del/${id}` });
 const GetCategoryList = (data: GetCategoryListReq) =>
   apiClient.post({ url: PlanetType.GetCategoryList, data });
 const UpdateCategory = (data: UpdateCategoryReq) =>

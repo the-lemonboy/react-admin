@@ -64,9 +64,9 @@ export default function WebsiteCategoryTag() {
             编辑
           </Button>
           <Popconfirm
-            title="Delete the Website"
-            okText="Yes"
-            cancelText="No"
+            title="确认删除"
+            okText="是"
+            cancelText="否"
             placement="left"
             onConfirm={() => onDelTag(record)}
           >

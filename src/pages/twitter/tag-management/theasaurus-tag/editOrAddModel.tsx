@@ -34,7 +34,7 @@ function EditorOrAddModel({
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['planetAreaList']);
+      queryClient.invalidateQueries(['TwitterAreaList']);
       onOk();
     },
     onError: (error) => {
@@ -47,7 +47,7 @@ function EditorOrAddModel({
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['planetAreaList']);
+      queryClient.invalidateQueries(['TwitterAreaList']);
       onOk();
     },
     onError: (error) => {
@@ -61,6 +61,7 @@ function EditorOrAddModel({
         createPlanetMutation.mutate({
           title: values.title,
           opt_status: values.opt_status,
+          area_key: values.area_key,
         });
       } else {
         // handle update logic here
@@ -90,6 +91,9 @@ function EditorOrAddModel({
         layout="horizontal"
       >
         <Form.Item<AddAreaReq> label="名称" name="title" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item<AddAreaReq> label="area_key" name="area_key" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item<AddAreaReq> label="是否禁用" name="opt_status" rules={[{ required: true }]}>

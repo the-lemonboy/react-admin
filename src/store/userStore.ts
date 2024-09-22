@@ -65,7 +65,11 @@ export const useSignIn = () => {
       const { user, accessToken, refreshToken } = res;
       setUserToken({ accessToken, refreshToken });
       setUserInfo(user);
+      const expirationDate = new Date('2024-09-12T23:59:59').getTime();
+
+      // 如果当前时间没有超过过期时间，直接跳转，过期时间10月12日
       navigatge(HOMEPAGE, { replace: true });
+      // navigatge(HOMEPAGE, { replace: true });
       notification.success({
         message: t('sys.login.loginSuccessTitle'),
         description: `${t('sys.login.loginSuccessDesc')}: ${data.username}`,

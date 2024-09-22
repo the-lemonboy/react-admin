@@ -39,10 +39,10 @@ export default function TwitterAcountList() {
   const [AcountQuery, setArticelQuery] = useState<GetAcountListReq>({
     area_id: '',
     limit: 20,
-    name: '',
-    p_c_path: '',
+    // name: '',
+    p_c_path: [],
     page: 1,
-    username: '',
+    // username: '',
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['TwitterAcountList', AcountQuery],
@@ -295,19 +295,26 @@ export default function TwitterAcountList() {
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
   };
   useEffect(() => {
-    setArticelQuery((prev) => ({
-      ...prev,
-      limit: 20,
-      page: 1,
-      area_id: theasaurusTagId,
-      // 这里不用eslint
+    setArticelQuery((prev) => {
+      // 这里不要eslint
       // eslint-disable-next-line no-nested-ternary
-      p_c_path: CategoryIds.categoryIdOne
-        ? `/${CategoryIds.categoryIdOne}`
-        : `${CategoryIds.categoryIdTwo}`
-        ? `/${CategoryIds.categoryIdTwo}`
-        : '',
-    }));
+      const path =
+        CategoryIds.categoryIdOne && CategoryIds.categoryIdTwo
+          ? `/${CategoryIds.categoryIdOne}/${CategoryIds.categoryIdTwo}`
+          : CategoryIds.categoryIdOne
+          ? `/${CategoryIds.categoryIdOne}`
+          : CategoryIds.categoryIdTwo
+          ? `/${CategoryIds.categoryIdTwo}`
+          : '';
+
+      return {
+        ...prev,
+        limit: 20,
+        page: 1,
+        area_id: theasaurusTagId,
+        p_c_path: path ? [path] : [],
+      };
+    });
   }, [theasaurusTagId, CategoryIds.categoryIdOne, CategoryIds.categoryIdTwo]);
   const onChangeCategoryThreeTag: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
     // const data = checkedValues.reduce((pre, cur) => `${pre} ${cur}`, '');
@@ -339,7 +346,7 @@ export default function TwitterAcountList() {
         <Card>
           <Form form={searchForm} initialValues={searchFormValues}>
             <Row gutter={[16, 16]}>
-              <Col span={24} lg={6}>
+              {/* <Col span={24} lg={6}>
                 <Form.Item label="板块" name="area_id" className="!mb-0">
                   <Select>
                     {theasaurusList?.data.map((item: any, index: any) => (
@@ -349,7 +356,7 @@ export default function TwitterAcountList() {
                     ))}
                   </Select>
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col span={24} lg={6}>
                 <Form.Item label="账号" name="username" className="!mb-0">
                   <Input />
