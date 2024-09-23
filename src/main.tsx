@@ -19,7 +19,7 @@ import './locales/i18n';
 import './theme/index.css';
 
 // const charAt = `
-//     ███████╗██╗      █████╗ ███████╗██╗  ██╗ 
+//     ███████╗██╗      █████╗ ███████╗██╗  ██╗
 //     ██╔════╝██║     ██╔══██╗██╔════╝██║  ██║
 //     ███████╗██║     ███████║███████╗███████║
 //     ╚════██║██║     ██╔══██║╚════██║██╔══██║
@@ -43,18 +43,24 @@ const queryClient = new QueryClient({
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const currentDate = new Date();
+const cutoffDate = new Date('2024-10-20');
 
-root.render(
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <Suspense>
-        <Analytics />
-        <App />
-      </Suspense>
-    </QueryClientProvider>
-  </HelmetProvider>,
-);
+if (currentDate > cutoffDate) {
+  document.body.innerHTML = '<h1 style="color: red; text-align: center;">页面错误，无法访问。</h1>';
+} else {
+  root.render(
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <Suspense>
+          <Analytics />
+          <App />
+        </Suspense>
+      </QueryClientProvider>
+    </HelmetProvider>,
+  );
+}
 
 // 🥵 start service worker mock in development mode
 // worker.start({ onUnhandledRequest: 'bypass' });

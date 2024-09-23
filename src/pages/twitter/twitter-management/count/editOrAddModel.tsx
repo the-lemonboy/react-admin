@@ -103,7 +103,11 @@ function EditorOrAddModel({
     setSelectedRowKeys([]);
   };
 
-  const onSearchSubmit = () => {
+  useEffect(() => {
+    const areaId = form.getFieldValue('area_id');
+    setQueryNewsCategory({ area_id: areaId });
+  }, [form]);
+  const onValuesChange = () => {
     const areaId = form.getFieldValue('area_id');
     setQueryNewsCategory({ area_id: areaId });
   };
@@ -123,11 +127,11 @@ function EditorOrAddModel({
 
   return (
     <Modal width={1000} title={title} open={show} onOk={handleOk} onCancel={onCancel}>
-      <Form form={form} layout="horizontal">
+      <Form form={form} layout="horizontal" onValuesChange={onValuesChange}>
         <Row gutter={[16, 16]}>
           <Col span={24} lg={10}>
             <Form.Item label="所属板块" name="area_id">
-              <Select>
+              <Select defaultValue={theasaurusList?.data[0]?.id}>
                 {theasaurusList?.data.map((item: Theasaurus) => (
                   <Select.Option key={item.id} value={item.id}>
                     {item.title}
@@ -136,11 +140,11 @@ function EditorOrAddModel({
               </Select>
             </Form.Item>
           </Col>
-          <Col span={24} lg={6}>
+          {/* <Col span={24} lg={6}>
             <Button onClick={onSearchSubmit} type="primary">
               搜索
             </Button>
-          </Col>
+          </Col> */}
         </Row>
       </Form>
       <Row gutter={[16, 16]}>
