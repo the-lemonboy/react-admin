@@ -39,16 +39,16 @@ export default function ThesaurusTag() {
         />
       ),
     },
-    {
-      title: '操作',
-      key: 'operation',
-      align: 'center',
-      render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
-          <Button>编辑</Button>
-        </div>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   key: 'operation',
+    //   align: 'center',
+    //   render: (_, record) => (
+    //     <div className="flex w-full justify-center text-gray">
+    //       <Button>编辑</Button>
+    //     </div>
+    //   ),
+    // },
   ];
   const changeTheasaurusStatus = useMutation({
     mutationFn: (params: AddTheasaurusReq) => {

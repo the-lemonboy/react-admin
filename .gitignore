@@ -21,6 +21,9 @@ dist.zip
 *.njsproj
 *.sln
 *.sw?
+.env
+.env.development
+.env.production
 
 # vite 打包分析产物
 stats.html

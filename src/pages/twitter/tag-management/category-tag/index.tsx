@@ -25,17 +25,6 @@ import { Theasaurus, PlanetCategory } from '#/entity';
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-interface TableParams {
-  pagination?: TablePaginationConfig;
-}
-interface TreeCategory extends PlanetCategory {
-  children?: TreeCategory[];
-}
-interface MediaTableType {
-  media_key: string;
-  media_title: string;
-  opt_status: boolean;
-}
 type SearchFormFieldType = {};
 export default function TwitterCategoryTag() {
   const queryClient = useQueryClient();

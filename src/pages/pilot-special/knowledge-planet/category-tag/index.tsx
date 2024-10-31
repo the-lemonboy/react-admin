@@ -11,6 +11,7 @@ import {
   Col,
   Select,
   Popconfirm,
+  Checkbox,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState, useEffect } from 'react';
@@ -18,35 +19,25 @@ import { useState, useEffect } from 'react';
 import planetService from '@/api/services/planetService';
 import { ArrayToTree } from '@/utils/tree';
 
-import EditorOrAddModel, { EditorOrAddModelProps } from './editOrAddModel';
+import EditorOrAddModel from './editOrAddModel';
 
 import { Theasaurus, PlanetCategory } from '#/entity';
 
+type TableRowSelection<T> = TableProps<T>['rowSelection'];
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-interface TableParams {
-  pagination?: TablePaginationConfig;
-}
-interface TreeCategory extends PlanetCategory {
-  children?: TreeCategory[];
-}
-interface MediaTableType {
-  media_key: string;
-  media_title: string;
-  opt_status: boolean;
-}
 type SearchFormFieldType = {};
-export default function NewsCategoryTag() {
+export default function TwitterCategoryTag() {
   const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
   const [query, setQuery] = useState<{ area_id?: string }>({ area_id: '' });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['PlanetCategroyList', query],
+    queryKey: ['TwitterCategroyList', query],
     queryFn: () => planetService.GetCategoryList(query),
   });
-  const [treeCategory, setTreeCategory] = useState<NewsCategory[]>([]);
+  const [treeCategory, setTreeCategory] = useState<any[]>([]);
   useEffect(() => {
     if (tableList) {
-      setTreeCategory(ArrayToTree(tableList.data) as TreeCategory[]);
+      setTreeCategory(ArrayToTree(tableList.data) as PlanetCategory[]);
     }
   }, [tableList]);
   const { data: theasaurusList } = useQuery({
@@ -97,7 +88,7 @@ export default function NewsCategoryTag() {
     },
   ];
   const onAddChildTag = (record: PlanetCategory, addFlag: boolean) => {
-    setEditorOrAddModelProps((prev) => ({
+    setEditorOrAddModelProps((prev: any) => ({
       ...prev,
       title: '新增标签',
       show: true,
@@ -114,7 +105,7 @@ export default function NewsCategoryTag() {
     }));
   };
   const onEditTag = (record: PlanetCategory, addFlag: boolean) => {
-    setEditorOrAddModelProps((prev) => ({
+    setEditorOrAddModelProps((prev: any) => ({
       ...prev,
       title: '编辑标签',
       show: true,
@@ -134,7 +125,7 @@ export default function NewsCategoryTag() {
   const delCategoryTag = useMutation({
     mutationFn: planetService.DelCateGory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['PlanetCategroyList']);
+      queryClient.invalidateQueries(['TwitterCategroyList']);
       messageApi.success('删除成功');
     },
     onError: () => {
@@ -147,7 +138,7 @@ export default function NewsCategoryTag() {
   const changeCategoryStatus = useMutation({
     mutationFn: planetService.ChangeCategoryStatus,
     onSuccess: () => {
-      queryClient.invalidateQueries(['PlanetCategroyList']);
+      queryClient.invalidateQueries(['TwitterCategroyList']);
       messageApi.success('修改成功');
     },
     onError: () => {
@@ -162,7 +153,7 @@ export default function NewsCategoryTag() {
     });
   };
 
-  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<EditorOrAddModelProps>({
+  const [editorOrAddModelProps, setEditorOrAddModelProps] = useState<any>({
     title: '新增标签',
     show: false,
     formValue: {},
@@ -208,6 +199,49 @@ export default function NewsCategoryTag() {
     const values = await searchForm.validateFields();
     setQuery({ ...values });
   };
+  const [selectedPath, setSelectedPath] = useState<string[]>([]);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: TreeCategory[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    const paths = selectedRows.map((item) => item.p_c_path);
+    setSelectedPath(paths);
+  };
+  const rowSelection: TableRowSelection<TreeCategory> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [isExpandAll, setIsExpandAll] = useState(false);
+  useEffect(() => {
+    if (isExpandAll) {
+      const getAllKeys = (data: any) => {
+        let keys = [] as React.Key[];
+        data.forEach((item: any) => {
+          keys.push(item.c_id);
+          if (item.children && item.children.length > 0) {
+            keys = keys.concat(getAllKeys(item.children));
+          }
+        });
+        return keys;
+      };
+      const allKeys = getAllKeys(treeCategory);
+      setExpandedRowKeys(allKeys);
+    } else {
+      setExpandedRowKeys([]);
+    }
+  }, [isExpandAll, treeCategory]);
+  const expandAllRows = () => {
+    const allKeys = treeCategory.flatMap((item) => {
+      const collectKeys = (node) => {
+        if (!node.children) return [node.c_id];
+        return [node.c_id, ...node.children.flatMap(collectKeys)];
+      };
+      return collectKeys(item);
+    });
+    setExpandedRowKeys(allKeys);
+  };
   return (
     <>
       {contextHolder}
@@ -238,19 +272,47 @@ export default function NewsCategoryTag() {
           </Form>
         </Card>
         <Card
-          title="媒体管理"
+          title="标签管理"
           extra={
             <Button type="primary" onClick={() => onCreateNewsCategory(true)}>
               新增
             </Button>
           }
         >
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Checkbox
+                checked={isExpandAll}
+                onChange={(e) => {
+                  setIsExpandAll(e.target.checked);
+                  if (e.target.checked) {
+                    expandAllRows();
+                  } else {
+                    setExpandedRowKeys([]);
+                  }
+                }}
+              >
+                展开全部
+              </Checkbox>
+            </Col>
+          </Row>
           <Table
             rowKey="c_id"
             size="small"
             columns={columns}
             dataSource={treeCategory}
             loading={isLoadingList}
+            rowSelection={rowSelection}
+            expandable={{
+              expandedRowKeys,
+              onExpand: (expanded, record) => {
+                if (expanded) {
+                  setExpandedRowKeys((prev) => [...prev, record.c_id]);
+                } else {
+                  setExpandedRowKeys((prev) => prev.filter((key) => key !== record.c_id));
+                }
+              },
+            }}
           />
         </Card>
         <EditorOrAddModel {...editorOrAddModelProps} />

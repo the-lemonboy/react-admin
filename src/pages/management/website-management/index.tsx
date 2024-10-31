@@ -196,6 +196,7 @@ export default function NavWebsitePage() {
       dataIndex: 'content_search_text',
       key: 'content_search_text',
       width: 200,
+      align: 'center',
       render: (_, record) => (
         <Tooltip title={record.description}>
           <div
@@ -217,7 +218,7 @@ export default function NavWebsitePage() {
       title: '链接',
       dataIndex: 'link',
       align: 'center',
-      width: 300,
+      width: 200,
       render: (link: string) => {
         return (
           <a href={link} target="_blank" rel="noreferrer">
