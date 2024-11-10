@@ -22,10 +22,6 @@ export default function NoticeButton() {
     backgroundPosition: 'right top, left bottom',
     backgroundSize: '50, 50%',
   };
-  const bodyStyle: CSSProperties = {
-    padding: 0,
-  };
-
   return (
     <div>
       <IconButton onClick={() => setDrawerOpen(true)}>
@@ -46,8 +42,10 @@ export default function NoticeButton() {
         open={drawerOpen}
         closable={false}
         width={420}
-        bodyStyle={bodyStyle}
-        maskStyle={{ backgroundColor: 'transparent' }}
+        styles={{
+          mask: { backgroundColor: 'transparent' },
+          body: { padding: 0 }, // 替换 bodyStyle
+        }}
         style={style}
         extra={
           <IconButton

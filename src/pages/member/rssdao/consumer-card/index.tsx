@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, Space, message, Switch, Tag } from 'antd';
+import { Card, Space, message, Switch, Tag, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
@@ -109,6 +109,34 @@ export default function MemberLevelPage() {
       }));
     }
   };
+  const [editingKey, setEditingKey] = useState<string>('');
+  const [remarkValue, setRemarkValue] = useState<string>('');
+
+  // ... 添加处理函数
+  const onChangeRemark = (e: React.ChangeEvent<HTMLInputElement>, record: CouponTableType) => {
+    setRemarkValue(e.target.value);
+    // 这里可以添加保存备注的API调用
+  };
+  const changeRemarkMutation = useMutation({
+    mutationFn: async (params: any) => {
+      const res = await couponService.ChangeRemark(params);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['couponList']);
+      messageApi.success('修改成功');
+    },
+    onError: (err: any) => {
+      messageApi.error(err.message);
+    },
+  });
+  const handleSaveRemark = (record: CouponTableType) => {
+    changeRemarkMutation.mutate({
+      c_no: record.c_no,
+      remark: remarkValue,
+    });
+    setEditingKey('');
+  };
   // 这里可以加入更新状态的逻辑，例如调用 API 更新状态
   const columns: ColumnsType<CouponTableType> = [
     { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
@@ -151,7 +179,30 @@ export default function MemberLevelPage() {
     },
 
     { title: '使用渠道', dataIndex: 'pay_channel', key: 'pay_channel', align: 'center' },
-    { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, align: 'center' },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+      align: 'center',
+      render: (value, record) =>
+        editingKey === record.id ? (
+          <Input
+            value={remarkValue}
+            onChange={(e) => onChangeRemark(e, record)}
+            onBlur={() => handleSaveRemark(record)}
+          />
+        ) : (
+          <span
+            onClick={() => {
+              setEditingKey(record.id);
+              setRemarkValue(value);
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            {value || '-'}
+          </span>
+        ),
+    },
     // { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
     // { title: '过期时间', dataIndex: 'expired_at', key: 'expired_at' },
   ];

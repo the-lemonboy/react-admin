@@ -13,7 +13,7 @@ const WebsiteManagementPage = lazy(() => import('@/pages/management/website-mana
 // const ThesaurusTagPage = lazy(() => import('@/pages/news/theasaurus-tag')); // 修正为ThesaurusTagPage
 const WebsiteCategoryTagPage = lazy(() => import('@/pages/management/category-tag'));
 const management: AppRouteObject = {
-  order: 2,
+  order: 1,
   path: 'management',
   element: (
     <Suspense fallback={<CircleLoading />}>

@@ -27,9 +27,9 @@ export enum ExchangeApi {
   GetTickerCx = '/api/ax/ticker-cex/list',
   GetTickerDex = '/api/ax/ticker-dex/list',
 }
-const GetDailyIncrease = () => apiClient.get<any>({ url: ExchangeApi.GetDailyIncrease });
-const GetMothlyIncrease = () => apiClient.get<any>({ url: ExchangeApi.GetMothlyIncrease });
-const GetWeeklyIncrease = () => apiClient.get<any>({ url: ExchangeApi.GetWeeklyIncrease });
+const GetDailyIncrease = () => apiClient.post<any>({ url: ExchangeApi.GetDailyIncrease });
+const GetMothlyIncrease = () => apiClient.post<any>({ url: ExchangeApi.GetMothlyIncrease });
+const GetWeeklyIncrease = () => apiClient.post<any>({ url: ExchangeApi.GetWeeklyIncrease });
 const NoticeSearch = (data: NoticeSearchReq) =>
   apiClient.post<any>({ url: ExchangeApi.NoticeSearch, data });
 const GetRate = (data: GetRateReq) =>

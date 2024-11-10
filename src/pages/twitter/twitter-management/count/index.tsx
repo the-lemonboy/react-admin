@@ -9,7 +9,6 @@ import {
   Form,
   Row,
   Col,
-  Select,
   Input,
   Tag,
   Tooltip,
@@ -36,7 +35,7 @@ interface TableParams {
 export default function TwitterAcountList() {
   const queryClient = useQueryClient(); // 全局声明
   const [messageApi, contextHolder] = message.useMessage();
-  const [AcountQuery, setArticelQuery] = useState<GetAcountListReq>({
+  const [AcountQuery, setAcountQuery] = useState<GetAcountListReq>({
     area_id: '',
     limit: 20,
     // name: '',
@@ -70,10 +69,10 @@ export default function TwitterAcountList() {
   const handleTableChange: TableProps['onChange'] = (pagination) => {
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 20;
-    setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
+    setAcountQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
     setTableParams({ pagination });
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setArticelQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
+      setAcountQuery((prev) => ({ ...prev, page: 1, limit: pagination.pageSize ?? 20 }));
       setTableParams({ pagination });
     }
   };
@@ -295,7 +294,7 @@ export default function TwitterAcountList() {
     setCategoryQuery((prev) => ({ ...prev, p_c_id: e.target.value, level: 2 }));
   };
   useEffect(() => {
-    setArticelQuery((prev) => {
+    setAcountQuery((prev) => {
       // 这里不要eslint
       // eslint-disable-next-line no-nested-ternary
       const path =
@@ -306,7 +305,6 @@ export default function TwitterAcountList() {
           : CategoryIds.categoryIdTwo
           ? `/${CategoryIds.categoryIdTwo}`
           : '';
-
       return {
         ...prev,
         limit: 20,
@@ -321,7 +319,7 @@ export default function TwitterAcountList() {
     const data = checkedValues.map(
       (item) => `/${CategoryIds.categoryIdOne}/${CategoryIds.categoryIdTwo}/${item}`,
     );
-    setArticelQuery((prev: any) => ({
+    setAcountQuery((prev: any) => ({
       ...prev,
       limit: 20,
       page: 1,
@@ -333,11 +331,42 @@ export default function TwitterAcountList() {
   const [searchForm] = Form.useForm();
   const onSearchFormReset = () => {
     searchForm.resetFields();
+    setAcountQuery({
+      area_id: '',
+      limit: 20,
+      p_c_path: [],
+      page: 1,
+    });
+    setTheasaurusTagId('');
+    setCategoryIds({
+      categoryIdOne: '',
+      categoryIdTwo: '',
+      categoryIdThree: '',
+    });
   };
   const [searchFormValues, setSearchFormValues] = useState<GetAcountListReq>({});
   const onSearchSubmit = async () => {
     const values = await searchForm.validateFields();
-    setArticelQuery({ ...values, page: 1, limit: 10 });
+    setAcountQuery({ ...values, page: 1, limit: 10 });
+  };
+  const [selectItems, setSelectItems] = useState<string[]>([]);
+  const onChangeTableList = (selectedRowKeys: any, selectedRows: any) => {
+    const authoIds = selectedRows.map((item: any) => item.author_id);
+    setSelectItems(authoIds);
+  };
+  const onHandleTags = () => {
+    if (selectItems.length === 0) {
+      messageApi.error('请选择打标签的账号');
+      return;
+    }
+    setEditorOrAddModelProps((prev: any) => ({
+      ...prev,
+      show: true,
+      tableValue: {
+        author_id: selectItems,
+      },
+      theasaurusList,
+    }));
   };
   return (
     <>
@@ -346,17 +375,6 @@ export default function TwitterAcountList() {
         <Card>
           <Form form={searchForm} initialValues={searchFormValues}>
             <Row gutter={[16, 16]}>
-              {/* <Col span={24} lg={6}>
-                <Form.Item label="板块" name="area_id" className="!mb-0">
-                  <Select>
-                    {theasaurusList?.data.map((item: any, index: any) => (
-                      <Select.Option key={index} value={item.id}>
-                        {item.title}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col> */}
               <Col span={24} lg={6}>
                 <Form.Item label="账号" name="username" className="!mb-0">
                   <Input />
@@ -426,11 +444,21 @@ export default function TwitterAcountList() {
             </div>
           )}
         </Card>
-        <Card title="群组内容">
+        <Card
+          title="群组内容"
+          extra={
+            <div>
+              <Button style={{ background: '#1DA57A', color: '#fff' }} onClick={onHandleTags}>
+                批量打标签
+              </Button>
+            </div>
+          }
+        >
           <Table
             rowKey="id"
             size="small"
             columns={columns}
+            rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
             dataSource={tableList?.data}
             loading={isLoadingList}
             pagination={tableParams.pagination}

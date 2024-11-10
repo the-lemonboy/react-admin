@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Modal, Table, Form, Select, Button, Row, Col, Checkbox, message } from 'antd';
+import { Modal, Table, Form, Select, Row, Col, Checkbox, message } from 'antd';
 import { useEffect, useState } from 'react';
 
 import twitterService, { SetCategroyTagsReq } from '@/api/services/twitterService';
@@ -60,7 +60,6 @@ function EditorOrAddModel({
     setSelectedRowKeys(newSelectedRowKeys);
     const paths = selectedRows.map((item) => item.p_c_path);
     setSelectedPath(paths);
-    console.log('Selected paths changed: ', paths);
   };
 
   const rowSelection: TableRowSelection<TreeCategory> = {
@@ -91,11 +90,22 @@ function EditorOrAddModel({
         c_id: selectedRowKeys[index],
         p_c_path: item,
       }));
-      const params = {
-        category_paths: paramsValue,
-        author_id: tableValue.author_id,
-      };
-      setCategoryTags.mutate(params);
+
+      if (Array.isArray(tableValue.author_id)) {
+        tableValue.author_id.forEach((item) => {
+          const params = {
+            category_paths: paramsValue,
+            author_id: item,
+          };
+          setCategoryTags.mutate(params);
+        });
+      } else {
+        const params = {
+          category_paths: paramsValue,
+          author_id: tableValue.author_id,
+        };
+        setCategoryTags.mutate(params);
+      }
     } catch (error) {
       console.error('Validation failed:', error);
     }

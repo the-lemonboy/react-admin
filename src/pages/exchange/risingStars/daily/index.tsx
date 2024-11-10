@@ -1,12 +1,14 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import exchangeService, { GetDailyIncrease } from '@/api/services/exchangeService';
+
+import exchangeService from '@/api/services/exchangeService';
+
 export default function DailyIncreasePage() {
   // const [formList,setFormList] = useState<any[]>([])
   const queryClient = useQueryClient();
   const { data: tableList, isLoading: isLoadingList } = useQuery({
-    queryKey: ['articelList'],
+    queryKey: ['dailyIncrease'],
     queryFn: () => exchangeService.GetDailyIncrease(),
   });
   const columns: ColumnsType<NewsSearchList> = [
@@ -29,7 +31,7 @@ export default function DailyIncreasePage() {
           dataSource={tableList?.data}
           loading={isLoadingList}
           // pagination={tableParams.pagination}
-          onChange={handleTableChange}
+          // onChange={handleTableChange}
         />
       </Card>
     </Space>

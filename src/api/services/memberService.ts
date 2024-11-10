@@ -43,6 +43,10 @@ export interface ChangeVipLevelStatusReq {
   id: number;
   opt_status: boolean;
 }
+export interface ChangeRemarkReq {
+  c_no: string;
+  remark: string;
+}
 export enum MemberType {
   MemberList = '/api/vip/level/list',
   CouponCreate = '/api/vip/coupon/generate',
@@ -51,6 +55,7 @@ export enum MemberType {
   GetUserList = '/api/user/list',
   suspendedUser = '/api/user/suspended',
   ChangeVipLevelStatus = '/api/vip/level/opt_status',
+  ChangeRemark = '/api/vip/coupon/update_remark',
   // EditVipLevel = '/api/nav/vip/level/edit',
 }
 const MemberList = (data: GetMemberListReq) =>

@@ -136,11 +136,13 @@ export default function SearchBar() {
         onCancel={handleCancel}
         closeIcon={false}
         afterOpenChange={handleAfterOpenChange}
-        bodyStyle={{
-          height: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
+        styles={{
+          body: {
+            height: '400px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          },
         }}
         title={
           <Input

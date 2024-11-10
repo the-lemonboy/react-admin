@@ -158,6 +158,13 @@
         "tg-grounp": "grounp",
         "tg-grounp-content": "content"
       },
+      "exchange": "exchange",
+      "risingStars":{
+        "index": "rising stars",
+        "daily": "daily",
+        "weekly": "weekly",
+        "monthly": "monthly"
+      },
       "disabled": "Item Disabled",
       "label": "Item Label",
       "frame": "Item External",

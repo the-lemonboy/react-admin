@@ -14,17 +14,25 @@ export interface ChangeCouponStatusReq {
   c_no: string;
   distributed: boolean;
 }
+export interface ChangeRemarkReq {
+  c_no: string;
+  remark: string;
+}
 export enum CouponType {
   GetCouponList = '/api/vip/coupon/list',
   ChangeCouponStatus = '/api/vip/coupon/distribute',
+  ChangeRemark = '/api/vip/coupon/update_remark',
 }
 const GetCouponList = (data: GetCouponListReq) =>
   apiClient.post<any>({ url: CouponType.GetCouponList, data });
 const ChangeCouponStatus = (data: ChangeCouponStatusReq) =>
   apiClient.post<any>({ url: CouponType.ChangeCouponStatus, data });
 const getUserInfo = (uid: string) => apiClient.get<any>({ url: `/api/nav/user/detail/${uid}` });
+const ChangeRemark = (data: ChangeRemarkReq) =>
+  apiClient.post<any>({ url: CouponType.ChangeRemark, data });
 export default {
   GetCouponList,
   ChangeCouponStatus,
   getUserInfo,
+  ChangeRemark,
 };
