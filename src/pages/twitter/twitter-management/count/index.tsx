@@ -125,7 +125,7 @@ export default function TwitterAcountList() {
       render: (_, record) => (
         // 跳转https://x.com/trondao
         <a href={`https://x.com/${record.username}`} target="_blank" rel="noopener noreferrer">
-          {record.name}
+          {record.username}
         </a>
       ),
     },
@@ -143,22 +143,6 @@ export default function TwitterAcountList() {
       key: 'description',
       align: 'center',
       width: 300,
-      // render: (_, record) => (
-      //   <Tooltip title={record.description}>
-      //     <div
-      //       className="ellipsis"
-      //       style={{
-      //         float: 'left',
-      //         maxWidth: '300px',
-      //         // overflow: 'hidden',
-      //         // whiteSpace: 'nowrap',
-      //         // textOverflow: 'ellipsis',
-      //       }}
-      //     >
-      //       {record.description}
-      //     </div>
-      //   </Tooltip>
-      // ),
     },
     {
       title: '位置',

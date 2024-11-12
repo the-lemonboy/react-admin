@@ -15,6 +15,7 @@ import {
   Drawer,
 } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import twitterService, {
@@ -41,7 +42,7 @@ export default function Session() {
   });
   const { data: tableList, isLoading: isLoadingList } = useQuery({
     queryKey: ['twitterSessionList', sessionQuery],
-    queryFn: () => twitterService.GetSessionList(sessionQuery),
+    queryFn: () => twitterService.GetNewTweet(sessionQuery),
   });
   // 分页
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -63,7 +64,6 @@ export default function Session() {
     }
   }, [tableList]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
-    console.log(pagination);
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 20;
     setSessionQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
@@ -241,6 +241,7 @@ export default function Session() {
       key: 'created_time',
       width: 150,
       align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '发推时间',
@@ -248,25 +249,26 @@ export default function Session() {
       key: 'created_at',
       width: 150,
       align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
 
-    {
-      title: '状态',
-      dataIndex: 'hidden',
-      key: 'hidden',
-      width: 100,
-      align: 'center',
-      fixed: 'right',
-      render: (_: any, record: any) => (
-        <Switch
-          checkedChildren="显示"
-          unCheckedChildren="隐藏"
-          defaultChecked={record.hidden}
-          checked={!record.hidden}
-          onClick={(checked, e) => onChanheHideStatus(checked, record, e)}
-        />
-      ),
-    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'hidden',
+    //   key: 'hidden',
+    //   width: 100,
+    //   align: 'center',
+    //   fixed: 'right',
+    //   render: (_: any, record: any) => (
+    //     <Switch
+    //       checkedChildren="显示"
+    //       unCheckedChildren="隐藏"
+    //       defaultChecked={record.hidden}
+    //       checked={!record.hidden}
+    //       onClick={(checked, e) => onChanheHideStatus(checked, record, e)}
+    //     />
+    //   ),
+    // },
   ];
   const changeDistributedMutation = useMutation({
     mutationFn: async (params: SetArticlesStatusReq) => {
@@ -544,35 +546,35 @@ export default function Session() {
           )}
         </Card>
         <Card
-          title="会话内容"
-          extra={
-            <div>
-              <Button
-                className="mr-5"
-                style={{ background: '#1DA57A', color: '#fff' }}
-                onClick={onChangeSelectShowStatus}
-              >
-                显示
-              </Button>
-              <Button
-                className="bg-red mr-5"
-                style={{ background: '#de3f00', color: '#fff' }}
-                onClick={onChangeSelectHiddenStatus}
-              >
-                隐藏
-              </Button>
-              {/* <Button type="primary" onClick={onDelSelectItems}>
-                删除记录
-              </Button> */}
-            </div>
-          }
+          title="最近推文"
+          // extra={
+          //   <div>
+          //     <Button
+          //       className="mr-5"
+          //       style={{ background: '#1DA57A', color: '#fff' }}
+          //       onClick={onChangeSelectShowStatus}
+          //     >
+          //       显示
+          //     </Button>
+          //     <Button
+          //       className="bg-red mr-5"
+          //       style={{ background: '#de3f00', color: '#fff' }}
+          //       onClick={onChangeSelectHiddenStatus}
+          //     >
+          //       隐藏
+          //     </Button>
+          //     {/* <Button type="primary" onClick={onDelSelectItems}>
+          //       删除记录
+          //     </Button> */}
+          //   </div>
+          // }
         >
           <Table
             scroll={{ x: 'max-content' }}
             rowKey="conv_id"
             size="small"
             columns={columns}
-            rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
+            // rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
             dataSource={tableList?.data}
             loading={isLoadingList}
             pagination={tableParams.pagination}

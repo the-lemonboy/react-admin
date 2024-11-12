@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Tooltip, Button, Switch, Drawer } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import twitterService, { GetArticleReq, SetArticlesStatusReq } from '@/api/services/twitterService';
@@ -46,7 +47,6 @@ export default function KnowledgeGrounp() {
     }
   }, [tableList]);
   const handleTableChange: TableProps['onChange'] = (pagination) => {
-    console.log(pagination);
     const current = pagination.current ?? 1;
     const pageSize = pagination.pageSize ?? 20;
     setArticelQuery((prev) => ({ ...prev, page: current, limit: pageSize }));
@@ -146,10 +146,20 @@ export default function KnowledgeGrounp() {
     },
     {
       title: '推文类型',
-      dataIndex: 'lang',
-      key: 'lang',
+      dataIndex: 'ref_type',
+      key: 'ref_type',
       width: 100,
       align: 'center',
+      render: (text: string) => {
+        // retweeted: '转发', quoted：'引用', replied_to: '回复'， '': '原创'
+        return text === 'retweeted'
+          ? '转发'
+          : text === 'quoted'
+          ? '引用'
+          : text === 'replied_to'
+          ? '回复'
+          : '原创';
+      },
     },
     {
       title: '推文内容',
@@ -175,8 +185,8 @@ export default function KnowledgeGrounp() {
     },
     {
       title: '推文链接',
-      dataIndex: 'url',
-      key: 'url',
+      dataIndex: 'tweet_url',
+      key: 'tweet_url',
       width: 100,
       align: 'center',
     },
@@ -184,7 +194,7 @@ export default function KnowledgeGrounp() {
       title: '评论数',
       dataIndex: 'like_count',
       key: 'like_count',
-      width: 50,
+      width: 100,
       align: 'center',
     },
 
@@ -192,28 +202,28 @@ export default function KnowledgeGrounp() {
       title: '转发数',
       dataIndex: 'retweet_count',
       key: 'retweet_count',
-      width: 50,
+      width: 100,
       align: 'center',
     },
     {
       title: '引用数',
       dataIndex: 'quote_count',
       key: 'quote_count',
-      width: 50,
+      width: 100,
       align: 'center',
     },
     {
       title: '点赞数',
       dataIndex: 'like_count',
       key: 'like_count',
-      width: 50,
+      width: 100,
       align: 'center',
     },
     {
       title: '收藏数',
       dataIndex: 'quote_count',
       key: 'quote_count',
-      width: 50,
+      width: 100,
       align: 'center',
     },
     {
@@ -222,6 +232,7 @@ export default function KnowledgeGrounp() {
       key: 'created_time',
       width: 150,
       align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '发推时间',
@@ -229,25 +240,26 @@ export default function KnowledgeGrounp() {
       key: 'created_at',
       width: 150,
       align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     },
 
-    {
-      title: '状态',
-      dataIndex: 'hidden',
-      key: 'hidden',
-      width: 100,
-      align: 'center',
-      fixed: 'right',
-      render: (_: any, record: any) => (
-        <Switch
-          checkedChildren="显示"
-          unCheckedChildren="隐藏"
-          defaultChecked={record.hidden}
-          checked={!record.hidden}
-          onClick={(checked, e) => onChanheHideStatus(checked, record, e)}
-        />
-      ),
-    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'hidden',
+    //   key: 'hidden',
+    //   width: 100,
+    //   align: 'center',
+    //   fixed: 'right',
+    //   render: (_: any, record: any) => (
+    //     <Switch
+    //       checkedChildren="显示"
+    //       unCheckedChildren="隐藏"
+    //       defaultChecked={record.hidden}
+    //       checked={!record.hidden}
+    //       onClick={(checked, e) => onChanheHideStatus(checked, record, e)}
+    //     />
+    //   ),
+    // },
   ];
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -350,32 +362,32 @@ export default function KnowledgeGrounp() {
       {contextHolder}
       <Space direction="vertical" size="large" className="w-full">
         <Card
-          title="推文内容"
-          extra={
-            <div>
-              <Button
-                className="mr-5"
-                style={{ background: '#1DA57A', color: '#fff' }}
-                onClick={onChangeSelectShowStatus}
-              >
-                显示
-              </Button>
-              <Button
-                className="bg-red mr-5"
-                style={{ background: '#de3f00', color: '#fff' }}
-                onClick={onChangeSelectHiddenStatus}
-              >
-                隐藏
-              </Button>
-            </div>
-          }
+          title="推文搜索"
+          // extra={
+          //   <div>
+          //     <Button
+          //       className="mr-5"
+          //       style={{ background: '#1DA57A', color: '#fff' }}
+          //       onClick={onChangeSelectShowStatus}
+          //     >
+          //       显示
+          //     </Button>
+          //     <Button
+          //       className="bg-red mr-5"
+          //       style={{ background: '#de3f00', color: '#fff' }}
+          //       onClick={onChangeSelectHiddenStatus}
+          //     >
+          //       隐藏
+          //     </Button>
+          //   </div>
+          // }
         >
           <Table
             scroll={{ x: 'max-content' }}
             rowKey="id"
             size="small"
             columns={columns}
-            rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
+            // rowSelection={{ type: 'checkbox', onChange: onChangeTableList }}
             dataSource={tableList?.data}
             loading={isLoadingList}
             pagination={tableParams.pagination}

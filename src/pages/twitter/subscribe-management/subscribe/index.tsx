@@ -63,16 +63,16 @@ export default function KnowledgeGrounp() {
       align: 'center',
       render: (_: any, __: any, index: number) => index + 1,
     },
-    // {
-    //   title: '头像',
-    //   dataIndex: 'avatar',
-    //   key: 'profile_image_url0',
-    //   align: 'center',
-    //   width: 80,
-    //   render: (text: string) => (
-    //     <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
-    //   ),
-    // },
+    {
+      title: '头像',
+      dataIndex: 'profile_image_url0',
+      key: 'profile_image_url0',
+      align: 'center',
+      width: 80,
+      render: (text: string) => (
+        <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
+      ),
+    },
     {
       title: '推特账号名称',
       dataIndex: 'author_name',
@@ -97,20 +97,20 @@ export default function KnowledgeGrounp() {
         </a>
       ),
     },
-    // {
-    //   title: '手机号',
-    //   dataIndex: 'mobile_number',
-    //   key: 'mobile_number',
-    //   width: 150,
-    //   align: 'center',
-    //   render: (text: string) => {
-    //     // 如果不为空
-    //     if (text) {
-    //       return text;
-    //     }
-    //     return '-';
-    //   },
-    // },
+    {
+      title: '手机号',
+      dataIndex: 'mobile_number',
+      key: 'mobile_number',
+      width: 150,
+      align: 'center',
+      render: (text: string) => {
+        // 如果不为空
+        if (text) {
+          return text;
+        }
+        return '-';
+      },
+    },
 
     {
       title: '添加时间',

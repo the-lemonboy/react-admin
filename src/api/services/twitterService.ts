@@ -133,6 +133,19 @@ export interface GetSubscribeListReq {
   mobile_number?: string;
   page: number;
 }
+export interface GetNewTweetReq {
+  area_id: string;
+  author: string;
+  content: string;
+  created_at_range: string;
+  like_count: number;
+  limit: number;
+  p_c_paths: string[];
+  page: number;
+  reply_count: number;
+  retweet_count: number;
+  username: string;
+}
 export enum PlanetType {
   AddArea = '/api/twitter/area/add',
   GetAreaList = '/api/twitter/area/list',
@@ -162,6 +175,7 @@ export enum PlanetType {
   GetSessionList = '/api/twitter/conv/tweet/list',
   DelSession = '/api/twitter/tweet/delete',
   SetSessionStatus = '/api/twitter/tweet/hidden',
+  GetNewTweet = '/api/twitter/tweet/list',
 
   // ---- 订阅管理
   GetSubscribeList = '/api/twitter/user/sub/author/list',
@@ -214,6 +228,7 @@ const GetSubscribeList = (data: GetSubscribeListReq) =>
   apiClient.post({ url: PlanetType.GetSubscribeList, data });
 const DelSubscribe = (id: string) =>
   apiClient.get({ url: `/api/twitter/user/sub/author/del/${id}` });
+const GetNewTweet = (data: GetNewTweetReq) => apiClient.post({ url: PlanetType.GetNewTweet, data });
 export default {
   AddArea,
   GetAreaList,
@@ -246,4 +261,5 @@ export default {
   SetSessionStatus,
   GetSubscribeList,
   DelSubscribe,
+  GetNewTweet,
 };
