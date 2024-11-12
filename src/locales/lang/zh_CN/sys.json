@@ -86,9 +86,9 @@
       "dashboard": "仪表",
       "workbench": "工作台",
       "analysis": "分析",
-      "management": "网站管理",
-      "news": "财经新闻监控",
-      "media-management": "财经新闻",
+      "management": "RSSDAO导航",
+      "news": "新闻财经监控",
+      "media-management": "新闻财经平台",
       "user": {
         "index": "用户",
         "profile": "个人资料",
@@ -103,7 +103,7 @@
       "newscatagory-tag": "标签分类",
       "news-list": "快讯列表",
       "article-list": "文章列表",
-      "member": "会员管理",
+      "member": "系统管理",
       "category-tag": "标签分类",
       "wechat": {
         "index": "微信公众号",
@@ -111,7 +111,7 @@
         "recharge-record": "充值记录"
       },
       "rssdao": {
-        "index": "RssDAO",
+        "index": "RSSDAO",
         "consumer-card": "消费卡",
         "member-level": "会员等级",
         "user": "用户管理"
@@ -119,33 +119,34 @@
       "pilot-special": "领航者专拦",
       "knowledge-planet":{
         "index": "知识星球",
-        "category-tag": "标签管理",
-        "theasaurus-tag": "词库管理",
-        "knowledge-zone": "领航专栏",
+        "category-tag": "标签分类",
+        "theasaurus-tag": "词库分类",
+        "knowledge-zone": "领航者专栏",
         "knowledge-content": "专栏内容"
       },
       "TG-community":{
-        "index": "TG社群",
-        "category-tag": "标签管理",
-        "theasaurus-tag": "词库管理",
-        "tg-grounp": "TG群组",
+        "index": "Telegram",
+        "category-tag": "标签分类",
+        "theasaurus-tag": "词库分类",
+        "tg-grounp": "Telegram群组",
         "tg-grounp-content": "群组内容"
       },
       
-      "twitter-management": "推特管理",
+      "twitter-management": "推特监控",
       "tag-management": {
-        "index": "标签管理",
+        "index": "关键词库",
         "category-tag": "标签分类",
         "theasaurus-tag": "词库分类"
       },
       "count-management": {
-        "index": "账户管理",
-        "count": "推特账号"
+        "index": "推特账号",
+        "count": "账号搜索",
+        "subscribe": "账号订阅"
       },
       "articel-management": {
-        "index": "推文管理",
-        "articel": "推文内容",
-        "session": "会话管理"
+        "index": "推特数据",
+        "articel": "推文搜索",
+        "session": "最近推文"
       },
       "subscribe-management": {
         "index": "订阅管理",

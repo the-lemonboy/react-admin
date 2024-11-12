@@ -32,32 +32,6 @@ const pilotSpecial: AppRouteObject = {
       element: <Navigate to="twitter-management" replace />,
     },
     {
-      path: 'tag-management',
-      meta: {
-        label: 'sys.menu.tag-management.index',
-        key: '/twitter-management/tag-management',
-      },
-      children: [
-        { index: true, element: <Navigate to="category-tag" replace /> },
-        {
-          path: 'theasaurus-tag',
-          element: <TwitterTheasaurusPage />,
-          meta: {
-            label: 'sys.menu.tag-management.theasaurus-tag',
-            key: '/twitter-management/tag-management/theasaurus-tag',
-          },
-        },
-        {
-          path: 'category-tag',
-          element: <TwitterCategoryPage />,
-          meta: {
-            label: 'sys.menu.tag-management.category-tag',
-            key: '/twitter-management/tag-management/category-tag',
-          },
-        },
-      ],
-    },
-    {
       path: 'count-management',
       meta: {
         label: 'sys.menu.count-management.index',
@@ -71,6 +45,14 @@ const pilotSpecial: AppRouteObject = {
           meta: {
             label: 'sys.menu.count-management.count',
             key: '/twitter-management/count-management/count',
+          },
+        },
+        {
+          path: 'subscribe',
+          element: <SubscribePage />,
+          meta: {
+            label: 'sys.menu.count-management.subscribe',
+            key: '/twitter-management/count-management/subscribe',
           },
         },
       ],
@@ -102,31 +84,50 @@ const pilotSpecial: AppRouteObject = {
       ],
     },
     {
-      path: 'subscribe-management',
+      path: 'tag-management',
       meta: {
-        label: 'sys.menu.subscribe-management.index',
-        key: '/twitter-management/subscribe-management',
+        label: 'sys.menu.tag-management.index',
+        key: '/twitter-management/tag-management',
       },
       children: [
         { index: true, element: <Navigate to="category-tag" replace /> },
-        // {
-        //   path: 'user',
-        //   element: <UserPage />,
-        //   meta: {
-        //     label: 'sys.menu.subscribe-management.user',
-        //     key: '/twitter-management/subscribe-management/user',
-        //   },
-        // },
         {
-          path: 'subscribe',
-          element: <SubscribePage />,
+          path: 'theasaurus-tag',
+          element: <TwitterTheasaurusPage />,
           meta: {
-            label: 'sys.menu.subscribe-management.subscribe',
-            key: '/twitter-management/subscribe-management/subscribe',
+            label: 'sys.menu.tag-management.theasaurus-tag',
+            key: '/twitter-management/tag-management/theasaurus-tag',
+          },
+        },
+        {
+          path: 'category-tag',
+          element: <TwitterCategoryPage />,
+          meta: {
+            label: 'sys.menu.tag-management.category-tag',
+            key: '/twitter-management/tag-management/category-tag',
           },
         },
       ],
     },
+    // {
+    //   path: 'subscribe-management',
+    //   meta: {
+    //     label: 'sys.menu.subscribe-management.index',
+    //     key: '/twitter-management/subscribe-management',
+    //   },
+    //   children: [
+    //     { index: true, element: <Navigate to="category-tag" replace /> },
+    //     // {
+    //     //   path: 'user',
+    //     //   element: <UserPage />,
+    //     //   meta: {
+    //     //     label: 'sys.menu.subscribe-management.user',
+    //     //     key: '/twitter-management/subscribe-management/user',
+    //     //   },
+    //     // },
+
+    //   ],
+    // },
   ],
 };
 

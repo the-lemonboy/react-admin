@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, Space, message, Button } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import twitterService, { GetSubscribeListReq } from '@/api/services/twitterService';
@@ -54,57 +55,132 @@ export default function KnowledgeGrounp() {
     }
   };
   const columns: ColumnsType<TwitterUser> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', width: 100, align: 'center' },
     {
-      title: '用户名',
-      dataIndex: 'author_username',
-      key: 'username',
-      width: 100,
-      align: 'center',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'author_name',
-      key: 'name',
-      width: 100,
-      align: 'center',
-    },
-    {
-      title: '头像',
-      dataIndex: 'avatar',
-      key: 'profile_image_url0',
-      align: 'center',
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
       width: 80,
-      render: (text: string) => (
-        <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
+      align: 'center',
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    // {
+    //   title: '头像',
+    //   dataIndex: 'avatar',
+    //   key: 'profile_image_url0',
+    //   align: 'center',
+    //   width: 80,
+    //   render: (text: string) => (
+    //     <img src={text} alt="icon" style={{ width: 30, height: 30, margin: 'auto' }} />
+    //   ),
+    // },
+    {
+      title: '推特账号名称',
+      dataIndex: 'author_name',
+      key: 'author_name',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '推特账号ID',
+      dataIndex: 'author_username',
+      key: 'author_username',
+      width: 200,
+      align: 'center',
+      render: (_, record: any) => (
+        // 跳转https://x.com/trondao
+        <a
+          href={`https://x.com/${record.author_username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {record.author_username}
+        </a>
       ),
     },
+    // {
+    //   title: '手机号',
+    //   dataIndex: 'mobile_number',
+    //   key: 'mobile_number',
+    //   width: 150,
+    //   align: 'center',
+    //   render: (text: string) => {
+    //     // 如果不为空
+    //     if (text) {
+    //       return text;
+    //     }
+    //     return '-';
+    //   },
+    // },
+
     {
-      title: '网站名称',
-      dataIndex: 'web_site_name',
-      key: 'web_site_name',
-      width: 100,
+      title: '添加时间',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 150,
+      align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '标签',
+      dataIndex: 'tag',
+      key: 'tag',
+      width: 200,
       align: 'center',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile_number',
-      key: 'mobile_number',
-      width: 150,
+      title: '备注',
+      dataIndex: 'sign',
+      key: 'sign',
+      width: 200,
       align: 'center',
-      render: (text: string) => {
-        // 如果不为空
-        if (text) {
-          return text;
-        }
-        return '-';
-      },
     },
     {
-      title: '粉丝数',
-      dataIndex: 'followers_count',
-      key: 'followers_count',
-      width: 150,
+      title: '推特评分',
+      dataIndex: 'twitter_score',
+      key: 'twitter_score',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '简介',
+      dataIndex: 'profile',
+      key: 'profile',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '位置',
+      dataIndex: 'location',
+      key: 'location',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '超链接',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '注册时间',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '推特主页链接',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '推特账号类型',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
       align: 'center',
     },
     {
@@ -115,10 +191,24 @@ export default function KnowledgeGrounp() {
       align: 'center',
     },
     {
-      title: '创建时间',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: '粉丝数',
+      dataIndex: 'followers_count',
+      key: 'followers_count',
       width: 150,
+      align: 'center',
+    },
+    {
+      title: '置顶推文链接',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '置顶推文内容',
+      dataIndex: 'url',
+      key: 'url',
+      width: 200,
       align: 'center',
     },
     {
@@ -127,6 +217,7 @@ export default function KnowledgeGrounp() {
       key: 'opt_status',
       width: 120,
       align: 'center',
+      fixed: 'right',
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button className="mr-2" type="primary" onClick={() => onDel(record)}>
@@ -158,6 +249,7 @@ export default function KnowledgeGrounp() {
       <Space direction="vertical" size="large" className="w-full">
         <Card title="推特订阅管理">
           <Table
+            scroll={{ x: '1500' }}
             rowKey="id"
             size="small"
             columns={columns}

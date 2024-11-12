@@ -65,7 +65,7 @@ function DetailModel({ title, show, formValue, onOk, onCancel }: DetailModelProp
         wrapperCol={{ span: 18 }}
         layout="horizontal"
       >
-        <Form.Item label="已有标签" name="url">
+        <Form.Item label="已有标签">
           {tagList && (
             <div className="flex flex-wrap items-center">
               {tagList.map((item: TagInfo) => (

@@ -83,6 +83,14 @@ export default function KnowledgeGrounp() {
   };
   const columns: ColumnsType<Tweet> = [
     {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 80,
+      align: 'center',
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
       title: 'tweet_id',
       dataIndex: 'tweet_id',
       key: 'tweet_id',
@@ -100,18 +108,6 @@ export default function KnowledgeGrounp() {
       ),
     },
     {
-      title: '作者',
-      dataIndex: 'name',
-      key: 'name',
-      width: 100,
-      align: 'center',
-      render: (_, record) => (
-        <div className="text-blue underline decoration-solid" onClick={() => showDrawer(record)}>
-          {record.name}
-        </div>
-      ),
-    },
-    {
       title: '头像',
       dataIndex: 'profile_image_url0',
       key: 'profile_image_url0',
@@ -122,7 +118,41 @@ export default function KnowledgeGrounp() {
       ),
     },
     {
-      title: '描述',
+      title: '推特账号名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 100,
+      align: 'center',
+    },
+    {
+      title: '推特账号ID',
+      dataIndex: 'username',
+      key: 'username',
+      width: 100,
+      align: 'center',
+      render: (_, record) => (
+        <div className="text-blue underline decoration-solid" onClick={() => showDrawer(record)}>
+          {record.username}
+        </div>
+      ),
+    },
+
+    {
+      title: '推特账号类型',
+      dataIndex: 'lang',
+      key: 'lang',
+      width: 100,
+      align: 'center',
+    },
+    {
+      title: '推文类型',
+      dataIndex: 'lang',
+      key: 'lang',
+      width: 100,
+      align: 'center',
+    },
+    {
+      title: '推文内容',
       dataIndex: 'text',
       key: 'text',
       width: 200,
@@ -144,9 +174,31 @@ export default function KnowledgeGrounp() {
       ),
     },
     {
-      title: '语言',
-      dataIndex: 'lang',
-      key: 'lang',
+      title: '推文链接',
+      dataIndex: 'url',
+      key: 'url',
+      width: 100,
+      align: 'center',
+    },
+    {
+      title: '评论数',
+      dataIndex: 'like_count',
+      key: 'like_count',
+      width: 50,
+      align: 'center',
+    },
+
+    {
+      title: '转发数',
+      dataIndex: 'retweet_count',
+      key: 'retweet_count',
+      width: 50,
+      align: 'center',
+    },
+    {
+      title: '引用数',
+      dataIndex: 'quote_count',
+      key: 'quote_count',
       width: 50,
       align: 'center',
     },
@@ -158,39 +210,34 @@ export default function KnowledgeGrounp() {
       align: 'center',
     },
     {
-      title: '回复',
-      dataIndex: 'reply_count',
-      key: 'reply_count',
+      title: '收藏数',
+      dataIndex: 'quote_count',
+      key: 'quote_count',
       width: 50,
       align: 'center',
     },
     {
-      title: '转推',
-      dataIndex: 'retweet_count',
-      key: 'retweet_count',
-      width: 50,
-      align: 'center',
-    },
-    {
-      title: '发布时间',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 150,
-      align: 'center',
-    },
-    {
-      title: '采集时间',
+      title: '推送时间',
       dataIndex: 'created_time',
       key: 'created_time',
       width: 150,
       align: 'center',
     },
     {
+      title: '发推时间',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 150,
+      align: 'center',
+    },
+
+    {
       title: '状态',
       dataIndex: 'hidden',
       key: 'hidden',
       width: 100,
       align: 'center',
+      fixed: 'right',
       render: (_: any, record: any) => (
         <Switch
           checkedChildren="显示"
@@ -324,6 +371,7 @@ export default function KnowledgeGrounp() {
           }
         >
           <Table
+            scroll={{ x: 'max-content' }}
             rowKey="id"
             size="small"
             columns={columns}

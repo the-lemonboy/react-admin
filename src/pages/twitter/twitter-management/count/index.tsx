@@ -1,19 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Card,
-  Space,
-  message,
-  Button,
-  Radio,
-  Checkbox,
-  Form,
-  Row,
-  Col,
-  Input,
-  Tag,
-  Tooltip,
-} from 'antd';
+import { Card, Space, message, Button, Radio, Checkbox, Form, Row, Col, Input, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import twitterService, {
@@ -104,17 +92,12 @@ export default function TwitterAcountList() {
   };
   const columns: ColumnsType<TweetCount> = [
     {
-      title: '用户名',
-      dataIndex: 'name',
-      key: 'name',
-      width: 200,
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 80,
       align: 'center',
-      render: (_, record) => (
-        // 跳转https://x.com/trondao
-        <a href={`https://x.com/${record.username}`} target="_blank" rel="noopener noreferrer">
-          {record.name}
-        </a>
-      ),
+      render: (_: any, __: any, index: number) => index + 1,
     },
     {
       title: '头像',
@@ -127,60 +110,157 @@ export default function TwitterAcountList() {
       ),
     },
     {
-      title: '粉丝量',
-      dataIndex: 'followers_count',
-      key: 'followers_count',
+      title: '推特账号名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '推特账号ID',
+      dataIndex: 'username',
+      key: 'username',
+      width: 200,
+      align: 'center',
+      render: (_, record) => (
+        // 跳转https://x.com/trondao
+        <a href={`https://x.com/${record.username}`} target="_blank" rel="noopener noreferrer">
+          {record.name}
+        </a>
+      ),
+    },
+    {
+      title: '添加时间',
+      dataIndex: 'created_time',
+      key: 'created_time',
+      width: 150,
+      align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '简介',
+      dataIndex: 'description',
+      key: 'description',
+      align: 'center',
+      width: 300,
+      // render: (_, record) => (
+      //   <Tooltip title={record.description}>
+      //     <div
+      //       className="ellipsis"
+      //       style={{
+      //         float: 'left',
+      //         maxWidth: '300px',
+      //         // overflow: 'hidden',
+      //         // whiteSpace: 'nowrap',
+      //         // textOverflow: 'ellipsis',
+      //       }}
+      //     >
+      //       {record.description}
+      //     </div>
+      //   </Tooltip>
+      // ),
+    },
+    {
+      title: '位置',
+      dataIndex: 'location',
+      key: 'location',
       width: 150,
       align: 'center',
     },
     {
-      title: '关注量',
+      title: '超链接',
+      dataIndex: 'url',
+      key: 'url',
+      width: 150,
+      align: 'center',
+      render: (text: string) => (
+        <a href={text} target="_blank" rel="noreferrer">
+          {text}
+        </a>
+      ),
+    },
+    {
+      title: '注册时间',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 150,
+      align: 'center',
+      render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
+    },
+    // {
+    //   title: '推特主页链接',
+    //   dataIndex: 'location',
+    //   key: 'location',
+    //   width: 150,
+    //   align: 'center',
+    // },
+
+    {
+      title: '推特主页链接',
+      dataIndex: 'profile_url',
+      key: 'profile_url',
+      width: 150,
+      align: 'center',
+      render: (text: string, record: any) => (
+        <a href={`https://x.com/${record.username}`} target="_blank" rel="noreferrer">
+          https://x.com/{record.username}
+        </a>
+      ),
+    },
+    {
+      title: '推特账号类型',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 150,
+      align: 'center',
+      render: (text: string, record: any) =>
+        record.verified_type ? record.verified_type : record.is_blue_verified ? 'Blue' : null,
+    },
+    {
+      title: '关注数',
       dataIndex: 'following_count',
       key: 'following_count',
       width: 150,
       align: 'center',
     },
     {
-      title: '推特量',
-      dataIndex: 'tweet_count',
-      key: 'tweet_count',
-      width: 100,
+      title: '粉丝数',
+      dataIndex: 'followers_count',
+      key: 'followers_count',
+      width: 150,
       align: 'center',
     },
     {
-      title: '描述',
-      dataIndex: 'description',
-      key: 'description',
-      width: 200,
-      render: (_, record) => (
-        <Tooltip title={record.description}>
-          <div
-            className="ellipsis"
-            style={{
-              float: 'left',
-              maxWidth: '100px',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {record.description}
-          </div>
-        </Tooltip>
+      title: '钱包地址',
+      dataIndex: 'wallet',
+      key: 'wallet',
+      width: 150,
+      align: 'center',
+      render: (text: string, record: any) => (
+        <>
+          {record.bitcoin_handle && <p>BTC:{record.bitcoin_handle}</p>}
+          {record.ethereum_handle && <p>ETH:{record.ethereum_handle}</p>}
+        </>
       ),
     },
     {
-      title: '加入时间',
-      dataIndex: 'created_time',
-      key: 'created_time',
-      width: 250,
+      title: '置顶推文链接',
+      dataIndex: 'profile_url',
+      key: 'profile_url',
+      width: 150,
       align: 'center',
+      render: (text: string, record: any) => (
+        <a href={`https://x.com/${record.username}`} target="_blank" rel="noreferrer">
+          https://x.com/{record.username}
+        </a>
+      ),
     },
     {
       title: '标签',
       dataIndex: 'group',
       key: 'group',
       align: 'center',
+      width: 400,
       render: (_, record) => {
         const categories = record?.categories;
         if (!categories) {
@@ -214,6 +294,8 @@ export default function TwitterAcountList() {
       dataIndex: 'opt_status',
       key: 'opt_status',
       align: 'center',
+      fixed: 'right',
+      width: 200,
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
           <Button type="primary" className="mr-2" onClick={() => onDetail(record)}>
@@ -455,6 +537,7 @@ export default function TwitterAcountList() {
           }
         >
           <Table
+            scroll={{ x: 1500 }}
             rowKey="id"
             size="small"
             columns={columns}
